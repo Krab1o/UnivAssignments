@@ -1,0 +1,23 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{arena\PYGZus{}allocate}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{arena}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{arena}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{unsigned}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{count}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{c+c1}{// Если места в регионе недостаточно}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{allocated}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{count}\PYG{+w}{ }\PYG{o}{\PYGZgt{}=}\PYG{+w}{ }\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{c+c1}{// Определим новый размер региона}
+\PYG{+w}{        }\PYG{k+kt}{unsigned}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{newSize}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{MULTIPLY\PYGZus{}FACTOR}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{p}{;}
+\PYG{+w}{        }\PYG{c+c1}{// Выделим регион большего размера и освободим ранее занятую память}
+\PYG{+w}{        }\PYG{n}{node}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{newArena}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{realloc}\PYG{p}{(}\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{arena}\PYG{p}{,}
+\PYG{+w}{            }\PYG{n}{newSize}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{node}\PYG{p}{));}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nb}{NULL}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{newArena}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{arena}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{newArena}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{size}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{newSize}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{c+c1}{// В качестве результата вернем индекс первого свободного участка региона}
+\PYG{+w}{    }\PYG{k+kt}{unsigned}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{result}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{allocated}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+c1}{// Сместим индекс на объем выделенной памяти}
+\PYG{+w}{    }\PYG{n}{arena}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{allocated}\PYG{+w}{ }\PYG{o}{+=}\PYG{+w}{ }\PYG{n}{count}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+c1}{// Вернем результат}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{result}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
