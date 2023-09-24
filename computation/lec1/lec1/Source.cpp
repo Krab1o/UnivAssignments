@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
 int main()
 {
@@ -20,12 +21,14 @@ int main()
 	std::cout << "¬ведите число тестов:" << std::endl;
 	std::cin >> computationNumber;
 
+	std::cout << std::setprecision(8);
+
 	for (int i = 0; i < computationNumber; i++)
 	{
-		std::cout << "¬ведите eps" << i << std::endl;
-		std::cin >> eps;
 		std::cout << "¬ведите x" << i << std::endl;
 		std::cin >> arg;
+		std::cout << "¬ведите eps" << i << std::endl;
+		std::cin >> eps;
 
 		term = arg;
 		sum = arg;
@@ -41,11 +44,14 @@ int main()
 		startArr.push_back(arg);
 		sumArr.push_back(sum);
 		itArr.push_back(stepNumber);
+
+		fact = 1;
+		stepNumber = 0;
 	}
 
 	for (auto x : startArr)
 	{
-		std::cout << x << '\t';
+		std::cout << x << '\t' << '\t';
 	}
 	std::cout << std::endl;
 	for (auto x : sumArr)
@@ -55,10 +61,8 @@ int main()
 	std::cout << std::endl;
 	for (auto x : itArr)
 	{
-		std::cout << x << '\t';
+		std::cout << x << '\t' << '\t';
 	}
 
-	
-	
 	return 0;
 }

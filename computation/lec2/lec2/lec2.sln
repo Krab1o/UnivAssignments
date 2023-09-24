@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lec2", "lec2.vcxproj", "{220B6F08-7668-448C-86A5-D2656D60AA7B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Debug|x64.ActiveCfg = Debug|x64
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Debug|x64.Build.0 = Debug|x64
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Debug|x86.ActiveCfg = Debug|Win32
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Debug|x86.Build.0 = Debug|Win32
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Release|x64.ActiveCfg = Release|x64
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Release|x64.Build.0 = Release|x64
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Release|x86.ActiveCfg = Release|Win32
+		{220B6F08-7668-448C-86A5-D2656D60AA7B}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C36B9098-A2CC-4EA9-A90F-FC8AEBC42B97}
+	EndGlobalSection
+EndGlobal
