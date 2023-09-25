@@ -20,14 +20,16 @@ using std::fstream;
 
 class Graph
 {
+	friend void to_json(json& j, const Graph& graph);
+	friend void from_json(const json& j, Graph& graph);
 public:
 
 	Graph(bool orient);
-	Graph(bool orient, fstream& file);
+	Graph(fstream& file);
 	Graph(const Graph& copiedValue);
 
 	void AddVertice(const string& value);
-	void AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight);
+	void AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight = 1);
 
 	void RemoveVertice(const string& vertice);
 	void RemoveEdge(const string& startVertice, const string& endVertice);
@@ -35,8 +37,8 @@ public:
 	void Save();
 
 private:
+
 	map<string, list<pair<string, int32_t>>*> adjacencyMatrix;
 	bool isOriented;
-
-	NLOHMANN_DEFINE_TYPE_INTRUSIVE(Graph, adjacencyMatrix, isOriented)
 };
+

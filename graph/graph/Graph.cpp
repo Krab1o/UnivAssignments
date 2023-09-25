@@ -1,13 +1,14 @@
 #include "Graph.h"
+#include <nlohmann/json.hpp>
 
-Graph::Graph(bool orient)
+Graph::Graph(bool isOriented)
 {
-	isOriented = orient;
+	this->isOriented = isOriented;
 }
 
-Graph::Graph(bool orient, fstream& file)
+Graph::Graph(fstream& file)
 {
-	//TODO: json files parsing 
+	//TODO: json files parsing
 }
 
 Graph::Graph(const Graph& copiedValue)
@@ -21,7 +22,7 @@ void Graph::AddVertice(const string& vertice)
 	adjacencyMatrix[vertice] = new list<pair<string, int32_t>>;
 }
 
-void Graph::AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight = 1)
+void Graph::AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight)
 {
 	adjacencyMatrix[startVertice]->push_back(pair<string, int32_t>(endVertice, weight));
 	if (!isOriented)
@@ -62,4 +63,30 @@ void Graph::RemoveEdge(const string& startVertice, const string& endVertice)
 			}
 		}
 	}
+}
+
+void Graph::Save()
+{
+	json j = *this;
+	std::ofstream data("data.json");
+	data << j;
+}
+
+//TODO: create json to_file and json from_file
+
+void to_json(json& j, const Graph& graph)
+{
+	j["orient"] = graph.isOriented;
+	for (auto const& mapEl : graph.adjacencyMatrix)
+	{
+		for (auto const& listEl : *mapEl.second)
+		{
+			j[mapEl.first] = { {listEl.first, listEl.second} };
+		}
+	}
+}
+
+void from_json(const json& j, Graph& graph)
+{
+
 }
