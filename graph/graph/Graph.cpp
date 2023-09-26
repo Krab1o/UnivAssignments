@@ -6,48 +6,115 @@ Graph::Graph(bool isOriented)
 	this->isOriented = isOriented;
 }
 
-Graph::Graph(ofstream& file)
+Graph::Graph(ifstream& file)
 {
-	
+	json j;
+	file >> j;
+	this->isOriented = j["orient"];
+	for (auto& adjList : j["vertices"].items())
+	{
+		this->adjacencyMatrix[adjList.key()] = j["vertices"][adjList.key()].get<map<string, int32_t>>();
+	}
 }
 
 Graph::Graph(const Graph& copiedValue)
 {
-	//TODO: json handling
+	this->isOriented = copiedValue.isOriented;
+	this->adjacencyMatrix = copiedValue.adjacencyMatrix;
+}
 
+void Graph::PrintVertices()
+{
+	for (auto& list : adjacencyMatrix)
+	{
+		std::cout << list.first << '\n';
+		for (auto& el : list.second)
+		{
+			std::cout << "(" << el.first << ", " << el.second << ") ";
+		}
+		std::cout << '\n';
+	}
 }
 
 void Graph::AddVertice(const string& vertice)
 {
-	//TODO
 	adjacencyMatrix[vertice];
 }
 
-void Graph::AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight)
+bool Graph::AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight)
 {
-	adjacencyMatrix[startVertice][endVertice] = weight;
-	if (!isOriented)
-		adjacencyMatrix[endVertice][startVertice] = weight;
-}
-
-void Graph::RemoveVertice(const string& vertice)
-{
-	adjacencyMatrix.erase(vertice);
-}
-
-void Graph::RemoveEdge(const string& startVertice, const string& endVertice)
-{
-	adjacencyMatrix[startVertice].erase(endVertice);
-	if (!isOriented)
+	if (adjacencyMatrix.find(startVertice) != adjacencyMatrix.end()
+		&& adjacencyMatrix.find(endVertice) != adjacencyMatrix.end())
 	{
-		adjacencyMatrix[endVertice].erase(startVertice);
+		adjacencyMatrix[startVertice][endVertice] = weight;
+		if (!isOriented)
+			adjacencyMatrix[endVertice][startVertice] = weight;
+		//success
+		return true;
+	}
+	else
+	{
+		//fail
+		return false;
+		std::cout << "No such vertices in graph" << '\n';
+	}
+	
+}
+
+bool Graph::RemoveVertice(const string& vertice)
+{
+	if (adjacencyMatrix.find(vertice) != adjacencyMatrix.end())
+	{
+		//cleaning other vertices and their edges
+		
+		/*
+		for (auto it1 = adjacencyMatrix.begin(); it1 != adjacencyMatrix.end(); it1++)
+		{
+			for (auto it2 = it1->second.begin(); it2 != it1->second.end(); it2++)
+			{
+				if (it2->first == vertice)
+				{
+					adjacencyMatrix[it1->first].erase(vertice);
+				}
+			}
+		}
+		*/
+		adjacencyMatrix.erase(vertice);
+		//success
+		return true;
+	}
+	else
+	{
+		//fail
+		return false;
 	}
 }
 
-void Graph::Save()
+bool Graph::RemoveEdge(const string& startVertice, const string& endVertice)
+{
+	if (adjacencyMatrix.find(startVertice) != adjacencyMatrix.end()
+		&& adjacencyMatrix.find(endVertice) != adjacencyMatrix.end())
+	{
+		adjacencyMatrix[startVertice].erase(endVertice);
+		if (!isOriented)
+		{
+			adjacencyMatrix[endVertice].erase(startVertice);
+		}
+		//success
+		return true;
+	}
+	else
+	{
+		//fail
+		return false;
+	}
+	
+}
+
+void Graph::Save(string fileName)
 {
 	json j = *this;
-	std::ofstream data("data.json");
+	std::ofstream data(fileName);
 	data << std::setw(4) << j;
 }
 
@@ -62,8 +129,10 @@ void to_json(json& j, const Graph& graph)
 	}
 }
 
+/*
 void from_json(const json& j, Graph& graph)
 {
 	j.at("orient").get_to(graph.isOriented);
 	j.at("vertices").get_to(graph.adjacencyMatrix);
 }
+*/

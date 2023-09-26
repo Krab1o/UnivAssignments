@@ -17,31 +17,29 @@ using std::vector;
 using std::list; 
 using std::pair;
 using std::ofstream;
+using std::ifstream;
 
 class Graph
 {
 	friend void to_json(json& j, const Graph& graph);
-	friend void from_json(const json& j, Graph& graph);
 public:
 
-	Graph(bool orient);
-	Graph(ofstream& file);
+	Graph(bool orient = true);
+	Graph(ifstream& file);
 	Graph(const Graph& copiedValue);
 
+	void PrintVertices();
+
 	void AddVertice(const string& value);
-	void AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight = 1);
+	bool AddEdge(const string& startVertice, const string& endVertice, const int32_t& weight);
 
-	void RemoveVertice(const string& vertice);
-	void RemoveEdge(const string& startVertice, const string& endVertice);
+	bool RemoveVertice(const string& vertice);
+	bool RemoveEdge(const string& startVertice, const string& endVertice);
 
-	void Save();
+	void Save(string fileName);
 
 private:
-
 	map<string, map<string, int32_t>> adjacencyMatrix;
 	bool isOriented;
 };
-
-void to_json(json& j, const Graph& graph);
-void from_json(const json& j, Graph& graph);
 
