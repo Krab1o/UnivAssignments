@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "Graph.h"
 #include <string>
 
@@ -41,7 +42,9 @@ Graph* CreateGraph()
 
 int main()
 {
-	Graph* graph;
+	std::ofstream file("data.json");
+	json j = json::parse(file);
+	auto graph = j.template get<Graph>();
 	string enteredValue = "";
 	string verticeTitle1 = "";
 	string verticeTitle2 = "";

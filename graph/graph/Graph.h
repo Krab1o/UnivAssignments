@@ -16,7 +16,7 @@ using std::map;
 using std::vector;
 using std::list; 
 using std::pair;
-using std::fstream;
+using std::ofstream;
 
 class Graph
 {
@@ -25,7 +25,7 @@ class Graph
 public:
 
 	Graph(bool orient);
-	Graph(fstream& file);
+	Graph(ofstream& file);
 	Graph(const Graph& copiedValue);
 
 	void AddVertice(const string& value);
@@ -38,7 +38,10 @@ public:
 
 private:
 
-	map<string, list<pair<string, int32_t>>*> adjacencyMatrix;
+	map<string, map<string, int32_t>> adjacencyMatrix;
 	bool isOriented;
 };
+
+void to_json(json& j, const Graph& graph);
+void from_json(const json& j, Graph& graph);
 
