@@ -18,23 +18,23 @@ int main()
 	divDiff.resize(4);
 	for (int i = 0; i < 4; i++)
 	{
-		divDiff[i].resize(4);
+		divDiff[i].resize(4 - i);
+		divDiff[i][0] = functionNodes[i].second;
 	}
 
-	for (int j = 0; j < 4; j++)
-	{
-		divDiff[0][j] = functionNodes[j].second;
-	}
+	double x;
+	cin >> x;
+	double ans = divDiff[0][0];
+	double currentProd = 1;
 
-	for (int i = 1; i < 4; i++)
+	for (int j = 1; j < 4; j++)
 	{
-		for (int j = 0; j < 4 - i; j++)
+		for (int i = 0; i < 4 - j; i++)
 		{
-			double a = divDiff[i - 1][j + 1] - divDiff[i - 1][j];
-			double b = functionNodes[j + i].first - functionNodes[j].first;
-			divDiff[i][j] = (divDiff[i - 1][j + 1] - divDiff[i - 1][j]) /
-				(functionNodes[j + i].first - functionNodes[j].first);
+			divDiff[i][j] = (divDiff[i + 1][j - 1] - divDiff[i][j - 1]) / (functionNodes[i + j].first - functionNodes[i].first);
 		}
+		currentProd *= (x - functionNodes[j - 1].first);
+		ans += divDiff[0][j] * currentProd;
 	}
 
 	for (auto el : divDiff)
@@ -45,4 +45,5 @@ int main()
 		}
 		cout << '\n';
 	}
+	cout << ans;
 }
