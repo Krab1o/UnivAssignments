@@ -22,9 +22,7 @@ int main()
 
 	setlocale(LC_ALL, "russian");
 	cout << "Введите параметр:\n";
-	cout << setprecision(6);
 	cin >> V;
-	
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
@@ -55,19 +53,17 @@ int main()
 	for (auto row : A)
 	{
 		for (auto it : row)
-			cout << it << '\t';
+			cout << it << "\t\t";
 		cout << '\n';
 	}
 
-	cout << "Матрица X:\n";
-	for (auto row : x)
-		cout << row << '\n';
 
 	cout << "Матрица B:\n";
 	for (auto row : B)
 		cout << row << '\n';
 
 	double currentDiag;
+	double multiplier;
 	for (int i = 0; i < N; i++)
 	{
 		currentDiag = A[i][i];
@@ -77,25 +73,39 @@ int main()
 		
 		for (int k = i + 1; k < N; k++)
 		{
+			multiplier = A[k][i];
 			for (int j = i; j < N; j++)
 			{
-				A[k][j] -= A[i][j] * A[k][0];
-			}	
-			B[k] -= B[i] * A[k][0];
-		}	
+				A[k][j] -= multiplier * A[i][j];
+			}
+			B[k] -= multiplier * B[i];
+		}
 
 		cout << "Матрица A:\n";
 		for (auto row : A)
 		{
 			for (auto it : row)
-				cout << it << '\t';
+				cout << setprecision(3) << it << "\t";
 			cout << '\n';
 		}
 
 		cout << "Матрица B:\n";
 		for (auto row : B)
-			cout << row << '\n';
+			cout << setprecision(4) << row << '\n';
 	}
+
+	for (int i = N - 1; i >= 0; i--)
+	{
+		x[i] = B[i];
+		for (int j = i + 1; j < N; j++)
+		{
+			x[i] -= A[i][j] * x[j];
+		}
+	}
+
+	cout << "Матрица X:\n";
+	for (auto row : x)
+		cout << setprecision(6) << row << '\n';
 
 	return 0;
 }

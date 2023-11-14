@@ -1,0 +1,8 @@
+\babel@toc {russian}{}\relax 
+\beamer@sectionintoc {1}{Введение}{2}{0}{1}
+\beamer@subsectionintoc {1}{1}{Кто такой DevOps?}{3}{0}{1}
+\beamer@sectionintoc {2}{Основные инструменты DevOps}{5}{0}{2}
+\beamer@subsectionintoc {2}{1}{Ускорение разработки}{5}{0}{2}
+\beamer@sectionintoc {3}{Безопасность}{10}{0}{3}
+\beamer@sectionintoc {4}{Заключение}{14}{0}{4}
+\beamer@sectionintoc {5}{Ссылки на источники}{15}{0}{5}
