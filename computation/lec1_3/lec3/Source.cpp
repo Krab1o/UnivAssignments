@@ -35,6 +35,7 @@ int main()
 	vector<pair<double, double>> functionNodes = 
 	{
 		make_pair(-2, -8), 
+
 		make_pair(-1, -1), 
 		make_pair(0, 0), 
 		make_pair(2, 8)

@@ -6,10 +6,10 @@ using namespace std;
 
 //размерность матрицы
 const int N = 5;
+const double V = 3;
 
 int main()
 {
-	double V;
 	vector<vector<double>> A;
 	vector<double> B;
 	vector<double> x;
@@ -21,8 +21,7 @@ int main()
 	x.resize(N);
 
 	setlocale(LC_ALL, "russian");
-	cout << "¬ведите параметр:\n";
-	cin >> V;
+	//cout << "¬ведите параметр:\n";
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
