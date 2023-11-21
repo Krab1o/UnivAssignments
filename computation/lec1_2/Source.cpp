@@ -11,12 +11,8 @@ int main()
 	vector<pair<double, double>> functionNodes = { 
 		make_pair(-2, -8), make_pair(-1, -1), make_pair(0, 0), make_pair(2, 8)
 	};
-	/*
-	uint8_t nodeNumber;
-	cout << "¬ведите количество узлов интерпол€ции\n";
-	cin >> nodeNumber;
-	cout << "¬ведите " << nodeNumber << " узлов интерпол€ции\n";
-	*/
+
+	//P(x) = a_3 x^3 * a_2 x^2 + a_1 x + a_0
 	for (pair<double, double> val : functionNodes)
 	{
 		for (int i = nodeNumber - 1; i >= 0; i--)

@@ -48,21 +48,10 @@ int main()
 		fact = 1;
 		stepNumber = 0;
 	}
-
-	for (auto x : startArr)
+	std::cout << "Аргумент\t" << "Значение\t" << "Количество итераций\n";
+	for (int i = 0; i < startArr.size(); i++)
 	{
-		std::cout << x << '\t' << '\t';
+		std::cout << startArr[i] << "\t\t" << sumArr[i] << '\t' << itArr[i] << '\n';
 	}
-	std::cout << std::endl;
-	for (auto x : sumArr)
-	{
-		std::cout << x << '\t';
-	}
-	std::cout << std::endl;
-	for (auto x : itArr)
-	{
-		std::cout << x << '\t' << '\t';
-	}
-
 	return 0;
 }
