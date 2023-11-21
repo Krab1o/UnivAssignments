@@ -8,6 +8,7 @@ const double V = 3;
 
 int main()
 {
+	setlocale(LC_ALL, "russian");
 	vector<vector<double>> M;
 	vector<double> D;
 	vector<double> x;
@@ -22,13 +23,11 @@ int main()
 		M[i].resize(N);
 		tripples[i].resize(3);
 	}
-		
 	D.resize(N);
 	x.resize(N);
 	triag_P.resize(N);
 	triag_Q.resize(N);
 
-	setlocale(LC_ALL, "russian");
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
@@ -67,12 +66,10 @@ int main()
 			cout << it << "\t\t";
 		cout << '\n';
 	}
-
-
 	cout << "Матрица B:\n";
 	for (auto row : D)
 		cout << row << '\n';
-
+	cout << '\n';
 
 	for (int i = 1; i < N - 1; i++)
 	{
@@ -81,12 +78,16 @@ int main()
 			tripples[i][j] = j == 1 ? -M[i][j + i - 1] : M[i][j + i - 1];
 		}
 	}
+
+	//Элементы алгоритма прогонки
 	for (auto row : tripples)
 	{
 		for (auto it : row)
 			cout << it << '\t';
 		cout << '\n';
 	}
+	cout << '\n';
+
 	triag_P[0] = tripples[0][2] / tripples[0][1];
 	triag_Q[0] = -D[0] / tripples[0][1];
 	for (int i = 0; i < N - 1; i++)
@@ -94,8 +95,19 @@ int main()
 		triag_P[i + 1] = tripples[i][2] / (tripples[i][1] - tripples[i][0] * triag_P[i]);
 		triag_Q[i + 1] = (tripples[i][0] * triag_Q[i] - D[i]) / (tripples[i][1] - tripples[i][0] * triag_P[i]);
 	}
+
+	cout << "Прогоночные коэффициенты:\n";
 	for (auto row : triag_P)
-	{
 		cout << row << '\n';
+	cout << '\n';
+
+	x[N - 1] = triag_Q[N - 1];
+	for (int i = N - 2; i >= 0; i--)
+	{
+		x[i] = triag_P[i + 1] * x[i + 1] + triag_Q[i + 1];
 	}
+
+	cout << "Вектор x:\n";
+	for (auto it : x)
+		cout << it << '\n';
 }
