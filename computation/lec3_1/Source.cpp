@@ -80,7 +80,7 @@ int main()
 
 	for (int i = 0; i < N; i++)
 	{
-		error_m2[i] = abs(theor_value[i] - pract_value_m2[i]);
+		error_m2[i] = theor_value[i] - pract_value_m2[i];
 	}
 
 	cout << "Значения узлов:\n";
