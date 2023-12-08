@@ -4,7 +4,8 @@ VALUES	('Safia', '7:00:00', '22:30:00', 'ул. Кутякова 68'),
 		('MetroFitness', '6:00:00', '6:00:00', 'ул. Московская 129/133'),
 		('Alex Fitness', '7:00:00', '23:00:00', 'ул. Дзержинского 24'),
 		('Forte Club', '7:00:00', '23:00:00', 'ул. Вольская 29'),
-		('IronShape', '6:00:00', '6:00:00', 'ул. Ипподромная 47');
+		('IronShape', '6:00:00', '6:00:00', 'ул. Ипподромная 47'),
+		('Big Muscle', '6:00:00', '6:00:00', 'ул. Пушкина 135');
 
 INSERT INTO Clients (LastName, FirstName, Surname, BirthDate, PhoneNumber)
 VALUES	('Иванов','Сергей', 'Иванович', '1984.03.27','+7(927)723-37-66'),
@@ -17,12 +18,6 @@ VALUES	('Иванов','Сергей', 'Иванович', '1984.03.27','+7(927)723-37-66'),
 INSERT INTO Lockers (ID_gym, ID_client, LockerNumber, ExpiringDate, Expired)
 VALUES	(2, 1, 7, '2023.12.01', 0),
 		(2, 3, 9, '2023.11.01', 1);
-
-/*
-DELETE FROM Lockers
-WHERE
-	Expired > 0
-*/
 
 INSERT INTO ItemTypes (Type)
 VALUES	('Беговая дорожка'),
@@ -51,7 +46,7 @@ VALUES	('Блин 5кг Зелёный', 4, 1, 120001, '2021.06.01', 0),
 		('Беговая дорожка RunnerFirst', 1, 2, 103004, '2018.06.01', 0),
 		('Беговая дорожка RunnerFirst', 1, 5, 103005, '2018.09.01', 0),
 		('Беговая дорожка RunnerFirst', 1, 6, 103006, '2018.12.01', 0),
-		('Кулер Кристальный', 6, 3, 181001, '2022.12.01', 0);
+		('Кулер Кристальный', 7, 3, 181001, '2022.12.01', 0);
 
 INSERT INTO Employees (ID_gym, Lastname, FirstName, Surname, PhoneNumber, BirthDate, Occupation)
 VALUES	(1, 'Евдокимов', 'Евпатий', NULL, '+7(927)241-55-37', '1965.03.05', 'Administrator'),
