@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-const int N = 5;
+const int N = 4000;
 const double V = 8;
 
 double func(double x)
@@ -69,8 +69,8 @@ int main()
 	pract_value.resize(N);
 	vector<double> theor_value;
 	theor_value.resize(N);
-	vector<double> error_m1;
-	error_m1.resize(N);
+	vector<double> error;
+	error.resize(N);
 
 	vector<vector<double>> M;
 	vector<double> b;
@@ -104,6 +104,8 @@ int main()
 	b[0] = b[N - 1] = 0;
 
 	cout << fixed << setprecision(8);
+
+	/*
 	for (auto row : M)
 	{
 		for (auto it : row)
@@ -112,14 +114,32 @@ int main()
 	}
 	for (auto it : b)
 		cout << it << '\n';
+	*/
 
 	triag_method(M, b, pract_value);
 	
+	double max_error = 0;
+	int k = 0;
 	for (int i = 0; i < N; i++)
 	{
-		error_m1[i] = abs(theor_value[i] - pract_value[i]);
+		error[i] = abs(theor_value[i] - pract_value[i]);
+		if (error[i] > max_error)
+		{
+			max_error = error[i];
+			k = i;
+		}
+			
 	}
 
+	cout << "Значение узлов\t\tПрактическое значение\tТеоретическое значение\tПогрешность\n";
+	for (int i = 0; i < N; i++)
+	{
+		cout << nodes[i] << "\t\t" << pract_value[i] << "\t\t" << theor_value[i] << "\t\t" << error[i] << '\n';
+	}
+
+	cout << "Максимальная погрешность: " << max_error << "\nНомер узла максимальной погрешности: " << k;
+
+	/*
 	cout << "Значения узлов:\n";
 	for (auto it : nodes)
 		cout << it << '\t';
@@ -133,9 +153,9 @@ int main()
 		cout << it << '\t';
 	cout << '\n';
 	cout << "Погрешность:\n";
-	for (auto it : error_m1)
+	for (auto it : error)
 		cout << it << '\t';
 	cout << "\n\n";
-
+	*/
 	return 0;
 }
