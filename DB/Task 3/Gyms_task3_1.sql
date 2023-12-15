@@ -33,109 +33,110 @@ SELECT * FROM Gyms T1, Gyms T2
 WHERE T1.GymName = T2.GymName
 */
 
-/* ALL */
+--ALL, самый хороший по рейтингу
 SELECT c.* FROM Coaches AS c
-WHERE c.Rating > ALL (SELECT g.Rating FROM Gyms AS g)  
-/*
-/* ANY/SOME */
-SELECT c.* FROM Coaches AS c
-WHERE c.Rating > SOME (SELECT g.Rating FROM Gyms AS g)  
-/* IN */
-SELECT stt.* FROM SeasonTicketType AS stt
-WHERE stt.Price IN (1000, 3000, 4200)
+WHERE c.Rating >= ALL (SELECT c.Rating FROM Coaches AS c)  
 
-/* EXISTS */
+--ANY/SOME, все кроме тренера с самым низким рейтингом
+SELECT c.* FROM Coaches AS c
+WHERE c.Rating > SOME (SELECT c.Rating FROM Coaches AS c)
+
+--IN
+SELECT tar.* FROM Tariffs AS tar
+WHERE tar.Price IN (1900, 3500)
+
+--EXISTS, только залы, где есть занятия
 SELECT * FROM Gyms as g
-WHERE EXISTS (SELECT * FROM Equipment AS e
-			  WHERE e.ID_Gym = g.ID_Gym)
-/* BETWEEN */
-SELECT G.* FROM Gyms AS G
-WHERE G.Rating BETWEEN 4.5 AND 5
+WHERE EXISTS (SELECT * FROM Schedule AS Sc
+			  WHERE g.ID_gym = sc.ID_gym)
 
-/* LIKE */
-SELECT stt. * FROM SeasonTicketType AS stt
-WHERE stt.Duratuon LIKE 'на 90 дней'
+--BETWEEN
+SELECT c.* FROM Coaches AS c
+WHERE c.Rating BETWEEN 4 AND 5
 
-/* CASE */
-SELECT GymName, Rating, 
-	'Review' = 
+--LIKE
+SELECT inv.* FROM Inventory AS inv
+WHERE inv.ItemName LIKE 'Блин%'
+
+--CASE
+SELECT sch.*, 
+	'Time' = 
 		CASE
-			WHEN g.Rating > 3.5   THEN 'Рекомендую'
-			ELSE 'Не рекомендую'
+			WHEN  sch.StartTime <= '15:00' THEN 'Первая половина дня'
+			ELSE 'Вторая половина дня'
 		END
-FROM Gyms AS g
+FROM Schedule AS sch
 
-/* CAST */
-SELECT stt.Price, CAST (Price AS money) AS Cost
-FROM SeasonTicketType AS stt 
+--CAST
+SELECT inv.SerialNumber, CAST (SerialNumber AS nvarchar(40)) AS SerNum_CAST
+FROM Inventory AS inv
 
-/* CONVERT */
-SELECT _Date, CONVERT (datetime, _Date) AS date_time
-FROM Attendance
+--CONVER
+SELECT inv.SerialNumber, CONVERT (nvarchar(40), inv.SerialNumber) AS SerNum_CONVERT
+FROM Inventory AS inv
 
-/* ISNULL/ COALESCE */
-SELECT e.EquipName, e.AmountOfEq, ISNULL(e.AmountOfEq, 0) AS new_amount_of_eq 
-FROM Equipment AS e
-SELECT e.EquipName, e.AmountOfEq, COALESCE(e.AmountOfEq, 0) AS new_amount_of_eq 
-FROM Equipment AS e
+--ISNULL & COALESCE
+SELECT emp.FirstName, emp.Lastname, ISNULL(Surname, '---') AS NoSurname 
+FROM Employees AS emp
+SELECT emp.FirstName, emp.Lastname, COALESCE(Surname, '---') AS NoSurname 
+FROM Employees AS emp
 
-/* NULLIF */
-SELECT e.EquipName, NULLIF(e.EquipName, 'Гантели 4 кг') AS 'EquipName'
-FROM Equipment AS e
+--NULLIF
+SELECT cg.ID_client, NULLIF(cg.ID_group, 5) AS 'Группа без 5'
+FROM Clients_Groups AS cg
 
-/* CHOOSE */
-SELECT s.ID_Gym, s.Day_of_week , CHOOSE(2, 'Васильев', 'Столоне', 'Тимофеев') AS chosen_coach
+
+--CHOOSE
+SELECT s.*, CHOOSE(s.ID_coach, 'Сибирцев', 'Алеутов', 'Лепетин', 'Галкин') AS chosen_coach
 FROM Schedule AS s
 
-/* IIF */
-SELECT c.FirstName, c.LastName, 
-IIF( Rating >= 4, 'Специалист', 'Неопытный') AS coach_status
-FROM  Coaches AS  c
+--IIF
+SELECT tar.*, 
+IIF(tar.Price < 2500, 'Дешево', 'Дорого') AS 'Оценка'
+FROM Tariffs AS tar
 
-/* REPLACE */
-SELECT REPLACE (e.EquipName, 'Гантели 4 кг','Гантели 10 кг') modified_column
-FROM Equipment AS e
+--REPLACE
+SELECT REPLACE (emp.Occupation, 'Administrator','Admin') short_name
+FROM Employees AS emp
 
-/* SUBSTRING */
+--SUBSTRING
 SELECT c.FirstName, c.LastName, SUBSTRING (c.PhoneNumber, 9, 8) AS ShortNum
 FROM Clients AS c
 
-/* STUFF */
-SELECT g.Adress, STUFF(g.Adress, 1, 0, 'г. Саратов, ') AS modifiedAdress
+--STUFF
+SELECT g.Address, STUFF(g.Address, 1, 0, 'г. Саратов, ') AS modifiedAdress
 FROM Gyms AS g
 
-/* STR */
+--STR
+SELECT c.Rating, STR(c.Rating, 4, 2) AS StrRating
+FROM Coaches AS c
 
-SELECT g.Rating,  STR(g.Rating) AS StrRating 
-FROM Gyms AS  g
-/* UPPER */
+--UPPER
+SELECT UPPER (c.Lastname) AS UpperLastname
+FROM Coaches AS c
 
-SELECT UPPER (g.Adress) AS UpperAdress
-FROM Gyms AS g
+--DATEPART
+SELECT cl.Lastname, DATEPART (YEAR,  cl.BirthDate) AS BirthYear
+FROM Clients AS cl
 
-/* DATEPART */
-SELECT p.PurchaseDate, DATEPART (DAY,  p.PurchaseDate) AS PurshaseDay
-FROM PurchasedST AS p
+--DATEDIFF
+SELECT sub.StartingDate, sub.ExpiringDate, DATEDIFF (DAY, sub.StartingDate, sub.ExpiringDate) AS days_diff
+FROM Subscriptions AS sub
 
-/* DATEDIFF */
-SELECT p.PurchaseDate, p.EndData ,DATEDIFF (DAY, p.PurchaseDate, p.EndData ) AS days_diff
-FROM PurchasedST AS p
-
-/* GETDATE, SYSDATETIMEOFFSET */
+--GETDATE, SYSDATETIMEOFFSET
 SELECT GETDATE () AS SystemData
 SELECT SYSDATETIMEOFFSET () AS SystemData
 
-/* MIN, MAX, AVG, SUM */
-SELECT 'Min price' = MIN (stt.Price), 
-	   'Max price' = MAX (stt.Price), 
-	   'Average price' = AVG (stt.Price),
-	   'Summa' = SUM (stt.Price)
-FROM SeasonTicketType AS stt
 
-/* HAVING , GROUP BY */
+--MIN, MAX, AVG, SUM
+SELECT 'Min price' = MIN (tar.Price), 
+	   'Max price' = MAX (tar.Price), 
+	   'Average price' = AVG (tar.Price),
+	   'Sum' = SUM (tar.Price)
+FROM Tariffs AS tar
 
-SELECT Duratuon, SUM (Price) FROM PurchasedST AS pst
-INNER JOIN SeasonTicketType ON pst.ID_STT = SeasonTicketType.ID_STT
-GROUP BY Duratuon
-HAVING SUM(Price) > 15000
-*/
+--HAVING, GROUP BY
+SELECT COUNT(inv.ID_type), inv.ID_type
+FROM Inventory AS inv
+GROUP BY inv.ID_type
+HAVING COUNT(inv.ID_type) > 4
