@@ -5,7 +5,7 @@
 using namespace std;
 
 const int N = 5;
-const double V = 8;
+const double V = 4;
 const double T = V;
 
 double p(double x)
@@ -50,7 +50,6 @@ double theor_res(double x)
 	return V * x * x * (x - T);
 }
 
-
 int main()
 {
 	setlocale(LC_ALL, "ru");
@@ -91,26 +90,26 @@ int main()
 		M[i][4] = (42 * pow(x, 5) - 30 * pow(x, 4) * T)
 			+ (p(x) * (7 * pow(x, 6) - 6 * pow(x, 5) * T))
 			+ (q(x) * (pow(x, 6) * (x - T)));
+
 		*/
 		for (int j = 0; j < N; j++)
 		{
 			M[i][j] = coefs(j + 1, x, T);
 		}
 		B[i] = func(x);
-
 		nodes[i] = x;
 		theor_value[i] = theor_res(x);
 		x += h;
 	}
-
+	int l = 0;
 	for (auto row : M)
 	{
 		for (auto it : row)
 			cout << it << '\t';
-		cout << '\n';
+		cout << B[l++] << '\n';
 	}
 	cout << '\n';
-
+	/*
 	double currentDiag;
 	double multiplier;
 	for (int i = 0; i < N; i++)
@@ -151,4 +150,5 @@ int main()
 	{
 		cout << setprecision(4) << nodes[i] << "\t\t" << pract_value[i] << "\t\t\t" << theor_value[i] << "\t\t\t" << error[i] << '\n';
 	}
+	*/
 }
