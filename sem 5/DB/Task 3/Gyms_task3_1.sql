@@ -22,16 +22,14 @@ SELECT g.Title, inv.* FROM Inventory AS inv
 SELECT * FROM Coaches
 	CROSS JOIN Activities
 
-/*
-/* CROSS APPLY */
+--CROSS APPLY
 SELECT * FROM Clients AS c 
-CROSS APPLY (SELECT ID_PaymentType, PurchaseDate FROM PurchasedST 
-			 WHERE PurchasedST.ID_Client = c.ID_Client) AS newww
+CROSS APPLY (SELECT sub.ID_tariff FROM Subscriptions AS sub
+			 WHERE sub.ID_tariff = sub.ID_Client) AS result
 
-/* самосоединение */
-SELECT * FROM Gyms T1, Gyms T2
-WHERE T1.GymName = T2.GymName
-*/
+--самосоединение
+SELECT g1.Title, g2.OpenTime, g2.CloseTime FROM Gyms g1, Gyms g2
+WHERE g1.Title = g2.Title
 
 --ALL, самый хороший по рейтингу
 SELECT c.* FROM Coaches AS c
@@ -71,14 +69,22 @@ FROM Schedule AS sch
 SELECT inv.SerialNumber, CAST (SerialNumber AS nvarchar(40)) AS SerNum_CAST
 FROM Inventory AS inv
 
---CONVER
+--CONVERT
 SELECT inv.SerialNumber, CONVERT (nvarchar(40), inv.SerialNumber) AS SerNum_CONVERT
 FROM Inventory AS inv
 
 --ISNULL & COALESCE
 SELECT emp.FirstName, emp.Lastname, ISNULL(Surname, '---') AS NoSurname 
 FROM Employees AS emp
-SELECT emp.FirstName, emp.Lastname, COALESCE(Surname, '---') AS NoSurname 
+SELECT emp.FirstName, emp.Lastname, COALESCE ((SELECT CASE
+													WHEN emp.ID_employee = 1 THEN 'У ПЕРВОГО НЕТ ОТЧЕСТВА'
+													ELSE NULL
+													END),
+											  (SELECT CASE
+													WHEN emp.Surname IS NULL THEN 'НЕТ ОТЧЕСТВА'
+													ELSE NULL
+													END),
+											  emp.Surname)
 FROM Employees AS emp
 
 --NULLIF

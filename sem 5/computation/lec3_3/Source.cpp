@@ -53,14 +53,10 @@ double theor_res(double x)
 int main()
 {
 	setlocale(LC_ALL, "ru");
-	vector<double> nodes;
-	nodes.resize(N);
-	vector<double> pract_value;
-	pract_value.resize(N);
-	vector<double> theor_value;
-	theor_value.resize(N);
-	vector<double> error;
-	error.resize(N);
+	vector<double> nodes(N);
+	vector<double> pract_value(N);
+	vector<double> theor_value(N);
+	vector<double> error(N);
 
 	vector<vector<double>> M;
 	vector<double> B;
@@ -74,7 +70,6 @@ int main()
 
 	for (int i = 0; i < N; i++)
 	{
-		/*
 		M[i][0] = (6 * pow(x, 1) - 2 * T) 
 			+ (p(x) * (3 * pow(x, 2) - 2 * x * T)) 
 			+ (q(x) * (pow(x, 2) * (x - T)));
@@ -91,7 +86,6 @@ int main()
 			+ (p(x) * (7 * pow(x, 6) - 6 * pow(x, 5) * T))
 			+ (q(x) * (pow(x, 6) * (x - T)));
 
-		*/
 		for (int j = 0; j < N; j++)
 		{
 			M[i][j] = coefs(j + 1, x, T);
