@@ -1,6 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-calc.out:\PYG{+w}{ }calc.l\PYG{+w}{ }calc.y\PYG{+w}{ }arena\PYGZus{}ast.h
-\PYG{+w}{    }bison\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }calc.y
-\PYG{+w}{    }flex\PYG{+w}{ }calc.l
-\PYG{+w}{    }cc\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}@}\PYG{+w}{ }calc.tab.c\PYG{+w}{ }lex.yy.c\PYG{+w}{ }arena\PYGZus{}ast.c\PYG{+w}{ }arena.c
-\end{Verbatim}
