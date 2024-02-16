@@ -13,20 +13,18 @@ double f(double x)
 }
 
 void integral(const double a, const double b,
-    const double h, double* res)
+    const double h, const long long int n, double* res)
 {
-    int i, n;
-    double sum;
+    long long int i;
+    double sum = 0;
     double x;
-    n = (int)((b - a) / h); 
-    sum = 0.0;
-#pragma omp parallel for private(x) reduction(+: sum)
-    for (i = 0; i < n; i++)
+    #pragma omp parallel for private(x) reduction(+: sum)
+    for (i = 0; i < n - 1; i++)
     {
-        x = a + i * h + h / 2.0;
-        sum += f(x) * h;
+        //x = a + i * h + h / 2.0;
+        sum += (h / 3) * (4 * f(a + (2 * i - 1) * h) + 2 * f(a + 2 * i * h));
     }
-    *res = sum;
+    *res = sum + (h / 3) * ((f(a) + f(b)) + 4 * f(a + (2 * (n - 1) - 1) * h));
 }
 
 double experiment(double* res)
@@ -34,9 +32,10 @@ double experiment(double* res)
     double stime, ftime; // время начала и конца расчета
     double a = -1.0; // левая граница интегрирования
     double b = INF; // правая граница интегрирования
-    double h = 0.001; // шаг интегрирования
+    long long int n = 1'000'000'000;
+    double h = (b - a) / (2 * n); // шаг интегрирования
     stime = clock();
-    integral(a, b, h, res); // вызов функции интегрирования
+    integral(a, b, h, n, res); // вызов функции интегрирования
     ftime = clock();
     return (ftime - stime) / CLOCKS_PER_SEC;
 }
@@ -49,7 +48,7 @@ int main()
     double min_time;
     double max_time;
     double avg_time;
-    int numbExp = 10;
+    int numbExp = 1;
 
     min_time = max_time = avg_time = experiment(&res);
     // оставшиеся запуски
