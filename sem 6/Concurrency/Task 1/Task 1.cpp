@@ -48,7 +48,7 @@ int main()
     double min_time;
     double max_time;
     double avg_time;
-    int numbExp = 1;
+    int numbExp = 10;
 
     min_time = max_time = avg_time = experiment(&res);
     // оставшиеся запуски
