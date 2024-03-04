@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import scala.util._
 import scala.io.StdIn._
 import scala.util.matching.Regex
@@ -97,4 +98,3 @@ object task2 {
     if (carNumberPattern.matches(input)) println("Да")
     else println("Нет")
   }
-}
