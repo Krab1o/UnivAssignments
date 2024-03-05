@@ -5,7 +5,7 @@ import scala.util.matching.Regex
 
 object task2 {
   //task 1.1
-  @main def task1_1(): Unit = {
+  def task1_1(): Unit = {
     val str = readLine().split(" ")
     if (str.length != 3)
       throw new IllegalArgumentException("Неправильный формат ввода")
@@ -55,7 +55,7 @@ object task2 {
     }
   }
   //task 2.4
-  @main def task2_4(): Unit = {
+  def task2_4(): Unit = {
     val rand = Random
     val secret = rand.nextInt(100) + 1
     var guess = 0
@@ -70,31 +70,33 @@ object task2 {
   }
 
   //task 3.1
-    def task3_1(args: Array[String]): Unit = {
+    def task3_1(): Unit = {
+      //val args = Array[String]
       val carNumberPattern: Regex = "[А-Яа-я][0-9]{3}[А-Яа-я]{2}".r
       val input = readLine("Введите номер: ")
-      if (carNumberPattern.matches(input)) println("Номер соответствует автомобильному")
-      else println("Номер не соответствует автомобильному")
+      if (carNumberPattern.matches(input)) println("Автомобильный номер валидный")
+      else println("Автомобильный номер не валидный")
     }
 
   //task 3.2
-    def task3_2(args: Array[String]): Unit = {
-      val hasUppercase = ".*[A-Z].*".r
-      val hasLowercase = ".*[a-z].*".r
-      val hasDigit = ".*[0-9].*".r
-      val hasSpecialChar = ".*[!@#$%^&*()].*".r
-      val hasEightChars = ".{8,}".r
+    def task3_2(): Unit = {
+      val upper = ".*[A-Z].*".r
+      val lower = ".*[a-z].*".r
+      val digits = ".*[0-9].*".r
+      val bannedChars = ".*[!@#$%^&*()<>/ \t].*".r
+      val specialChars = ".*[_+-].*".r
+      val eightChars = ".{8,}".r
       val input = readLine("Введите пароль: ")
-      val boolPass = hasUppercase.matches(input) && hasLowercase.matches(input) &&
-          hasDigit.matches(input) && hasSpecialChar.matches(input) && hasEightChars.matches(input)
-      if (boolPass) println("Да")
-       else println("Нет")
+      val boolPass = upper.matches(input) && lower.matches(input) && digits.matches(input)
+        && !bannedChars.matches(input) && specialChars.matches(input) && eightChars.matches(input)
+      if (boolPass) println("Пароль валидный")
+       else println("Пароль не валидный")
     }
 
   //task 3.3
-  def task3_3(args: Array[String]): Unit = {
-    val carNumberPattern: Regex = "\\d{2}\\.\\d{2}\\.\\d{4}".r
-    val input = readLine("Введите дату: ")
-    if (carNumberPattern.matches(input)) println("Да")
-    else println("Нет")
+  @main def task3_3(): Unit = {
+    val datePattern: Regex = "\\d{2}\\.\\d{2}\\.\\d{4}".r
+    val input = readLine("Дата для проверки: ")
+    if (datePattern.matches(input)) println("Дата валидна")
+    else println("Дата не валидна")
   }
