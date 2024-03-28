@@ -4,12 +4,26 @@ import scala.util.matching.Regex
 
 //TASK 1
 def weightChips(potato: BigInt, waterPotato: Double, waterChips: Double): String = {
-  (potato.toDouble * (1 - waterPotato) / (1 - waterChips)).formatted("%.2f")
+  (BigDecimal(potato) * (1 - waterPotato) / (1 - waterChips)).formatted("%.2f")
 }
 
 def weightChipsCurried: BigInt => Double => Double => String =
   potato => waterPotato => waterChips =>
     (potato.toDouble * (1 - waterPotato) / (1 - waterChips)).formatted("%.2f")
+
+@main def task1(): Unit = {
+  //A
+  val str = readLine().split(' ')
+  println(weightChips(BigInt(str(0)), str(1).toDouble, str(2).toDouble))
+  //B
+  println(weightChips.curried(BigInt(str(0))))
+  println(weightChips.curried(BigInt(str(0)))(str(1).toDouble))
+  println(weightChips.curried(BigInt(str(0)))(str(1).toDouble)(str(2).toDouble))
+  //C
+  println(weightChipsCurried(BigInt(str(0))))
+  println(weightChipsCurried(BigInt(str(0)))(str(1).toDouble))
+  println(weightChipsCurried(BigInt(str(0)))(str(1).toDouble)(str(2).toDouble))
+}
 
 //TASK 2
 def strToColDigits(str: String): Int = {
@@ -43,6 +57,14 @@ def compareString(f: String => Int): (String, String) => Boolean = {
   (s1, s2) => f(s1) > f(s2)
 }
 
+@main def task2(): Unit = {
+  val str1 = readLine()
+  val str2 = readLine()
+  println(compareString(strToColDigits)(str1, str2))
+  println(compareString(strToSumDigits)(str1, str2))
+  println(compareString(strToColAlpha)(str1, str2))
+}
+
 //TASK3
 
 def calculate(f: (Double, Double) => Double, a: Double, b: Double): Double = {
@@ -66,30 +88,6 @@ def div(a: Double, b: Double): Double = {
   a / b
 }
 
-//MAIN
-
-@main def task1(): Unit = {
-  //A
-  val str = readLine().split(' ')
-  println(weightChips(BigInt(str(0)), str(1).toDouble, str(2).toDouble))
-  //B
-  println(weightChips.curried(BigInt(str(0))))
-  println(weightChips.curried(BigInt(str(0)))(str(1).toDouble))
-  println(weightChips.curried(BigInt(str(0)))(str(1).toDouble)(str(2).toDouble))
-  //C
-  println(weightChipsCurried(BigInt(str(0))))
-  println(weightChipsCurried(BigInt(str(0)))(str(1).toDouble))
-  println(weightChipsCurried(BigInt(str(0)))(str(1).toDouble)(str(2).toDouble))
-}
-
-@main def task2(): Unit = {
-  val str1 = readLine()
-  val str2 = readLine()
-  println(compareString(strToColDigits)(str1, str2))
-  println(compareString(strToSumDigits)(str1, str2))
-  println(compareString(strToColAlpha)(str1, str2))
-}
-
 @main def task3(): Unit = {
   val taskType = 3
   val str = readLine().split(" ")
@@ -98,7 +96,7 @@ def div(a: Double, b: Double): Double = {
   val arg1 = Try(str.head.toDouble)
   val arg2 = Try(str.last.toDouble)
 
-
+  //Функции высших порядков
   taskType match {
     case 1 =>
       (arg1, arg2) match {
@@ -112,6 +110,7 @@ def div(a: Double, b: Double): Double = {
             })
         case _ => throw new IllegalArgumentException("Введены неверные числовые значения")
       }
+    //Частичные функции
     case 2 =>
       (arg1, arg2) match {
         case (Success(arg1), Success(arg2)) =>
@@ -124,6 +123,7 @@ def div(a: Double, b: Double): Double = {
           println(part(str(1)))
         case _ => throw new IllegalArgumentException("Введены неверные числовые значения")
       }
+    //Лямбда-функции
     case 3 =>
       (arg1, arg2) match {
         case (Success(arg1), Success(arg2)) =>
