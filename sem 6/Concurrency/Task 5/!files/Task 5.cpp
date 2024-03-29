@@ -46,6 +46,46 @@ void RandomDataInitialization(double* pMatrix, double* pVector,
 		}
 	}
 }
+
+void TaskInitialization(double* pMatrix, double* pVector, int Size)
+{
+	//constant terms
+	pVector[0] = -9;
+	pVector[1] = -146;
+	pVector[2] = -10;
+	pVector[3] = -26;
+	pVector[4] = 37;
+	//row 1
+	pMatrix[0] = 1;
+	pMatrix[1] = 1;
+	pMatrix[2] = 4;
+	pMatrix[3] = 4;
+	pMatrix[4] = 9;
+	//row 2
+	pMatrix[5] = 2;
+	pMatrix[6] = 2;
+	pMatrix[7] = 17;
+	pMatrix[8] = 17;
+	pMatrix[9] = 82;
+	//row 3
+	pMatrix[10] = 2;
+	pMatrix[11] = 0;
+	pMatrix[12] = 3;
+	pMatrix[13] = -1;
+	pMatrix[14] = 4;
+	//row 4
+	pMatrix[15] = 0;
+	pMatrix[16] = 1;
+	pMatrix[17] = 4;
+	pMatrix[18] = 12;
+	pMatrix[19] = 27;
+	//row 5
+	pMatrix[20] = 1;
+	pMatrix[21] = 2;
+	pMatrix[22] = 2;
+	pMatrix[23] = 10;
+	pMatrix[24] = 0;
+}
 // Function for memory allocation and definition of the objects elements 
 void ProcessInitialization(double*& pMatrix, double*
 	& pVector,
@@ -210,10 +250,10 @@ void TestResult(double* pMatrix, double* pVector,
 			equal = 1;
 	}
 	if (equal == 1)
-		printf("The result of the parallel Gauss algorithm is NOT correct."
-			"Check your code.");
+		printf("\n\nThe result of the parallel Gauss algorithm is NOT correct."
+			"Check your code.\n");
 	else
-		printf("The result of the parallel Gauss algorithm is correct.");
+		printf("\n\nThe result of the parallel Gauss algorithm is correct.\n");
 	delete[] pRightPartVector;
 }
 

@@ -231,9 +231,9 @@ int main() {
 
 	// The matrix and the vector output
 	printf("Initial Matrix \n");
-	PrintMatrix(pMatrix, Size, Size);
+	//PrintMatrix(pMatrix, Size, Size);
 	printf("Initial Vector \n");
-	PrintVector(pVector, Size);
+	//PrintVector(pVector, Size);
 
 	// Execution of Gauss algorithm
 	start = clock();
@@ -241,10 +241,10 @@ int main() {
 	finish = clock();
 	duration = (finish - start) / CLOCKS_PER_SEC;
 
-	TestResult(pMatrix, pVector, pResult, Size);
+	//TestResult(pMatrix, pVector, pResult, Size);
 	// Printing the result vector
 	printf("\n Result Vector: \n");
-	PrintVector(pResult, Size);
+	//PrintVector(pResult, Size);
 
 	// Printing the execution time of Gauss method
 	printf("\n Time of execution: %f\n", duration);

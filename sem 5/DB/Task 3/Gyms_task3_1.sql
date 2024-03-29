@@ -102,7 +102,8 @@ IIF(tar.Price < 2500, 'Дешево', 'Дорого') AS 'Оценка'
 FROM Tariffs AS tar
 
 --REPLACE
-SELECT REPLACE (emp.Occupation, 'Administrator','Admin') short_name
+SELECT REPLACE (emp.Occupation, 'Administrator','Admin') short_name,
+REPLACE (emp.Occupation, 'Cleaner', 'Clean') short_name
 FROM Employees AS emp
 
 --SUBSTRING

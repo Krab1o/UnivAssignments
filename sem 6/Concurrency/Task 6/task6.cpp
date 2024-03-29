@@ -7,6 +7,8 @@
 #include <math.h>
 #include <omp.h>
 
+const double eps = 0.00001;
+
 typedef struct {
 	int PivotRow;
 	double MaxValue;
@@ -161,22 +163,40 @@ void ParallelGaussianElimination(double* pMatrix, double* pVector,
 	}
 }
 
+//ƒŒƒ≈À¿“‹
 // Function for the execution of Gauss algorithm
 void ParallelResultCalculation(double* pMatrix, double* pVector,
 	double* pResult, int Size) {
-	// Memory allocation
-	pPivotPos = new int[Size];
-	pPivotIter = new int[Size];
-	for (int i = 0; i < Size; i++) {
-		pPivotIter[i] = -1;
-	}
+	long double* g = new long double[Size];
+	long double* d = new long double[Size];
+	int t = 0;
+#pragma omp parallel for 
+	for (int i = 0; i < Size; i++) { pResult[i] = 0; g[i] = 0; }
+	bool flag = false;
+	long double sum;
+	do {
+		flag = false;
+		for (int i = 0; i < Size; i++) {
+			g[i] = pVector[i];
+			sum = 0;
+#pragma omp parallel for reduction(+: sum)
+			for (int j = 0; j < Size; j++) {
+				if (i != j) {
+					sum += (pMatrix[Size * i + j] * pResult[j]);
+				}
+			}
+			g[i] -= sum;
+			g[i] = (1.0 * g[i]) / pMatrix[Size * i + i];
+		}
 
-	ParallelGaussianElimination(pMatrix, pVector, Size);
-	ParallelBackSubstitution(pMatrix, pVector, pResult, Size);
+#pragma omp parallel for 
+		for (int i = 0; i < Size; i++) {
+			if (fabs(g[i] - pResult[i]) >= eps) flag = true;
+			pResult[i] = g[i];
+		}
 
-	// Memory deallocation
-	delete[] pPivotPos;
-	delete[] pPivotIter;
+	} while (flag);
+	delete[] g;
 }
 
 // Function for computational process termination
@@ -231,9 +251,9 @@ int main() {
 
 	// The matrix and the vector output
 	printf("Initial Matrix \n");
-	PrintMatrix(pMatrix, Size, Size);
+	//PrintMatrix(pMatrix, Size, Size);
 	printf("Initial Vector \n");
-	PrintVector(pVector, Size);
+	//PrintVector(pVector, Size);
 
 	// Execution of Gauss algorithm
 	start = clock();
@@ -241,10 +261,10 @@ int main() {
 	finish = clock();
 	duration = (finish - start) / CLOCKS_PER_SEC;
 
-	TestResult(pMatrix, pVector, pResult, Size);
+	//TestResult(pMatrix, pVector, pResult, Size);
 	// Printing the result vector
 	printf("\n Result Vector: \n");
-	PrintVector(pResult, Size);
+	//PrintVector(pResult, Size);
 
 	// Printing the execution time of Gauss method
 	printf("\n Time of execution: %f\n", duration);

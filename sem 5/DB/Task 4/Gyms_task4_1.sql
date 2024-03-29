@@ -14,8 +14,12 @@ CREATE TABLE [Help] (
 
 */
 
-SELECT * 
+SELECT * FROM Lockers
+
+SELECT * FROM Clients
+
+SELECT *
 FROM Clients AS Cl
-LEFT JOIN Lockers AS Lock
-ON CL.ID_client = Lock.ID_client
+FULL JOIN Lockers AS Lock
+ON Cl.ID_client = Lock.ID_client
 
