@@ -1,5 +1,4 @@
 #define _CRT_SECURE_NO_WARNINGS
-// SerialGauss.cpp
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
@@ -8,6 +7,7 @@
 #include <omp.h>
 
 const double eps = 0.00001;
+const double relaxParam = 1.5;
 
 typedef struct {
 	int PivotRow;
@@ -32,6 +32,7 @@ void DummyDataInitialization(double* pMatrix, double* pVector, int
 		}
 	}
 }
+
 // Function for random initialization of the matrix
 // and the vector elements
 void RandomDataInitialization(double* pMatrix, double* pVector,
@@ -39,10 +40,10 @@ void RandomDataInitialization(double* pMatrix, double* pVector,
 	int i, j; // Loop variables
 	srand(unsigned(clock()));
 	for (i = 0; i < Size; i++) {
-		pVector[i] = rand() / double(1000);
+		pVector[i] = rand() / double(100000);
 		for (j = 0; j < Size; j++) {
 			if (j <= i)
-				pMatrix[i * Size + j] = rand() / double(1000);
+				pMatrix[i * Size + j] = rand() / double(100000);
 			else
 				pMatrix[i * Size + j] = 0;
 		}
@@ -66,7 +67,7 @@ void ProcessInitialization(double*& pMatrix, double*
 	pResult = new double[Size];
 	// Initialization of the matrix and the vector elements
 	RandomDataInitialization(pMatrix, pVector, Size);
-	//RandomDataInitialization(pMatrix, pVector, Size);
+	//DummyDataInitialization(pMatrix, pVector, Size);
 }
 // Function for formatted matrix output
 void PrintMatrix(double* pMatrix, int RowCount, int ColCount) {
@@ -163,40 +164,51 @@ void ParallelGaussianElimination(double* pMatrix, double* pVector,
 	}
 }
 
-//ÄÎÄÅËÀÒÜ
 // Function for the execution of Gauss algorithm
 void ParallelResultCalculation(double* pMatrix, double* pVector,
 	double* pResult, int Size) {
-	long double* g = new long double[Size];
+
+	long double* curResult = new long double[Size];
 	long double* d = new long double[Size];
 	int t = 0;
 #pragma omp parallel for 
-	for (int i = 0; i < Size; i++) { pResult[i] = 0; g[i] = 0; }
+	for (int i = 0; i < Size; i++) 
+	{ 
+		pResult[i] = 0; 
+		curResult[i] = 0; 
+	}
 	bool flag = false;
-	long double sum;
+	long double sum1;
+	long double sum2;
 	do {
 		flag = false;
 		for (int i = 0; i < Size; i++) {
-			g[i] = pVector[i];
-			sum = 0;
-#pragma omp parallel for reduction(+: sum)
-			for (int j = 0; j < Size; j++) {
-				if (i != j) {
-					sum += (pMatrix[Size * i + j] * pResult[j]);
-				}
+			curResult[i] = pVector[i];
+			sum1 = 0;
+			sum2 = 0;
+
+			//first substraction
+			for (int j = 0; j < i; j++) {
+				sum1 += pMatrix[Size * i + j] * curResult[j];
 			}
-			g[i] -= sum;
-			g[i] = (1.0 * g[i]) / pMatrix[Size * i + i];
+
+			//second substraction
+			for (int j = i + 1; j < Size; j++) {
+				sum2 += pMatrix[Size * i + j] * pResult[j];
+			}
+
+			curResult[i] -= sum1;
+			curResult[i] -= sum2;
+			curResult[i] = (1 - relaxParam) * pResult[i] + relaxParam * (curResult[i] / pMatrix[Size * i + i]);
 		}
 
-#pragma omp parallel for 
+		//Check if difference between current computations and previous ones exceed eps
 		for (int i = 0; i < Size; i++) {
-			if (fabs(g[i] - pResult[i]) >= eps) flag = true;
-			pResult[i] = g[i];
+			if (fabs(curResult[i] - pResult[i]) >= eps) flag = true;
+			pResult[i] = curResult[i];
 		}
-
 	} while (flag);
-	delete[] g;
+	delete[] curResult;
 }
 
 // Function for computational process termination
@@ -261,10 +273,10 @@ int main() {
 	finish = clock();
 	duration = (finish - start) / CLOCKS_PER_SEC;
 
-	//TestResult(pMatrix, pVector, pResult, Size);
+	TestResult(pMatrix, pVector, pResult, Size);
 	// Printing the result vector
 	printf("\n Result Vector: \n");
-	//PrintVector(pResult, Size);
+	PrintVector(pResult, Size);
 
 	// Printing the execution time of Gauss method
 	printf("\n Time of execution: %f\n", duration);
