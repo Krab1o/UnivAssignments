@@ -38,7 +38,7 @@ begin
 end
 
 -- заполнение таблицы клиентов
-
+/*
 declare @n int = 0;
 declare @k int = 20;
 declare @myIdent uniqueidentifier;
@@ -76,4 +76,4 @@ begin
 	SET @k=@k+1
 	SET @GeoKey = @GeoKey+1;
 end
-
+*/
