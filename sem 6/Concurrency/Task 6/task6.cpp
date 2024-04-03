@@ -6,7 +6,7 @@
 #include <math.h>
 #include <omp.h>
 
-const double eps = 0.00001;
+const double eps = 0.000000001;
 const double relaxParam = 1;
 
 int* pPivotPos; // The number of pivot rows selected at the iterations
@@ -31,16 +31,24 @@ void DummyDataInitialization(long double* pMatrix, long double* pVector, int
 // Function for random initialization of the matrix
 // and the vector elements
 void RandomDataInitialization(long double* pMatrix, long double* pVector, int Size) {
-	int i, j; // Loop variables
+	long double s;
+	int i, j;  // Loop variables
 	srand(unsigned(clock()));
 	for (i = 0; i < Size; i++) {
-		pVector[i] = rand() / long double(1000);
+		pVector[i] = rand() / double(1000);
 		for (j = 0; j < Size; j++) {
-			if (j <= i)
-				pMatrix[i * Size + j] = rand() / long double(1000);
-			else
-				pMatrix[i * Size + j] = 0;
+			pMatrix[i * Size + j] = rand() / double(1000);
+
 		}
+	}
+	for (i = 0; i < Size; i++) {
+		s = 0;
+		pVector[i] = rand() / double(1000);
+		for (j = 0; j < Size; j++) {
+			if (i != j)
+				s += pMatrix[i * Size + j];
+		}
+		pMatrix[i * Size + i] = rand() / double(1000) + s;
 	}
 }
 // Function for memory allocation and definition of the objects elements 
@@ -59,8 +67,8 @@ void ProcessInitialization(long double*& pMatrix, long double*
 	pVector = new long double[Size];
 	pResult = new long double[Size];
 	// Initialization of the matrix and the vector elements
-	//RandomDataInitialization(pMatrix, pVector, Size);
-	DummyDataInitialization(pMatrix, pVector, Size);
+	RandomDataInitialization(pMatrix, pVector, Size);
+	//DummyDataInitialization(pMatrix, pVector, Size);
 }
 // Function for formatted matrix output
 void PrintMatrix(double* pMatrix, int RowCount, int ColCount) {
@@ -84,7 +92,7 @@ void ParallelResultCalculation(long double* pMatrix, long double* pVector,
 	long double* prevResult, int Size) {
 
 	long double* curResult = new long double[Size];
-//#pragma omp parallel for 
+#pragma omp parallel for 
 	for (int i = 0; i < Size; i++) 
 	{ 
 		prevResult[i] = 0; 
@@ -97,18 +105,17 @@ void ParallelResultCalculation(long double* pMatrix, long double* pVector,
 		for (int i = 0; i < Size; i++) {
 			curResult[i] = pVector[i];
 			sum = 0;
+#pragma omp parallel for reduction(+: sum)
 			for (int j = 0; j < Size; j++) {
 				if (i != j)
 					sum += pMatrix[Size * i + j] * curResult[j];
 			}
 			curResult[i] -= sum;
-			//curResult[i] = (1 - relaxParam) * prevResult[i] + relaxParam * curResult[i] / pMatrix[Size * i + i];
-			curResult[i] = relaxParam * curResult[i] / pMatrix[Size * i + i];
-		}
+			curResult[i] = (1 - relaxParam) * prevResult[i] + relaxParam * curResult[i] / pMatrix[Size * i + i];
+			//curResult[i] = curResult[i] / pMatrix[Size * i + i];
 
-		//Check if difference between current computations and previous ones exceed eps
-		for (int i = 0; i < Size; i++) {
-			if (fabs(curResult[i] - prevResult[i]) >= eps) 
+			//Check if difference between current computations and previous ones exceed eps
+			if (fabs(curResult[i] - prevResult[i]) >= eps)
 				flag = true;
 			prevResult[i] = curResult[i];
 		}
@@ -132,7 +139,7 @@ void TestResult(long double* pMatrix, long double* pVector,
 	// Flag, that shows wheather the right parts
 	// vectors are identical or not
 	int equal = 0;
-	long double Accuracy = 1.e-6; // Comparison accuracy
+	long double Accuracy = 0.001; // Comparison accuracy
 	pRightPartVector = new long double[Size];
 	for (int i = 0; i < Size; i++) {
 		pRightPartVector[i] = 0;
