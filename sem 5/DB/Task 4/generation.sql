@@ -44,8 +44,9 @@ begin
 	SET @k=@k+1
 	SET @n=@n+1
 end
-
+*/
 --Ñoaches
+/*
 
 SET @n=0
 SET @k=80
@@ -72,7 +73,7 @@ begin
 	SET @BirthDate = dateadd(year, -@k, Getdate())
 	SET @BirthDate = dateadd(day, @k, @BirthDate)
 
-	insert into [dbo].[Coaches] ([Lastname], [Firstname], [Surname], [Rating], [BirthDate])
+	insert into [dbo].[Coaches_unclustered] ([Lastname], [Firstname], [Surname], [Rating], [BirthDate])
 	values (@Lastname,@Firstname,@Surname,@Rating,@BirthDate)
 	SET @k=@k+1
 	SET @n=@n+1
@@ -95,6 +96,8 @@ begin
 	values (@Lastname)
 	SET @n=@n+1
 end
+*/
+/*
 --gyms
 
 SET @n=0
@@ -127,12 +130,12 @@ begin
 	SET @randomTime1 = convert(Time, DateAdd(second, @randomSeconds1, @startTime))
 	SET @randomSeconds2 = (@maxSeconds + 1) * RAND(convert(varbinary, newId()))
 	SET @randomTime2 = convert(Time, DateAdd(second, @randomSeconds2, @startTime))
-	
-	insert into [dbo].[Gyms] ([Title], [OpenTime], [CloseTime], [Address])
+
+	insert into [dbo].[Gyms_unclustered] ([Title], [OpenTime], [CloseTime], [Address])
 	values (@Lastname, @randomTime1, @randomTime2, @Surname)
 	SET @n=@n+1
 end
-*/
+
 
 --employees
 
@@ -160,3 +163,40 @@ begin
 	SET @k=@k+1
 	SET @n=@n+1
 end
+
+
+SET @Lastname = 'TARIFF'
+DECLARE @Price int
+
+while(@n<10000)
+begin
+	if (len(@Lastname)>12) SET @Lastname = 'TARIFF' else SET @Lastname = @Lastname+char(round(rand() * @w, 0) + @l)
+	SET @Price = FLOOR(RAND()*(10000))+1
+
+	insert into [dbo].[Tariffs]([Title], [Price])
+	values (@Lastname, @Price)
+
+	SET @n=@n+1
+end
+
+
+
+declare @ID_1 int
+declare @ID_2 int
+
+while(@n<10000)
+begin
+	
+	SET @ID_1 = FLOOR(RAND()*(10000))+1
+	SET @ID_2 = FLOOR(RAND()*(10000))+1
+	if (@k>80) SET @k=20
+	SET @BirthDate  = dateadd(day, -@k, Getdate())
+	SET @BirthDate = dateadd(year, -@k, Getdate())
+	SET @BirthDate = dateadd(day, @k, @BirthDate)
+
+	insert into [dbo].[Lockers]([ID_client], [ID_gym], [ExpiringDate], [LockerNumber], [Expired])
+	values (@ID_1, @ID_2, @BirthDate, @k, 0)
+	SET @n=@n+1
+	SET @k=@k+1
+end
+*/

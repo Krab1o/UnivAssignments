@@ -108,8 +108,8 @@ def addShip(field: Field, ship: Ship): Field = {
 
 @main def task4(): Unit = {
   val initialField: Field = Vector.fill(10, 10)(false)
-  val ship1: Ship = List((3, 3), (5, 5), (5, 6), (5, 7))
-  val ship2: Ship = List((3, 3), (6, 9))
+  val ship1: Ship = List((4, 4), (5, 7), (5, 6), (5, 9))
+  val ship2: Ship = List((4, 9), (6, 9))
   var updatedField = addShip(initialField, ship1)
   updatedField = addShip(updatedField, ship2)
 
