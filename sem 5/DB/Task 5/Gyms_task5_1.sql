@@ -1,255 +1,240 @@
--- //////////////////////////////
--- AFTER INSERT & DELETE TRIGGER
--- //////////////////////////////
--- При изменении таблицы PeopleInGroup (удалении или добавлении строки) 
--- В таблице Groups происходит обновление поля, отвечающее за кол-во людей в группе с данным индексом
-CREATE TRIGGER INS_DEL_PIN_Trigger
-ON PeopleInGroup
-AFTER INSERT, DELETE
+DROP TRIGGER IF EXISTS [dbo].[trClientUpdateCheck]
+DROP TRIGGER IF EXISTS [dbo].[trEmployeeInsertCheck]
+DROP TRIGGER IF EXISTS [dbo].[trLockerUpdateCheck]
+DROP TRIGGER IF EXISTS [dbo].[trInventCheck]
+DROP TRIGGER IF EXISTS [dbo].[tarDelete]
+DROP TRIGGER IF EXISTS [dbo].[employeeDelete]
+
+--AFTER TRIGGERS
+
+--1. INSERT
+--Если добавлено новое оборудование, то поставить дату проверки у него через год и установить NeedReplacement = 0. 
+--Если добавлено оборудование типа 1, то поставить дату проверки через пять лет и установить NeedReplacement = 0.
+GO
+CREATE TRIGGER trInventCheck ON Inventory
+AFTER INSERT
 AS
-IF @@ROWCOUNT=1
-DECLARE @GroupID int;
 BEGIN
-    -- Получаем ID группы, к которой относится вставленная или удаленная запись
-    SELECT @GroupID = ID_Group FROM inserted  -- для вставки
-    IF @GroupID IS NULL
-        SELECT @GroupID = ID_Group FROM deleted  -- для удаления
+  DECLARE 
+	@ID_gym int,
+	@ItemName nvarchar(16),
+	@SerialNumber int,
+	@ID_type int
+  SELECT
+    @ID_gym = ID_gym,
+	@ItemName = ItemName,
+	@SerialNumber = SerialNumber,
+	@ID_type = ID_type
+	FROM inserted
+  IF @ID_type = 1
+  BEGIN
+    UPDATE Inventory
+	  SET CheckDate = DATEADD(year, 5, GETDATE()),
+	      NeedReplacement = 0
+	  WHERE ID_item IN (SELECT ID_item FROM inserted)
+  END
+  ELSE
+  BEGIN
+    UPDATE Inventory
+	  SET CheckDate = DATEADD(year, 1, GETDATE()),
+	      NeedReplacement = 0
+	  WHERE ID_item IN (SELECT ID_item FROM inserted)
+  END
+END
+GO
 
-    -- Обновляем количество людей в группе
-    UPDATE Groups
-    SET AmountPeople = (SELECT COUNT(*) FROM PeopleInGroup WHERE ID_Group = @GroupID)
-    WHERE ID_Group = @GroupID;
-END;
-SELECT * FROM Clients
-SELECT * FROM PeopleInGroup
-SELECT * FROM Groups
-INSERT INTO PeopleInGroup (ID_Client, ID_Group) VALUES (3, 1)
---SELECT * FROM PeopleInGroup
---SELECT * FROM Groups
-DELETE FROM PeopleInGroup
-WHERE ID_Group = 1;
---SELECT * FROM PeopleInGroup
---SELECT * FROM Groups
-DROP TRIGGER INS_DEL_PIN_Trigger
+--Тест
+INSERT INTO Inventory(ItemName, ID_type, ID_gym, SerialNumber)
+		VALUES	('Блин 10кг Чёрный', 1, 1, 120005)
+SELECT * FROM Inventory
 
--- //////////////////// 
--- AFTER UPDATE TRIGGER
--- ////////////////////
--- Если после обновленяи рейтинга у тренера его значение выходит за отрезок [0.0 ; 5.0]
--- То выходит ошибка о неверном значении 
-CREATE TRIGGER UPD_CoachRating_Trigger
-ON Coaches
+--2. DELETE
+--При удалении сотрудника проверить, остались ли администраторы в зале, из которого удалили сотрудника
+--Если количество администраторов равно нулю, то поставить префикс [NO ADMIN]
+GO
+CREATE TRIGGER employeeDelete ON Employees
+AFTER DELETE
+AS
+IF @@ROWCOUNT = 1
+BEGIN
+  DECLARE 
+    @Count int,
+	@Title nvarchar(30),
+	@ID_gym int = (SELECT ID_gym FROM deleted)
+  SET @Title = (SELECT Title 
+               FROM deleted AS e
+			   INNER JOIN Gyms AS g
+			   ON e.ID_gym = g.ID_gym)
+  SET @Count = (SELECT COUNT(*) FROM Employees WHERE Occupation = 'Administrator' AND ID_gym IN (@ID_gym))
+  IF (@Count = 0)
+  BEGIN
+    UPDATE Gyms
+	  SET Title = CONCAT('[NO ADMIN]', @Title)
+	  WHERE ID_gym = @ID_gym
+  END
+END
+GO
+
+--Тест
+SELECT * FROM Employees
+SELECT * FROM Gyms
+
+SELECT * FROM Employees
+WHERE ID_gym = 10010 AND Occupation = 'Administrator'
+SELECT * FROM Gyms
+WHERE ID_gym = 10010
+
+DELETE FROM Employees
+WHERE ID_employee = 10141
+
+SELECT * FROM Employees
+WHERE ID_gym = 10010 AND Occupation = 'Administrator'
+SELECT * FROM Gyms
+WHERE ID_gym = 10010
+
+--Откат
+UPDATE Gyms
+  SET Title = 'MetroFitness'
+  WHERE ID_gym = 10010
+INSERT INTO Employees(ID_gym, Lastname, FirstName, Surname, PhoneNumber, BirthDate, Occupation)
+	VALUES (10010, 'Мадамова', 'Евгения', 'Сергеевна', '+79473457109', '1977-03-05', 'Administrator')
+
+
+--3. UPDATE
+--Если новая дата окончания аренды шкафчика становится позже текущей, то установить 0 (иначе установить единицу)
+GO
+CREATE TRIGGER trLockerUpdateCheck ON Lockers
 AFTER UPDATE
 AS
 BEGIN
-
-    DECLARE @CoachID int, @CoachRating float;
-
-    -- Используем курсор для обработки обновленных строк
-    DECLARE UpdatedCursor CURSOR FOR
-    SELECT ID_Coach, Rating
-    FROM inserted; -- Мы используем inserted, потому что мы хотим проверить новые значения после обновления
-
-    OPEN UpdatedCursor;
-    FETCH NEXT FROM UpdatedCursor INTO @CoachID, @CoachRating;
-
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-        IF @CoachRating < 0.0 OR @CoachRating > 5.0
-        BEGIN
-			ROLLBACK TRAN
-            RAISERROR ('рейтинг', 16, 10);
-        END
-
-        FETCH NEXT FROM UpdatedCursor INTO @CoachID, @CoachRating;
-    END
-
-    CLOSE UpdatedCursor;
-    DEALLOCATE UpdatedCursor;
+  DECLARE @ExpiringDate date
+  SELECT @ExpiringDate = ExpiringDate
+  FROM inserted
+  IF @ExpiringDate > GETDATE()
+  BEGIN
+	UPDATE Lockers
+	  SET Expired = 0
+	  WHERE ID_locker = (SELECT ID_locker FROM inserted)
+  END
+  ELSE
+  BEGIN
+	UPDATE Lockers
+	  SET Expired = 1
+	  WHERE ID_locker = (SELECT ID_locker FROM inserted)
+  END
 END
+GO
 
-SELECT * FROM Coaches
-UPDATE Coaches
-SET Rating=-1.9
-WHERE ID_Coach = 4 
-SELECT * FROM Coaches
-DROP TRIGGER UPD_CoachRating_Trigger
+--Тест
+UPDATE Lockers
+	SET ExpiringDate = '2024.04.07'
+	WHERE ID_locker = 1
 
--- INSTEAD  OF INSERT TRIGGER
-CREATE TRIGGER IO_INS_Attendanse_Trigger
-ON Attendance
+SELECT * FROM Lockers
+
+--INSTEAD OF TRIGGER
+--1. INSERT
+--Запрос вставки дополняется проверкой на дату: если дата рождения больше текущей, то выводится сообщение об ошибке
+GO
+CREATE TRIGGER trEmployeeInsertCheck ON Employees
 INSTEAD OF INSERT
 AS
 BEGIN
-    
-    -- Декларируем переменные для хранения значений
-    DECLARE @ID_PurchasedST int, @AttendanceDate date;
+  DECLARE 
+	@ID_gym int,
+	@Lastname nvarchar(16),
+	@Firstname nvarchar(16),
+	@Surname nvarchar(16),
+	@PhoneNumber nvarchar(16),
+	@BirthDate date,
+	@Occupation nvarchar(40)
+  SELECT
+    @ID_gym = ID_gym,
+	@Lastname = Lastname,
+	@Firstname = Firstname,
+	@Surname = Surname,
+	@PhoneNumber = PhoneNumber,
+	@BirthDate = BirthDate,
+	@Occupation = Occupation
+	FROM inserted
+  IF @BirthDate > GETDATE()
+  BEGIN
+	ROLLBACK TRAN
+    RAISERROR('Эта дата ещё не наступила!', 0, 1) WITH NOWAIT
+  END
+  ELSE
+  BEGIN
+    INSERT Employees(ID_gym, Lastname, FirstName, Surname, PhoneNumber, BirthDate, Occupation)
+	VALUES (@ID_gym, @Lastname, @Firstname, @Surname, @PhoneNumber, @BirthDate, @Occupation)
+  END
+END;
+GO
 
-    -- Создаем курсор для обработки вставленных строк
-    DECLARE InsertedCursor CURSOR FOR
-    SELECT ID_PurchasedST, _Date
-    FROM inserted;
+--Тест
+DECLARE @BirDate date = '1915.03.05'
+INSERT INTO Employees (ID_gym, Lastname, FirstName, Surname, PhoneNumber, BirthDate, Occupation)
+		VALUES (40, 'Евдокимов', 'Константин', NULL, '+79272415537', @BirDate, 'Administrator')
+SELECT * FROM Employees
+WHERE BirthDate = @BirDate
 
-    OPEN InsertedCursor;
-    FETCH NEXT FROM InsertedCursor INTO @ID_PurchasedST, @AttendanceDate;
+--Откат
+DELETE FROM Employees
+WHERE BirthDate = @BirDate
 
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-        -- Выполняем проверку даты посещения и даты окончания абонемента
-        DECLARE @EndData date;
-			SELECT @EndData = EndData
-			FROM PurchasedST
-			WHERE ID_PurchasedST = @ID_PurchasedST;
-
-        IF @AttendanceDate > @EndData
-        BEGIN
-            -- Если дата посещения больше даты окончания абонемента
-			ROLLBACK TRAN
-            RAISERROR ('посещение', 16, 10);
-        END
-        ELSE
-        BEGIN
-            -- Вставляем данные, если условие не выполняется
-            INSERT INTO Attendance (ID_PurchasedST, ID_Schedule, _Date)
-            VALUES (@ID_PurchasedST, (SELECT ID_Schedule FROM inserted WHERE ID_PurchasedST = @ID_PurchasedST), @AttendanceDate);
-        END
-
-        FETCH NEXT FROM InsertedCursor INTO @ID_PurchasedST, @AttendanceDate;
-    END
-
-    CLOSE InsertedCursor;
-    DEALLOCATE InsertedCursor;
+--2. DELETE
+--При удалении тарифа поставить значения NULL в группы, которые занимались по данному тарифу
+GO
+CREATE TRIGGER tarDelete ON Tariffs
+INSTEAD OF DELETE
+AS
+BEGIN
+  UPDATE Groups
+	SET ID_tariff = NULL
+	WHERE ID_tariff IN (SELECT ID_tariff FROM deleted)
 END
+GO
 
+--Тест
+SELECT * FROM Groups
+SELECT * FROM Tariffs
 
-SELECT * FROM Attendance
-SELECT * FROM PurchasedST
+DELETE FROM Tariffs
+WHERE ID_tariff = 1
 
-INSERT INTO Attendance (ID_PurchasedST, ID_Schedule, _Date)
-VALUES	(2, 1 , '10-09-2023'),
-		(3, 4 , '10-11-2024');
+SELECT * FROM Groups
+SELECT * FROM Tariffs
 
-DROP TRIGGER IO_INS_Attendanse_Trigger
+--Откат
+UPDATE Groups
+  SET ID_tariff = 1
+  WHERE ID_tariff IS NULL
 
--- INSTEAD OF UPDATE TRIGGER
-CREATE TRIGGER IO_UPD_Price_trigger
-ON SeasonTicketType
+--3. UPDATE
+--Проверяет, начинается ли обновляемый номер с +7 и содержит ли он 12 символов (+ и ещё 11 цифр) 
+GO
+CREATE TRIGGER trClientUpdateCheck ON Clients 
 INSTEAD OF UPDATE
 AS
 BEGIN
-    DECLARE @CurrentPrice DECIMAL, @NewPrice DECIMAL, @PercentageChange DECIMAL;
+  DECLARE @Phone nvarchar(16) 
+  SELECT @Phone = PhoneNumber FROM inserted
+  IF @Phone NOT LIKE '+%'
+  OR LEN(@Phone) != 12 
+  BEGIN
+    ROLLBACK TRAN
+    RAISERROR('Номер телефона начинается с +7', 0, 1) WITH NOWAIT
+  END
+  ELSE
+	  UPDATE Clients
+		SET PhoneNumber = @Phone
+		WHERE ID_client IN (SELECT ID_client FROM inserted);
+END;
+GO
 
-    SELECT @CurrentPrice = Price FROM SeasonTicketType WHERE ID_STT IN (SELECT ID_STT FROM inserted);
-    SELECT @NewPrice = Price FROM inserted;
+--Тест
+UPDATE Clients 
+	SET PhoneNumber = '+71234567890' 
+	WHERE ID_client = 1
 
-    IF (@NewPrice > @CurrentPrice * 1.1)
-    BEGIN
-        -- Если новая цена на 10% больше текущей
-		ROLLBACK TRAN
-        RAISERROR ('Резкое повышение, это отпугнёт покупателей', 16, 10)
-    END
-    ELSE IF (@NewPrice < @CurrentPrice * 0.9)
-    BEGIN
-        -- Если новая цена на 10% меньше текущей
-		ROLLBACK TRAN
-        RAISERROR ('Резкое понижение, возможно разорение', 16, 10);
-    END
-    ELSE
-    BEGIN
-        -- Обновляем цену, если она соответствует условиям
-        UPDATE SeasonTicketType
-        SET Price = @NewPrice
-        WHERE ID_STT IN (SELECT ID_STT FROM inserted);
-    END
-END
-
-SELECT * FROM SeasonTicketType
-
-UPDATE SeasonTicketType
-SET Price = 200
-WHERE ID_Gym = 2 
-
-SELECT * FROM SeasonTicketType
-
-UPDATE SeasonTicketType
-SET Price = Price * 1.2
-WHERE ID_TypeOfSport = 2
-
-SELECT * FROM SeasonTicketType
-
-DROP TRIGGER IO_UPD_Price_trigger
-
--- //////////////////////////
--- INSTEAD OF DELETE TRIGGER 
--- /////////////////////////
-CREATE TRIGGER IO_DEL_Coach_Trigger
-ON Coaches
-INSTEAD OF DELETE
-AS
-BEGIN
-
-    DECLARE @DeletedCoachID int;
-    
-    -- Создаем временную таблицу для хранения результата проверки наличия ID_Coach в таблице Schedule
-    CREATE TABLE #CoachUsage (CoachID INT, UsageCount INT);
-
-    -- Проверяем наличие ID_Coach в таблице Schedule и сохраняем результат во временную таблицу
-    INSERT INTO #CoachUsage (CoachID, UsageCount)
-    SELECT s.ID_Coach, COUNT(*) AS UsageCount
-    FROM Schedule s
-    WHERE s.ID_Coach IN (SELECT ID_Coach FROM deleted)
-    GROUP BY s.ID_Coach;
-
-    -- Извлекаем ID_Coach, для которого было найдено использование в таблице Schedule
-    SELECT @DeletedCoachID = CoachID FROM #CoachUsage WHERE UsageCount > 0;
-
-    -- Выводим сообщение или производим удаление в зависимости от результата
-    IF @DeletedCoachID IS NOT NULL
-    BEGIN
-        -- Если ID_Coach найден в таблице Schedule
-		ROLLBACK TRAN
-        RAISERROR ('Необходимо найти замену тренеру перед удалением', 16, 10);
-    END
-    ELSE
-    BEGIN
-        -- Если ID_Coach не найден в таблице Schedule, выполняем удаление
-        DELETE FROM Coaches WHERE ID_Coach IN (SELECT ID_Coach FROM deleted);
-    END
-
-    -- Удаляем временную таблицу
-    DROP TABLE #CoachUsage;
-END
-
--- Обновленный триггер с каскадным удалением из таблицы Attendance
-CREATE TRIGGER IO_DEL_Coach_Trigger
-ON Coaches
-INSTEAD OF DELETE
-AS
-BEGIN
-    -- Удаляем соответствующие записи из таблицы Schedule, используя JOIN с таблицей deleted
-    DELETE FROM Schedule
-    WHERE ID_Coach IN (SELECT ID_Coach FROM deleted);
-
-    -- Удаляем соответствующие записи из таблицы Attendance, используя JOIN с таблицей Schedule
-    DELETE FROM Attendance
-    WHERE ID_Schedule IN (SELECT ID_Schedule FROM Schedule);
-
-    -- Удаляем тренеров из таблицы Coaches, используя JOIN с таблицей deleted
-    DELETE FROM Coaches 
-    WHERE ID_Coach IN (SELECT ID_Coach FROM deleted);
-END
-
-
-
-SELECT * FROM Schedule
-SELECT * FROM Coaches
-
-DELETE FROM Coaches
-WHERE LastName = 'Тимофеев'
-
-DELETE FROM Coaches
-WHERE ID_Coach = 6
-SELECT * FROM Schedule
-SELECT * FROM Coaches
-
-DROP TRIGGER IO_DEL_Coach_Trigger
+SELECT * FROM Clients
+WHERE ID_client = 1

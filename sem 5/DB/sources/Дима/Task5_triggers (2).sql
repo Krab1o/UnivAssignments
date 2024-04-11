@@ -37,8 +37,7 @@ DROP TRIGGER INS_DEL_PIN_Trigger
 -- ////////////////////
 -- ≈сли после обновлен€и рейтинга у тренера его значение выходит за отрезок [0.0 ; 5.0]
 -- “о выходит ошибка о неверном значении 
-CREATE TRIGGER UPD_CoachRating_Trigger
-ON Coaches
+CREATE TRIGGER tr_update_rating ON Coaches
 AFTER UPDATE
 AS
 BEGIN
