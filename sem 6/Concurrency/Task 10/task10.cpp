@@ -72,11 +72,8 @@ void integral(const double a, const double b,
     {
         x = a + i * h + h / 2.0;
         sum += f(x) * h;
-
     }
     MPI_Reduce(&sum, res, 1, MPI_LONG_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
-
 }
 
 
@@ -122,6 +119,6 @@ int main()
         cout.precision(8);
         cout << "integral value : " << res << endl;
     }
-
     MPI_Finalize();
     return 0;
+}
