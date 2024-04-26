@@ -1,18 +1,11 @@
 import collection.mutable.Map
 
-def pack[T](xs: List[T]): List[List[T]] = {
-  var ans: List[List[T]] = List()
-  var count = 1
-  for (i <- 1 until xs.length) {
-    if (xs(i) == xs(i - 1))
-      count += 1
-    else {
-      ans = ans :+ List.fill(count)(xs(i - 1))
-      count = 1
-    }
-  }
-  ans = ans :+ List.fill(count)(xs.last)
-  ans
+
+def pack[T](xs: List[T]): List[List[T]] = xs match {
+  case Nil => Nil
+  case head :: tail =>
+    val (packed, next) = tail.span(_ == head)
+    (head :: packed) :: pack(next)
 }
 
 @main
@@ -22,19 +15,12 @@ def task1(): Unit = {
   println(pack(List("aa", "a", "b", "b", "b", "c", "k")))
 }
 
-def encode_t2[T] (xs: List[T]): List[(T, Int)] = {
-  var ans: List[(T, Int)] = List()
-  var count = 1
-  for (i <- 1 until xs.length) {
-    if (xs(i) == xs(i - 1))
-      count += 1
-    else {
-      ans = ans :+ (xs(i - 1), count)
-      count = 1
-    }
+def encode_t2[T](xs: List[T]): List[(T, Int)] = {
+  if (xs.isEmpty) Nil
+  else {
+    val (packed, next) = xs.span(_ == xs.head)
+    (xs.head, packed.length) :: encode_t2(next)
   }
-  ans = ans :+ (xs.last, count)
-  ans
 }
 
 @main
@@ -45,14 +31,17 @@ def task2(): Unit = {
 }
 
 def encode_t3[T] (xs: List[T]): List[(T, Int)] = {
-  var map: Map[T, Int] = Map()
-  for (it <- xs) {
-    if (!map.isDefinedAt(it))
-      map = map + (it -> 1)
-    else
-      map.update(it, map(it) + 1)
+  def encodeIter(xs: List[T], map: Map[T, Int]): List[(T, Int)] = {
+    if (xs.isEmpty) map.toList
+    else if (!map.isDefinedAt(xs.head))
+      encodeIter(xs.tail, map + (xs.head -> 1))
+    else {
+      map.update(xs.head, map(xs.head) + 1)
+      encodeIter(xs.tail, map)
+    }
   }
-  map.toList
+  var map: Map[T, Int] = Map()
+  encodeIter(xs, map)
 }
 
 @main
