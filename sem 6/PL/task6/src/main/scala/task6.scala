@@ -1,6 +1,5 @@
 import collection.mutable.Map
 
-
 def pack[T](xs: List[T]): List[List[T]] = xs match {
   case Nil => Nil
   case head :: tail =>

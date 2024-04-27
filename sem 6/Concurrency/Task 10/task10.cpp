@@ -3,7 +3,7 @@
 
 using namespace std;
 
-// Число pi
+//  pi
 #define PI 3.1415926535897932384626433832795
 
 double f(double x) {
@@ -13,9 +13,9 @@ double f(double x) {
 void simp(const double a, const double b, double h, double* res)
 {
     long long int i, n;
-    double sum1, sum2, sum11, sum22; // локальная переменная для подсчета интеграла
-    double x; // координата точки сетки
-    n = (int)((b - a) / h); // количество точек сетки интегрирования
+    double sum1, sum2, sum11, sum22; //     
+    double x; //   
+    n = (int)((b - a) / h); //    
 
     sum1 = 0.0;
     sum2 = 0.0;
@@ -56,9 +56,9 @@ void integral(const double a, const double b,
     const double h, double* res)
 {
     long long i, n;
-    double sum; // локальная переменная для подсчета интеграла
-    double x; // координата точки сетки
-    n = (int)((b - a) / h); // количество точек сетки интегрирования
+    double sum; //     
+    double x; //   
+    n = (int)((b - a) / h); //    
     int NProc, ProcId;
     MPI_Comm_size(MPI_COMM_WORLD, &NProc);
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcId);
@@ -79,13 +79,13 @@ void integral(const double a, const double b,
 
 double experiment(double* res)
 {
-    double stime, ftime; // время начала и конца расчета 
-    long double a = -1.0; // левая граница интегрирования 
-    long double b = 1000000.0; // правая граница интегрирования
+    double stime, ftime; //      
+    long double a = -1.0; //    
+    long double b = 1000000.0; //   
 
-    double h = 0.1; // шаг интегрирования
+    double h = 0.1; //  
     stime = clock();
-    simp(a, b, h, res); // вызов функции интегрирования
+    simp(a, b, h, res); //   
     ftime = clock();
     return (ftime - stime) / CLOCKS_PER_SEC;
 }
@@ -93,16 +93,16 @@ double experiment(double* res)
 int main()
 {
     MPI_Init(NULL, NULL);
-    int i; // переменная цикла
-    double time; // время проведенного эксперимента
-    double res;  // значение вычисленного интеграла 
-    double min_time; // минимальное время работы
-    double max_time; // максимальное время работы
-    double avg_time; // среднее время работы
-    int numbExp = 10; // количество запусков программы
-    // первый запуск
+    int i; //  
+    double time; //   
+    double res;  //    
+    double min_time; //   
+    double max_time; //   
+    double avg_time; //   
+    int numbExp = 10; //   
+    //  
     min_time = max_time = avg_time = experiment(&res);
-    // оставшиеся запуски
+    //  
     for (i = 0; i < numbExp - 1; i++)
     {
         time = experiment(&res);
@@ -113,7 +113,7 @@ int main()
     int ProcId;
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcId);
     if (ProcId == 0) {
-        // вывод результатов эксперимента
+        //   
         cout << "execution time : " << avg_time / numbExp << "; " <<
             min_time << "; " << max_time << endl;
         cout.precision(8);
