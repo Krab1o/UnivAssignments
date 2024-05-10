@@ -1,4 +1,4 @@
-[error] java.nio.file.FileSystemException: /run/media/krab1o/main/!UnivAssignments/sem 6/PL/task6/target/streams/_global/dependencyPositions/_global/streams/update_cache_3/output_dsp: Operation not permitted
+[error] java.nio.file.FileSystemException: /run/media/krab1o/main/code/UnivAssignments/sem 6/PL/task6/target/streams/_global/dependencyPositions/_global/streams/update_cache_3/output_dsp: Operation not permitted
 [error] 	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:100)
 [error] 	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)
 [error] 	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
@@ -35,4 +35,4 @@
 [error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
 [error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
 [error] 	at java.base/java.lang.Thread.run(Thread.java:1583)
-[error] (ssExtractDependencies) java.nio.file.FileSystemException: /run/media/krab1o/main/!UnivAssignments/sem 6/PL/task6/target/streams/_global/dependencyPositions/_global/streams/update_cache_3/output_dsp: Operation not permitted
+[error] (ssExtractDependencies) java.nio.file.FileSystemException: /run/media/krab1o/main/code/UnivAssignments/sem 6/PL/task6/target/streams/_global/dependencyPositions/_global/streams/update_cache_3/output_dsp: Operation not permitted

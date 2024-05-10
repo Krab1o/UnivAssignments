@@ -4,7 +4,7 @@
 #include <conio.h>
 #include <time.h>
 #include <math.h>
-#include "mpi.h"
+#include <mpi.h>
 
 const double eps = 0.000000001;
 const double relaxParam = 1;
@@ -51,12 +51,11 @@ void RandomDataInitialization(long double** pMatrix, long double* pVector,
 
 		}
 		pMatrix[i][i] = rand() / double(1000) + s;
-
 	}
 }
 
 // Function for memory allocation and definition of the objects elements 
-void ProcessInitialization(long double** pMatrix, long double*
+void ProcessInitialization(long double**& pMatrix, long double*
 	& pVector, long double*& pResult, int& Size) {
 	// Setting the size of the matrix and the vector
 	do {
@@ -94,18 +93,15 @@ void PrintVector(long double* pVector, int Size) {
 	for (i = 0; i < Size; i++)
 		printf("%7.4f ", pVector[i]);
 }
- 
+
 // Function for the execution of Gauss algorithm
 void ParallelResultCalculation(long double** pMatrix, long double* pVector,
-	long double* pResult, int Size, int NProc, int ProcId) 
-{
+	long double* pResult, int Size, int NProc, int ProcId) {
 	double* g = new double[Size];
 	double* d = new double[Size];
 	int t = 0;
-	for (int i = 0; i < Size; i++) 
-	{ 
-		pResult[i] = 0; g[i] = 0; 
-	}
+	//#pragma omp parallel for 
+	for (int i = 0; i < Size; i++) { pResult[i] = 0; g[i] = 0; }
 
 	bool flag = false;
 	double sum;
@@ -120,12 +116,14 @@ void ParallelResultCalculation(long double** pMatrix, long double* pVector,
 			sum = 0;
 			sum1 = 0;
 
+
 			int n1 = Size / NProc;
 			int n2 = (ProcId + 1) * n1;
 			if (NProc == ProcId + 1) {
 				n2 = Size;
 			}
 			int st = ProcId * n1;
+
 
 			for (int j = st; j < n2; j++) {
 				if (i != j) {
@@ -139,8 +137,11 @@ void ParallelResultCalculation(long double** pMatrix, long double* pVector,
 			g[i] -= sum1;
 			g[i] = (1.0 * g[i]) / pMatrix[i][i];
 			if (fabs(g[i] - pResult[i]) >= eps) flag = true;
+
 			pResult[i] = g[i];
+
 		}
+
 	} while (flag);
 	delete[] g;
 }
@@ -150,7 +151,7 @@ void ParallelResultCalculation(long double** pMatrix, long double* pVector,
 void ProcessTermination(long double** pMatrix, long double* pVector, long double* pResult, int Size) {
 	for (int i = 0; i < Size; i++)
 	{
-		delete[] pMatrix[i]
+		delete[] pMatrix[i];
 	}
 	delete[] pMatrix;
 	delete[] pVector;
@@ -158,7 +159,7 @@ void ProcessTermination(long double** pMatrix, long double* pVector, long double
 }
 
 // Function for testing the result
-void TestResult(long double** pMatrix, long double* pVector,
+void TestResult(long double* pMatrix, long double* pVector,
 	long double* pResult, int Size) {
 	/* Buffer for storing the vector, that is a result of multiplication
 	of the linear system matrix by the vector of unknowns */
@@ -172,7 +173,7 @@ void TestResult(long double** pMatrix, long double* pVector,
 		pRightPartVector[i] = 0;
 		for (int j = 0; j < Size; j++) {
 			pRightPartVector[i] +=
-				pMatrix[i][j] * pResult[j];
+				pMatrix[i * Size + j] * pResult[j];
 		}
 	}
 	for (int i = 0; i < Size; i++) {
@@ -189,14 +190,12 @@ void TestResult(long double** pMatrix, long double* pVector,
 
 
 int main() {
-	MPI_Init(NULL, NULL);
 	long double** pMatrix; // The matrix of the linear system
 	long double* pVector; // The right parts of the linear system
 	long double* pResult; // The result vector
 	int Size; // The sizes of the initial matrix and the vector
 	long double start, finish, duration;
 
-	/*
 	printf("Serial Gauss algorithm for solving linear systems\n");
 	// Memory allocation and definition of objects' elements
 	ProcessInitialization(pMatrix, pVector, pResult, Size);
@@ -206,30 +205,28 @@ int main() {
 	//PrintMatrix(pMatrix, Size, Size);
 	printf("Initial Vector \n");
 	//PrintVector(pVector, Size);
-	*/
+
+	int NProc, ProcId;
+	MPI_Init(NULL, NULL);
+	MPI_Comm_size(MPI_COMM_WORLD, &NProc);
+	MPI_Comm_rank(MPI_COMM_WORLD, &ProcId);
+
 	// Execution of Gauss algorithm
 	start = clock();
-	ParallelResultCalculation(pMatrix, pVector, pResult, Size);
+	ParallelResultCalculation(pMatrix, pVector, pResult, Size, 4, 1);
 	finish = clock();
 	duration = (finish - start) / CLOCKS_PER_SEC;
 
-	int	ProcId;
-	MPI_Comm_rank(MPI_COMM_WORLD, &ProcId);
+	//TestResult(pMatrix, pVector, pResult, Size);
+	//Printing the result vector
+	printf("\n Result Vector: \n");
+	PrintVector(pResult, Size);
 
-	if (ProcId == 0)
-	{
-		//TestResult(pMatrix, pVector, pResult, Size);
-		//Printing the result vector
-		printf("\n Result Vector: \n");
-		PrintVector(pResult, Size);
+	// Printing the execution time of Gauss method
+	printf("\n Time of execution: %f\n", duration);
 
-		// Printing the execution time of Gauss method
-		printf("\n Time of execution: %f\n", duration);
-
-		// Computational process termination
-		ProcessTermination(pMatrix, pVector, pResult, Size);
-	}
-	
+	// Computational process termination
+	ProcessTermination(pMatrix, pVector, pResult, Size);
 	MPI_Finalize();
 	return 0;
 }
