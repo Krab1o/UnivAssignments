@@ -11,6 +11,7 @@ enum Language
 class CinemaFactory;
 class Cinema;
 
+//Класс аудиодорожка
 class AudioTrack
 {
 protected:
@@ -22,6 +23,7 @@ public:
     }
 };
 
+//Класс субтитров
 class Subtitles
 {
 protected:
@@ -33,6 +35,7 @@ public:
     }
 };
 
+//Наследующий класс английской аудиодорожки
 class EnglishAudioTrack : public AudioTrack
 {
 public:
@@ -43,6 +46,7 @@ public:
     }
 };
 
+//Наследующий класс английских субтитров
 class EnglishSubtitles : public Subtitles
 {
 public:
@@ -53,6 +57,7 @@ public:
     }
 };
 
+//Наследующий класс русской аудиодорожки
 class RussianAudioTrack : public AudioTrack
 {
 public:
@@ -63,6 +68,7 @@ public:
     }
 };
 
+//Наследующий класс русских субтитров
 class RussianSubtitles : public Subtitles
 {
 public:
@@ -73,6 +79,7 @@ public:
     }
 };
 
+//Класс кино
 class Cinema
 {
 public:
@@ -94,6 +101,7 @@ private:
     AudioTrack audioTrack;
 };
 
+//Интерфейс (абстрактная фабрика)
 class CinemaFactory
 {
 public:
@@ -104,6 +112,7 @@ protected:
     virtual AudioTrack createAudioTrack() = 0;
 };
 
+//Наследующий класс английской абстрактной фабрики
 class EnglishCinemaFactory : public CinemaFactory
 {
 public:
@@ -131,6 +140,7 @@ private:
     }
 };
 
+//Наследующий класс русской абстрактной фабрики
 class RussianCinemaFactory : public CinemaFactory
 {
 public:
@@ -157,6 +167,7 @@ public:
     }
 };
 
+//Класс клиента
 class Client
 {
 private:
@@ -185,6 +196,7 @@ public:
     }
 };
 
+//Примеры использования
 int main()
 {
     Client cl = Client(English);
