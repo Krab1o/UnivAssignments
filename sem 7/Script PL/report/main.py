@@ -1,15 +1,15 @@
-# slide 2
+# # slide 2
 
-class MyClass:
-    pass  # Заглушка, указывающая на отсутствие содержимого
+# class MyClass:
+#     pass  # Заглушка, указывающая на отсутствие содержимого
 
-obj = MyClass()  # Создание экземпляра класса MyClass
+# obj = MyClass()  # Создание экземпляра класса MyClass
 
-class MyClass2:
-    def __init__(self, text): # Конструктор класса
-        print(text) # Вывод текста, переданного в конструктор
+# class MyClass2:
+#     def __init__(self, text): # Конструктор класса
+#         print(text) # Вывод текста, переданного в конструктор
 
-obj2 = MyClass2("Hello world") 
+# obj2 = MyClass2("Hello world") 
 
 # # slide 3
 
@@ -87,6 +87,9 @@ obj2 = MyClass2("Hello world")
 # circle2 = Circle.from_diameter(20)  # Создание объекта из диаметра
 # print(circle2.radius)  # Вывод: 10
 
+# circle3 = circle2.from_diameter(36)
+# print(circle3.radius)
+
 # print(Circle.is_valid_radius(5))  # Вывод: True (статический метод)
 
 # # slide 6
@@ -130,11 +133,41 @@ obj2 = MyClass2("Hello world")
 # print(dog.speak())  # Вывод: Бобик говорит: Гав!
 # print(cat.speak())  # Вывод: Мурзик говорит: Мяу!
 
-# # slide 8
+# # # slide 8
 
-# ========
+# class Animal:
+#     def speak(self):
+#         print("Животное издаёт звук")
+
+# class Dog(Animal):
+#     def speak(self):
+#         # Вызов метода speak() 
+#         # из родительского класса Animal
+#         super().speak()  
+#         print("Собака лает")
+
+# dog = Dog()
+# dog.speak()
 
 # # slide 9
+
+# class Animal:
+#     def __init__(self, name):
+#         self.name = name
+#         print(f"Животное {self.name} создано")
+
+# class Dog(Animal):
+#     def __init__(self, name, breed):
+#         # Вызов конструктора 
+#         # родительского класса
+#         super().__init__(name)  
+#         self.breed = breed
+#         print(f"Собака породы {self.breed} создана")
+
+# dog = Dog("Бобик", "Дворняга")
+
+
+# # slide 10
 
 # class Bird:
 #     def fly(self):
@@ -154,7 +187,7 @@ obj2 = MyClass2("Hello world")
 # take_off(bird)      # Вывод: Птица летает
 # take_off(airplane)  # Вывод: Самолет летает
 
-# # slide 10
+# # slide 11
 
 # from abc import ABC, abstractmethod
 
@@ -175,7 +208,7 @@ obj2 = MyClass2("Hello world")
 # moto = Motocycle()  # Ошибка времени выполнения: 
 #                     # не реализован абстрактный метод
 
-# # slide 11
+# # slide 12
 
 # class A:
 #     pass
@@ -196,7 +229,7 @@ obj2 = MyClass2("Hello world")
 # # [<class '__main__.D'>, <class '__main__.B'>, 
 # # <class '__main__.C'>, <class '__main__.A'>, <class 'object'>]
 
-# # slide 12
+# # slide 13
 
 # class Animal:
 #     pass
@@ -211,21 +244,19 @@ obj2 = MyClass2("Hello world")
 # print(issubclass(Dog, Animal))   # True
 # print(issubclass(Animal, Dog))   # False
 
-# slide 13 (PROPERTY)
-
 # slide 14
 
-# def multiply(a, b):
-#     """
-#     Умножает два числа.
+def multiply(a, b):
+    """
+    Умножает два числа.
 
-#     Args:
-#         a (int, float): Первое число.
-#         b (int, float): Второе число.
+    Args:
+        a (int, float): Первое число.
+        b (int, float): Второе число.
 
-#     Returns:
-#         int, float: Произведение чисел.
-#     """
-#     return a * b
+    Returns:
+        int, float: Произведение чисел.
+    """
+    return a * b
 
-# print(multiply.__doc__)
+print(multiply.__doc__)
