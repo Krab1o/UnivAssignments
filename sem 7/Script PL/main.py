@@ -1,15 +1,15 @@
-# # slide 2
+# slide 2
 
-# class MyClass:
-#     pass  # Заглушка, указывающая на отсутствие содержимого
+class MyClass:
+    pass  # Заглушка, указывающая на отсутствие содержимого
 
-# obj = MyClass()  # Создание экземпляра класса MyClass
+obj = MyClass()  # Создание экземпляра класса MyClass
 
-# class MyClass2:
-#     def __init__(self, text): # Конструктор класса
-#         print(text) # Вывод текста, переданного в конструктор
+class MyClass2:
+    def __init__(self, text): # Конструктор класса
+        print(text) # Вывод текста, переданного в конструктор
 
-# obj2 = MyClass2("Hello world") 
+obj2 = MyClass2("Hello world") 
 
 # # slide 3
 
@@ -132,6 +132,10 @@
 
 # # slide 8
 
+# ========
+
+# # slide 9
+
 # class Bird:
 #     def fly(self):
 #         print("Птица летает")
@@ -150,7 +154,7 @@
 # take_off(bird)      # Вывод: Птица летает
 # take_off(airplane)  # Вывод: Самолет летает
 
-# # slide 9
+# # slide 10
 
 # from abc import ABC, abstractmethod
 
@@ -171,7 +175,7 @@
 # moto = Motocycle()  # Ошибка времени выполнения: 
 #                     # не реализован абстрактный метод
 
-# # slide 10
+# # slide 11
 
 # class A:
 #     pass
@@ -192,7 +196,7 @@
 # # [<class '__main__.D'>, <class '__main__.B'>, 
 # # <class '__main__.C'>, <class '__main__.A'>, <class 'object'>]
 
-# # slide 11
+# # slide 12
 
 # class Animal:
 #     pass
@@ -207,21 +211,21 @@
 # print(issubclass(Dog, Animal))   # True
 # print(issubclass(Animal, Dog))   # False
 
-# slide 12 (PROPERTY)
+# slide 13 (PROPERTY)
 
-# slide 13
+# slide 14
 
-def multiply(a, b):
-    """
-    Умножает два числа.
+# def multiply(a, b):
+#     """
+#     Умножает два числа.
 
-    Args:
-        a (int, float): Первое число.
-        b (int, float): Второе число.
+#     Args:
+#         a (int, float): Первое число.
+#         b (int, float): Второе число.
 
-    Returns:
-        int, float: Произведение чисел.
-    """
-    return a * b
+#     Returns:
+#         int, float: Произведение чисел.
+#     """
+#     return a * b
 
-print(multiply.__doc__)
+# print(multiply.__doc__)
