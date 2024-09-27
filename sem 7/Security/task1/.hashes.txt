@@ -1,0 +1,4 @@
+files/file2.txt:19801
+files/file1.txt:27749
+files/files_inside/file3.txt:15883
+files/files_inside/inside/file4.txt:14083

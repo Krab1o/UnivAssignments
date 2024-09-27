@@ -244,19 +244,19 @@
 # print(issubclass(Dog, Animal))   # True
 # print(issubclass(Animal, Dog))   # False
 
-# slide 14
+# # slide 14
 
-def multiply(a, b):
-    """
-    Умножает два числа.
+# def multiply(a, b):
+#     """
+#     Умножает два числа.
 
-    Args:
-        a (int, float): Первое число.
-        b (int, float): Второе число.
+#     Args:
+#         a (int, float): Первое число.
+#         b (int, float): Второе число.
 
-    Returns:
-        int, float: Произведение чисел.
-    """
-    return a * b
+#     Returns:
+#         int, float: Произведение чисел.
+#     """
+#     return a * b
 
-print(multiply.__doc__)
+# print(multiply.__doc__)

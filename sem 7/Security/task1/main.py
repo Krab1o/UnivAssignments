@@ -1,7 +1,8 @@
 import os
 import struct
 
-HASH_FILE_NAME = "hashes.txt"
+HASH_FILE_NAME = ".hashes.txt"
+PROGRAM_NAME = "main.py"
 
 def calculate_hash(file_path):
     """Вычисляет хэш-сумму файла по описанному алгоритму."""
@@ -22,7 +23,7 @@ def save_hashes(directory):
     hashes = {}
     for root, _, files in os.walk(directory):
         for file_name in files:
-            if file_name == HASH_FILE_NAME:
+            if file_name == HASH_FILE_NAME or file_name == PROGRAM_NAME:
                 continue  # Пропускаем файл с хэш-суммами
             file_path = os.path.join(root, file_name)
             file_hash = calculate_hash(file_path)
@@ -51,7 +52,7 @@ def check_integrity(directory):
     # Проверяем текущие хэш-суммы
     for root, _, files in os.walk(directory):
         for file_name in files:
-            if file_name == HASH_FILE_NAME:
+            if file_name == HASH_FILE_NAME or file_name == PROGRAM_NAME:
                 continue  # Пропускаем файл с хэш-суммами
             file_path = os.path.join(root, file_name)
             relative_path = os.path.relpath(file_path, directory)
@@ -69,6 +70,6 @@ def check_integrity(directory):
             print(f"Файл удален: {saved_file}")
 
 # Пример использования
-# directory = "/path/to/your/directory"
+directory = os.getcwd()
 # save_hashes(directory)  # Сохраняем хэш-суммы
-# check_integrity(directory)  # Проверяем целостность
+check_integrity(directory)  # Проверяем целостность
