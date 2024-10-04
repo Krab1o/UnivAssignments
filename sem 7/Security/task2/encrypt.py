@@ -1,14 +1,29 @@
 import os
 
-def message_to_binary():
+def dictionary_init():
+    """
+    Подготовка алфавитов
+    """
+    # 2 алфавита
+    ru_letters = 'аеорсухАВЕКОРСТХ'.encode('cp1251')
+    en_letters = 'aeopcyxABEKOPCTX'.encode('cp1251')
+
+    code_rule = {}
+
+    # Составление правил перевода 
+    for i in range(len(ru_letters)):
+        code_rule[ru_letters[i]] = en_letters[i]
+        code_rule[en_letters[i]] = ru_letters[i]
+    
+    return code_rule
+
+def message_to_binary(data_path):
     """
     Перевод текста для шифрования из cp1251 кодировки в бинарный вид
     """
-    data_path = os.path.join(os.getcwd(), 'data.txt')
-    file_stats = os.stat(data_path)
     final_message = ''
     with open(data_path, 'rb') as data:
-        message_to_encrypt = ('_' + str(file_stats.st_size * 8) + '_').encode('cp1251') + data.read()
+        message_to_encrypt = data.read()
         for byte in message_to_encrypt:
             for _ in range(8):
                 final_message += str(int(bool(byte & 0x80)))
@@ -22,7 +37,6 @@ def encrypt_message(dictionary, message_to_encrypt):
     # Установка окружения файлов
     container_sample_path = os.path.join(os.getcwd(), 'container_sample.txt')
     container_path = os.path.join(os.getcwd(), 'container.txt')
-    container_text = None
 
     with (
         open(container_sample_path, 'rb') as sample,
@@ -41,3 +55,9 @@ def encrypt_message(dictionary, message_to_encrypt):
                 if position_message == len(message_to_encrypt):
                     break
         container.write(container_text)
+
+if __name__ == "__main__":
+    dictionary = dictionary_init()
+    data_path = os.path.join(os.getcwd(), 'data.txt')
+    binary = message_to_binary(data_path)
+    encrypt_message(dictionary, binary)

@@ -1,14 +1,31 @@
 import os
 import re
 
-def write_message(message):
+def dictionary_init():
+    """
+    Подготовка алфавитов
+    """
+    # 2 алфавита
+    ru_letters = 'аеорсухАВЕКОРСТХ'.encode('cp1251')
+    en_letters = 'aeopcyxABEKOPCTX'.encode('cp1251')
+
+    code_rule = {}
+
+    # Составление правил перевода 
+    for i in range(len(ru_letters)):
+        code_rule[ru_letters[i]] = en_letters[i]
+        code_rule[en_letters[i]] = ru_letters[i]
+    
+    return code_rule
+
+def binary_to_message(binary):
     """
     Записывает раскодированное сообщение из 
     бинарного вида в файл с кодировкой cp1251
     """
     decoded_path = os.path.join(os.getcwd(), 'decoded.txt')
     with open(decoded_path, 'wb') as decoded:
-        decoded.write(message)
+        decoded.write(binary)
         
 def decrypt_message(dictionary):
     """
@@ -20,12 +37,10 @@ def decrypt_message(dictionary):
         container_text = container.read()
         
         bit_count = 0
-        bits_to_parse = 0
-        metadata_flag = True
         current_symbol = ''
         
         message_to_decrypt = bytearray()
-        for index, char in enumerate(container_text):
+        for char in container_text:
             if char in dictionary:
                 # Проверка бита на 0/1
                 if char > 128:
@@ -36,17 +51,13 @@ def decrypt_message(dictionary):
 
                 # Если собрался очередной байт
                 if bit_count % 8 == 0:
+                    if current_symbol == '00000000':
+                        return message_to_decrypt
                     message_to_decrypt += int(current_symbol, base=2).to_bytes(1)
                     current_symbol = ''
-                # Проверяем, что получена метаинформация о количестве бит
-                    if metadata_flag and re.compile(b'_[0-9]+_').match(message_to_decrypt):
-                        bits_to_parse = int(message_to_decrypt[1:-1])
-                        bit_count = 0
-                        message_to_decrypt = b''
-                        metadata_flag = False
-                
-                # Проверяем, что собрали все нужные биты
-                if not metadata_flag and bit_count == bits_to_parse:
-                    return message_to_decrypt
-        if metadata_flag:
-            print('Не распознана метаинформация')
+
+if __name__ == "__main__":
+    dictionary = dictionary_init()
+    binary = decrypt_message(dictionary)
+    binary_to_message(binary)
+
