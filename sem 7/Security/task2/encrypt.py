@@ -4,7 +4,7 @@ def message_to_binary():
     """
     Перевод текста для шифрования из cp1251 кодировки в бинарный вид
     """
-    data_path = os.path.join(os.getcwd(), 'task2/data.txt')
+    data_path = os.path.join(os.getcwd(), 'data.txt')
     file_stats = os.stat(data_path)
     final_message = ''
     with open(data_path, 'rb') as data:
@@ -20,8 +20,8 @@ def encrypt_message(dictionary, message_to_encrypt):
     Шифрование бинарного текста в контейнере
     """
     # Установка окружения файлов
-    container_sample_path = os.path.join(os.getcwd(), 'task2/container_sample.txt')
-    container_path = os.path.join(os.getcwd(), 'task2/container.txt')
+    container_sample_path = os.path.join(os.getcwd(), 'container_sample.txt')
+    container_path = os.path.join(os.getcwd(), 'container.txt')
     container_text = None
 
     with (
@@ -41,39 +41,3 @@ def encrypt_message(dictionary, message_to_encrypt):
                 if position_message == len(message_to_encrypt):
                     break
         container.write(container_text)
-
-# message = message_init()
-# encrypt_message(message)
-
-
-"""
-print(message_to_encrypt)
-        # for byte in message_to_encrypt:
-        #     print(byte, chr(byte), sep=' = ', end=' = ')
-        #     for _ in range(8):
-        #         if byte & 0x80:
-        #             print("1", end='', sep='')
-        #             # pass
-        #         else: 
-        #             print("0", end='', sep='')
-        #             # pass
-        #         byte = byte << 1 
-        #     print()
-
-
-    # print(''.join(format(ord(x), 'b') for x in message_to_encrypt))
-    # for chunk in iter(partial(data.read, 1), b''):
-    #     byte = int.from_bytes(chunk)
-    #     print(chunk)
-    #     print(ord(chunk))
-    #     for bitNumber in range(8):
-    #         if byte & 0x80: 
-    #             print("1", end='', sep='')
-    #             pass
-    #         else: 
-    #             print("0", end='', sep='')
-    #             pass
-    #         byte = byte << 1
-    #     print()
-"""
-

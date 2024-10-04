@@ -1,5 +1,6 @@
 import encrypt as enc
 import decrypt as dec
+import sys
 
 def dictionary_init():
     """
@@ -19,8 +20,12 @@ def dictionary_init():
     return code_rule
 
 dictionary = dictionary_init()
-message = enc.message_to_binary()
-enc.encrypt_message(dictionary, message)
+
+# message = enc.message_to_binary()
+# enc.encrypt_message(dictionary, message)
+
 decrypted_message = dec.decrypt_message(dictionary)
+if decrypted_message is None:
+    sys.exit()
 dec.write_message(decrypted_message)
 

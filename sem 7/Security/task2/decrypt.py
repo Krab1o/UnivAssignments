@@ -6,7 +6,7 @@ def write_message(message):
     Записывает раскодированное сообщение из 
     бинарного вида в файл с кодировкой cp1251
     """
-    decoded_path = os.path.join(os.getcwd(), 'task2/decoded.txt')
+    decoded_path = os.path.join(os.getcwd(), 'decoded.txt')
     with open(decoded_path, 'wb') as decoded:
         decoded.write(message)
         
@@ -14,7 +14,7 @@ def decrypt_message(dictionary):
     """
     Расшифровывает полученное сообщение в бинарный вид
     """
-    container_path = os.path.join(os.getcwd(), 'task2/container.txt')
+    container_path = os.path.join(os.getcwd(), 'container.txt')
     with open(container_path, 'rb') as container:
         message_to_decrypt = ''
         container_text = container.read()
@@ -48,3 +48,5 @@ def decrypt_message(dictionary):
                 # Проверяем, что собрали все нужные биты
                 if not metadata_flag and bit_count == bits_to_parse:
                     return message_to_decrypt
+        if metadata_flag:
+            print('Не распознана метаинформация')
