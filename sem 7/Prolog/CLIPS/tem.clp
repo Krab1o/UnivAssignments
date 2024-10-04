@@ -1,0 +1,1 @@
+(deftemplate student (slot name) (slot grupp) (slot date))

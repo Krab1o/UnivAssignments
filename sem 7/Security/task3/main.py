@@ -16,7 +16,7 @@ def vigenere_encrypt(plain_text, key):
             # Находим индексы букв в алфавите
             plain_index = alphabet.index(char)
             key_index_mod = alphabet.index(key[key_index % key_length])
-            # Производим сдвиг с учетом ключа
+            # Производим сдвиг с учетом ключа (используем цикличность)
             new_index = (plain_index + key_index_mod) % alphabet_len
             encrypted_text.append(alphabet[new_index])
             

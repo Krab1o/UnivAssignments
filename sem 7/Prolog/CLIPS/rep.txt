@@ -1,0 +1,12 @@
+(deffacts rep
+(rep IVANOV Marks)
+(rep PETROV Marks)
+(rep SIDOROV Engels)
+(rep FROLOV Rovnoe)
+(rep BOJKO Rovnoe)
+(rep PEGOV Engels)
+(rep SOROKIN Engels)
+(rep SCHMIT Marks)
+(rep LOR Rovnoe)
+(rep ZADORNOV Marks)
+(rep MOROZOV Engels))

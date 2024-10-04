@@ -1,0 +1,1 @@
+(student (name Sidorov)(grupp 1)(date d) )
