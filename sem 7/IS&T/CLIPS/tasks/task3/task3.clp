@@ -1,3 +1,7 @@
+; task 2
+
+; Пункт А
+
 (deftemplate sotrudnik
     (slot name)
     (slot otdel (default OT1))
@@ -8,10 +12,12 @@
 ; (duplicate 2 (name Lazarev))
 ; (save-facts task3-facts.clp)
 
+; Пункт Б
+
 ; (clear)
 ; (load task3.clp)
 ; (load-facts task3-facts.clp)
-;  (assert (sotrudnik (name Gradusov) (otdel OT6) (st 9))
+; (assert (sotrudnik (name Gradusov) (otdel OT6) (st 9))
 ;          (sotrudnik (name Morozov) (otdel OT6) (st 10)) )
 
 ; (retract 2)
