@@ -7,6 +7,7 @@
     (slot otdel (default OT1))
     (slot st))
 
+; (load-facts task3-facts)
 ; (modify 1 (otdel OT4))
 ; (modify 3 (st 3))
 ; (duplicate 2 (name Lazarev))
