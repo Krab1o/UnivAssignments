@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{l+lScalar+lScalarPlain}{FROM nginx:stable\PYGZhy{}alpine}
+
+\PYG{l+lScalar+lScalarPlain}{WORKDIR /var/www}
+
+\PYG{l+lScalar+lScalarPlain}{EXPOSE 80}
+
+\PYG{l+lScalar+lScalarPlain}{CMD [\PYGZdq{}nginx\PYGZdq{}, \PYGZdq{}\PYGZhy{}g\PYGZdq{}, \PYGZdq{}daemon off;\PYGZdq{}]}
+\end{Verbatim}

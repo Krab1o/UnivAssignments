@@ -138,15 +138,14 @@
 написания настроечных файлов для pipeline на GitLab и написания 
 выполняемых в рамках автоматизации работ.
 
-Целью практики была разработка backend-части приложения, а также 
-автоматизация его деплоя на GitLab.
+Целью практики была разработка backend-части приложения.
 
 В рамках производственной практики должны были быть решены следующие задачи:
 \begin{enumerate}
     \item Построение схемы базы данных
     \item Создание базовых CRUD для backend-приложения
     \item Создание авторизации на основе концепции access- и refresh-токенов
-    \item Создание docker-compose и gitlab-ci файлов для настройки
+    \item Создание docker-compose файлов для настройки
     контейнеризации и автоматизации запуска приложения  
 \end{enumerate}
 
@@ -188,10 +187,12 @@ MVC на Symfony и взаимодействие с базами данных ч
 
 Целью производственной практики является приобретение навыков разработки 
 серверной части веб-приложений с использованием современных инструментов 
-и технологий, таких как PHP, Symfony, Docker, Nginx, Postman и Swagger. 
+и технологий, таких как PHP, Symfony, Docker, Nginx, Postman и Swagger
+\cite{symfony_docs} \cite{robots_net_symfony}. 
 Практика направлена на углубленное изучение архитектуры веб-приложений, 
 принципов работы серверной части и интеграции различных инструментов 
-для разработки, тестирования и развертывания приложений.
+для разработки, тестирования и развертывания приложений 
+\cite{postman_api_testing} \cite{postman_docs} \cite{nginx_docs}.
 
 Кроме того, значительное внимание будет уделено изучению особенностей
 контейнеризации и управления окружением разработки с помощью Docker,
@@ -209,7 +210,7 @@ MVC на Symfony и взаимодействие с базами данных ч
 \subsubsection{Решение}
 
 Для начала опишем структуру таблиц, которые использовались для построения
-изображения, а затем предоставим SQL-запросы для их создания.
+изображения, а затем предоставим SQL-запросы для их создания \cite{postgresql}.
 
 Структура таблиц:
 
@@ -337,6 +338,17 @@ public function up(Schema $schema): void
 Построить CRUD (API) PHP-приложения на фреймворке Symfony для функционирования
 Backend-приложения. 
 \subsubsection{Решение}
+
+Преимущества использования Symfony для REST API
+\begin{enumerate}
+    \item Автоматизация: Генерация кода упрощает создание API.
+    \item Мощный ORM: Doctrine облегчает управление базой данных.
+    \item API Platform: Symfony интегрируется с API Platform для создания сложных API.
+    \item Валидация: Простая интеграция с системой валидации данных.
+    \item Гибкость: Легко добавлять middleware, авторизацию и другие механизмы.
+\end{enumerate}
+
+Symfony — это мощный PHP-фреймворк, который упрощает создание REST API.
 
 Для решения данной задачи требовалось:
 
@@ -485,12 +497,13 @@ public function editAnecdote(Anecdote $anecdote, AnecdoteBaseRequestDTO $DTO): A
     защиту чувствительных данных.
     \item Контроллеры обеспечивают чистую организацию кода, выступая 
     посредниками между бизнес-логикой и клиентами API, обрабатывая запросы, 
-    вызовы сервисов и формирование ответов.
+    вызовы сервисов и формирование ответов \cite{rest_api_tutorial}
+    \cite{microsoft_rest_api} \cite{aws_rest_api}.
 \end{enumerate}
 
 \subsection{Создание авторизации на основе концепции access- и refresh-токенов}
 \subsubsection{Постановка задачи}
-Создать механизм авторизации с помощью access- и refresh-токенов.
+Создать механизм авторизации на языке PHP с помощью access- и refresh-токенов.
 
 \subsubsection{access- и refresh-токены}
 
@@ -524,7 +537,7 @@ public function editAnecdote(Anecdote $anecdote, AnecdoteBaseRequestDTO $DTO): A
     \item Если access-токен истёк, клиент использует refresh-токен, 
     чтобы получить новый access-токен через специальный API-эндпоинт.
     \item Если refresh-токен истёк, пользователь должен пройти повторную 
-    аутентификацию.
+    аутентификацию \cite{baeldung_tokens} \cite{auth0_refresh_tokens}.
 \end{enumerate}
 
 \subsubsection{Решение}
@@ -540,12 +553,139 @@ public function editAnecdote(Anecdote $anecdote, AnecdoteBaseRequestDTO $DTO): A
     с помощью MailerService
 \end{enumerate}
 
+Все эти шаги описаны в классе SecurityService, код которого содержится в 
+приложении \ref{appendA}.
 
-
-\subsection{Создание docker-compose и gitlab-ci файлов для настройки
+\subsection{Создание docker-compose файлов для настройки
     контейнеризации и автоматизации запуска приложения}
 \subsubsection{Постановка задачи}
+Создать автоматизацию контейнеризации с помощью docker и docker-compose
+в .yaml файле.
+
+\subsubsection{Docker и docker compose}
+
+Преимущества Docker:
+\begin{enumerate}
+    \item Изоляция среды. Docker контейнеры изолируют приложения и их 
+    зависимости, что позволяет избежать конфликтов с локальной средой 
+    разработчика или сервером. Каждое приложение запускается в своей среде, 
+    не влияя на другие.
+
+    \item Универсальность и совместимость. Контейнеры гарантируют, что 
+    приложение будет работать одинаково на любом хосте, где установлен 
+    Docker (локальная машина, сервер, облако).
+
+    \item Быстрое развертывание. Запуск контейнера занимает секунды, так как
+     он использует легковесные образы, а не тяжелые виртуальные машины.
+
+    \item Повторяемость. С использованием Dockerfile можно точно 
+    задокументировать и воспроизвести среду разработки и продакшн.
+
+    \item Легкость тестирования. Тестирование в изолированной среде Docker 
+    помогает обнаружить проблемы, которые могут проявиться в реальном продакшне.
+
+    \item Упрощенная миграция и масштабирование. Легко переносить приложение 
+    между средами (локальная разработка, staging, production). Контейнеры 
+    масштабируются горизонтально с помощью оркестрации (например, Kubernetes 
+    или Docker Swarm).
+\end{enumerate}
+    
+
 \subsubsection{Решение}
+
+Контейнеризация с помощью Docker Compose позволяет легко управлять 
+многокомпонентными приложениями, описывая их инфраструктуру (контейнеры, 
+сети, тома) в одном файле docker-compose.yml. Это упрощает настройку, 
+запуск и масштабирование, позволяя разработчикам и командам быстро 
+развертывать целые приложения с зависимостями (например, серверы, 
+базы данных) с помощью одной команды (docker-compose up).
+
+Для решения напишем .yaml файл, который как раз будет контролировать запуск 
+сервисов, описанных в docker compose.
+
+\begin{minted}[linenos, breaklines=true, style=bw]{YAML}
+version: '3.9'
+
+services:
+    nginx:
+    build:
+        context: ./build/nginx
+        dockerfile: Dockerfile
+    container_name: nginx-task3
+    volumes:
+        - ./app/public:/var/www/app/public/:ro
+        - ./build/nginx/config:/etc/nginx/conf.d/:ro
+    ports: 
+        - 8080:80
+    networks:
+        - default
+    
+    db:
+    image: postgres:15.2-alpine3.17
+    container_name: db-task3
+    environment:
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: db
+        POSTGRES_USER": krab1o
+        POSTGRES_HOST: krab1ocomp
+    volumes:
+        - db_volume:/var/lib/postgresql/data
+    networks:
+        - default
+
+    php:
+    build:
+        context: ./build/php
+        dockerfile: Dockerfile
+    container_name: php-task3
+    volumes:
+        - ./app:/var/www/app
+    networks:
+        - default
+networks:
+    default:
+volumes:
+    db_volume:
+\end{minted}
+
+При этом docker-compose использует два кастомных Docker-образа, которые 
+описаны ниже.
+
+Здесь представлен Docker-файл для сервиса nginx:
+
+\begin{minted}[linenos, breaklines=true, style=bw]{YAML}
+FROM php:fpm-alpine3.20 as php_upstream
+FROM composer/composer:2-bin
+
+FROM php_upstream as php_base
+
+WORKDIR /var/www/app
+
+RUN apk update && apk upgrade && apk add php php-fpm
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
+\end{minted}
+
+А здесь — для сервиса backend PHP:
+
+\begin{minted}[linenos, breaklines=true, style=bw]{YAML}
+FROM nginx:stable-alpine
+
+WORKDIR /var/www
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]    
+\end{minted}
+
+Таким образом, приложение на PHP с сервисом базы данных и сервером nginx,
+который выполняет функцию reverse-proxy, поднимается с помощью docker compose,
+а кастомные команды, которые требуется выполнить в образах сервера и 
+backend-приложения, описаны в Dockerfile \cite{docker} \cite{docker_docs}.
 
 \conclusion
 
@@ -581,7 +721,7 @@ Nginx для обеспечения эффективной и стабильно
 
 Таким образом, созданный проект достигнул поставленных задач школы ProfSoft,
 цель производственной практики была достигнута, а все поставленные в ходе
-практики задачи решены \cite{alembic}.
+практики задачи решены.
 
 \inputencoding{cp1251}
 \bibliographystyle{gost780uv}
@@ -591,129 +731,133 @@ Nginx для обеспечения эффективной и стабильно
 \appendix
 
 \section{Создание авторизации}
+\label{appendA}
 
 \begin{minted}[linenos, breaklines=true, style=bw]{PHP}
-    class SecurityService
+class SecurityService
+{
+    private const string SUBJECT = 'Код авторизации';
+
+    private const string ACCESS_TOKEN_LIFETIME = '+10 minutes';
+    private const string REFRESH_TOKEN_LIFETIME = '+90 days';
+
+    public function __construct(
+        #[Autowire(service: YandexMailerService::class)]
+        private MailerServiceInterface   $mailer,
+        protected EntityManagerInterface $entityManager,
+    ) { }
+    public function sendCode(LoginDTO $DTO): void
     {
-        private const string SUBJECT = 'Код авторизации';
-    
-        private const string ACCESS_TOKEN_LIFETIME = '+10 minutes';
-        private const string REFRESH_TOKEN_LIFETIME = '+90 days';
-    
-        public function __construct(
-            #[Autowire(service: YandexMailerService::class)]
-            private MailerServiceInterface   $mailer,
-            protected EntityManagerInterface $entityManager,
-        ) { }
-        public function sendCode(LoginDTO $DTO): void
-        {
-            $code = new Code();
-            if (!$this->entityManager->getRepository(User::class)->findOneByEmail($DTO->email) instanceof User) {
-                throw new ApiException(
-                    message: "Пользователь по указанному email не найден",
-                    status: Response::HTTP_NOT_FOUND,
-                );
-            }
-            $code
-                ->setEmail($DTO->email);
-    
-            $this->entityManager->persist($code);
-            $this->entityManager->flush();
-            $this->mailer->send(self::SUBJECT, $code->getCode(), (array)$DTO->email);
+        $code = new Code();
+        if (!$this->entityManager->getRepository(User::class)->
+        findOneByEmail($DTO->email) instanceof User) {
+            throw new ApiException(
+                message: "Пользователь по указанному email не найден",
+                status: Response::HTTP_NOT_FOUND,
+            );
         }
-    
-        public function verifyCode(LoginDTO $DTO): array
-        {
-            $code = $this->entityManager->getRepository(Code::class)->findOneBy([
-                'code' => $DTO->code,
-                'email' => $DTO->email,
-                'status' => CodeStatus::ACTIVE->value,
-            ]);
-    
-            if (!$code instanceof Code) {
-                throw new ApiException(
-                    'Неверный код авторизации',
-                    status: Response::HTTP_UNAUTHORIZED,
-                );
-            }
-            if ($code->getExpiredAt() < new \DateTime()) {
-                $code
-                    ->setStatus(CodeStatus::EXPIRED->value);
-                $this->entityManager->flush();
-                throw new ApiException(
-                    'Код авторизации истек',
-                    status: Response::HTTP_UNAUTHORIZED,
-                );
-            }
-            $owner = $this->entityManager->getRepository(User::class)->findOneBy([
-                'email' => $DTO->email,
-            ]);
-    
-            $device = (new Device())
-                ->setOwner($owner)
-                ->setTokenExpiresAt((new \DateTime())->modify(self::ACCESS_TOKEN_LIFETIME))
-                ->setRefreshTokenExpiresAt((new \DateTime())->modify(self::REFRESH_TOKEN_LIFETIME));
-            
-            $code
-                ->setStatus(CodeStatus::INACTIVE->value);
-    
-            $this->entityManager->persist($device);
-            $this->entityManager->flush();
-    
-            return [
-                'token' => $device->getToken(),
-                'refreshToken' => $device->getRefreshToken(),
-            ];
-        }
-    
-        public function logout(string $apikey): void
-        {
-            $device = $this->entityManager->getRepository(Device::class)->findOneBy([
-                'apikey' => $apikey,
-            ]);
-            $device->setStatus(DeviceStatus::INACTIVE->value);
-            $this->entityManager->flush();
-        }
-    
-        public function refresh(?string $refreshToken): array {
-            $device = $this->entityManager->getRepository(Device::class)->findOneBy([
-                'refreshToken' => $refreshToken,
-                'status' => DeviceStatus::ACTIVE->value,
-            ]);
-    
-            if (!$device instanceof Device) {
-                throw new ApiException(
-                    message: 'Некорректный refresh токен',
-                    status: Response::HTTP_UNAUTHORIZED,
-                );
-            }
-    
-            if ($device->getRefreshTokenExpiresAt() < new \DateTime()) {
-                $device->setStatus(DeviceStatus::EXPIRED->value);
-                $this->entityManager->flush();
-    
-                throw new ApiException(
-                    message: 'Refresh токен истёк',
-                    status: Response::HTTP_UNAUTHORIZED,
-                );
-            }
-    
-            $device
-                ->setToken($this->generateToken())
-                ->setTokenExpiresAt((new \DateTime())->modify(self::ACCESS_TOKEN_LIFETIME))
-                ->setRefreshToken($this->generateToken());
-    
-            $this->entityManager->flush();
-    
-            return [
-                'token' => $device->getToken(),
-                'refreshToken' => $device->getRefreshToken(),
-            ];
-        }
-        public function generateToken(): string {
-            return md5(random_int(100000, 999999) . microtime());
-        }
+        $code
+            ->setEmail($DTO->email);
+
+        $this->entityManager->persist($code);
+        $this->entityManager->flush();
+        $this->mailer->send(self::SUBJECT, $code->getCode(), (array)$DTO->email);
     }
-    \end{minted}
+
+    public function verifyCode(LoginDTO $DTO): array
+    {
+        $code = $this->entityManager->getRepository(Code::class)->
+        findOneBy([
+            'code' => $DTO->code,
+            'email' => $DTO->email,
+            'status' => CodeStatus::ACTIVE->value,
+        ]);
+
+        if (!$code instanceof Code) {
+            throw new ApiException(
+                'Неверный код авторизации',
+                status: Response::HTTP_UNAUTHORIZED,
+            );
+        }
+        if ($code->getExpiredAt() < new \DateTime()) {
+            $code
+                ->setStatus(CodeStatus::EXPIRED->value);
+            $this->entityManager->flush();
+            throw new ApiException(
+                'Код авторизации истек',
+                status: Response::HTTP_UNAUTHORIZED,
+            );
+        }
+        $owner = $this->entityManager->getRepository(User::class)->
+        findOneBy([
+            'email' => $DTO->email,
+        ]);
+
+        $device = (new Device())
+            ->setOwner($owner)
+            ->setTokenExpiresAt((new \DateTime())->modify(self::ACCESS_TOKEN_LIFETIME))
+            ->setRefreshTokenExpiresAt((new \DateTime())->modify(self::REFRESH_TOKEN_LIFETIME));
+        
+        $code
+            ->setStatus(CodeStatus::INACTIVE->value);
+
+        $this->entityManager->persist($device);
+        $this->entityManager->flush();
+
+        return [
+            'token' => $device->getToken(),
+            'refreshToken' => $device->getRefreshToken(),
+        ];
+    }
+    public function logout(string $apikey): void
+    {
+        $device = $this->entityManager->getRepository(Device::class)->
+        findOneBy([
+            'apikey' => $apikey,
+        ]);
+        $device->setStatus(DeviceStatus::INACTIVE->value);
+        $this->entityManager->flush();
+    }
+    public function refresh(?string $refreshToken): array {
+        $device = $this->entityManager->getRepository(Device::class)->
+        findOneBy([
+            'refreshToken' => $refreshToken,
+            'status' => DeviceStatus::ACTIVE->value,
+        ]);
+
+        if (!$device instanceof Device) {
+            throw new ApiException(
+                message: 'Некорректный refresh токен',
+                status: Response::HTTP_UNAUTHORIZED,
+            );
+        }
+
+        if ($device->getRefreshTokenExpiresAt() < new \DateTime()) {
+            $device->setStatus(DeviceStatus::EXPIRED->value);
+            $this->entityManager->flush();
+
+            throw new ApiException(
+                message: 'Refresh токен истёк',
+                status: Response::HTTP_UNAUTHORIZED,
+            );
+        }
+
+        $device
+            ->setToken($this->generateToken())
+            ->setTokenExpiresAt((new \DateTime())->modify(self::ACCESS_TOKEN_LIFETIME))
+            ->setRefreshToken($this->generateToken());
+
+        $this->entityManager->flush();
+
+        return [
+            'token' => $device->getToken(),
+            'refreshToken' => $device->getRefreshToken(),
+        ];
+    }
+    public function generateToken(): string {
+        return md5(random_int(100000, 999999) . microtime());
+    }
+}
+\end{minted}
 
 \end{document}

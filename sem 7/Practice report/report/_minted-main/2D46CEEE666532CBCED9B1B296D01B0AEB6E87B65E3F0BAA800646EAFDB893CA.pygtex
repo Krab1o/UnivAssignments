@@ -45,7 +45,7 @@
 \PYG{x}{            if (\PYGZdl{}code\PYGZhy{}\PYGZgt{}getExpiredAt() \PYGZlt{} new \PYGZbs{}DateTime()) \PYGZob{}}
 \PYG{x}{                \PYGZdl{}code}
 \PYG{x}{                    \PYGZhy{}\PYGZgt{}setStatus(CodeStatus::EXPIRED\PYGZhy{}\PYGZgt{}value);}
-\PYG{x}{                \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+\PYG{x}{                \PYGZdl{}this\PYGZhy{}\PYGZgt{}entntityManager\PYGZhy{}\PYGZgt{}flush();}
 \PYG{x}{                throw new ApiException(}
 \PYG{x}{                    \PYGZsq{}Код авторизации истек\PYGZsq{},}
 \PYG{x}{                    status: Response::HTTP\PYGZus{}UNAUTHORIZED,}

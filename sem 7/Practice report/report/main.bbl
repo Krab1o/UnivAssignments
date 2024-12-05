@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 \def\selectlanguageifdefined#1{
 \expandafter\ifx\csname date#1\endcsname\relax
 \else\language\csname l@#1\endcsname\fi}
@@ -9,10 +9,86 @@
 \ifx\undefined\BibAnnote\def\BibAnnote#1{}\else\fi
 \ifx\undefined\BibSection\def\BibSection#1#2#3{}\else\fi
 
-\bibitem{alembic}
+\bibitem{symfony_docs}
 \selectlanguageifdefined{english}
-\BibAuthor{Bayer,~M.} \BibTitle{Alembic: A database migrations tool for sqlalchemy [Электронный ресурс]}. "---
-\newblock \url{https://alembic.sqlalchemy.org/}. "---
-\newblock (Дата обращения 26.09.2024) Загл. с экр. Яз. англ.
+\BibAuthor{Symfony,}. \BibTitle{Symfony framework - Официальная документация}. "---
+\newblock \url{https://symfony.com/doc/current/index.html}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 04.11.2024) Загл. с экр. Яз. англ.
+
+\bibitem{robots_net_symfony}
+\selectlanguageifdefined{english}
+\BibAuthor{Robots.net,}. \BibTitle{What is php symfony?} "---
+\newblock \url{https://robots.net/programming/symfony-php-framework/}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 17.11.2024) Загл. с экр. Яз. англ.
+
+\bibitem{postman_api_testing}
+\selectlanguageifdefined{english}
+\BibAuthor{Postman,}. \BibTitle{Postman - Описание концепции api тестирования}. "---
+\newblock \url{https://www.postman.com/}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 03.11.2024) Загл. с экр. Яз. англ.
+
+\bibitem{postman_docs}
+\selectlanguageifdefined{english}
+\BibAuthor{Postman,}. \BibTitle{Postman - Официальная документация}. "---
+\newblock \url{https://learning.postman.com/docs/}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 21.11.2024) Загл. с экр. Яз. англ.
+
+\bibitem{nginx_docs}
+\selectlanguageifdefined{english}
+\BibAuthor{Nginx,}. \BibTitle{Nginx - Официальная документация}. "---
+\newblock \url{https://nginx.org/en/docs/}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 19.11.2024) Загл. с экр. Яз. англ.
+
+\bibitem{postgresql}
+\selectlanguageifdefined{english}
+\BibAuthor{Group,~P. G.~D.} \BibTitle{Postgresql documentation [Электронный ресурс]}. "---
+\newblock \url{https://www.postgresql.org/docs/}. "---
+\newblock (Дата обращения 15.11.2024) Загл. с экр. Яз. англ.
+
+\bibitem{rest_api_tutorial}
+\selectlanguageifdefined{english}
+\BibAuthor{RESTfulAPI.net,}. \BibTitle{Rest api tutorial}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 14.11.2024) Загл. с экр. Яз. англ. \BibUrl{https://restfulapi.net/}.
+
+\bibitem{microsoft_rest_api}
+\selectlanguageifdefined{english}
+\BibAuthor{Microsoft,}. \BibTitle{Learn rest api on microsoft docs}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 14.11.2024) Загл. с экр. Яз. англ. \BibUrl{https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design}.
+
+\bibitem{aws_rest_api}
+\selectlanguageifdefined{english}
+\BibAuthor{{Amazon Web Services},}. \BibTitle{What is restful api?} "---
+\newblock 2024. "---
+\newblock (Дата обращения 13.11.2024) Загл. с экр. Яз. англ. \BibUrl{https://aws.amazon.com/what-is/restful-api/}.
+
+\bibitem{baeldung_tokens}
+\selectlanguageifdefined{english}
+\BibAuthor{Baeldung,}. \BibTitle{What are access and refresh tokens?} "---
+\newblock 2024. "---
+\newblock (Дата обращения 27.10.2024) Загл. с экр. Яз. англ. \BibUrl{https://www.baeldung.com/cs/access-refresh-tokens}.
+
+\bibitem{auth0_refresh_tokens}
+\selectlanguageifdefined{english}
+\BibAuthor{Auth0,}. \BibTitle{What are refresh tokens and how to use them securely}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 18.11.2024) Загл. с экр. Яз. англ. \BibUrl{https://auth0.com/docs/secure/tokens/refresh-tokens}.
+
+\bibitem{docker}
+\selectlanguageifdefined{english}
+\BibAuthor{Frazelle,~J.} \BibTitle{Docker: Up and Running}~/ J.~Frazelle. "---
+\newblock O'Reilly Media, 2015.
+
+\bibitem{docker_docs}
+\selectlanguageifdefined{english}
+\BibAuthor{{Docker Inc.},}. \BibTitle{Docker documentation}. "---
+\newblock 2024. "---
+\newblock (Дата обращения 09.11.2024) Загл. с экр. Яз. англ. \BibUrl{https://docs.docker.com/}.
 
 \end{thebibliography}

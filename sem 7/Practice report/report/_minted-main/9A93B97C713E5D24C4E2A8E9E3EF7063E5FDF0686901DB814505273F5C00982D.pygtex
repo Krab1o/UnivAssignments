@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{l+lScalar+lScalarPlain}{FROM php:fpm\PYGZhy{}alpine3.20 as php\PYGZus{}upstream}
+\PYG{l+lScalar+lScalarPlain}{FROM composer/composer:2\PYGZhy{}bin}
+
+\PYG{l+lScalar+lScalarPlain}{FROM php\PYGZus{}upstream as php\PYGZus{}base}
+
+\PYG{l+lScalar+lScalarPlain}{WORKDIR /var/www/app}
+
+\PYG{l+lScalar+lScalarPlain}{RUN apk update \PYGZam{}\PYGZam{} apk upgrade \PYGZam{}\PYGZam{} apk add php php\PYGZhy{}fpm}
+
+\PYG{l+lScalar+lScalarPlain}{COPY \PYGZhy{}\PYGZhy{}from=composer /usr/bin/composer /usr/bin/composer}
+
+\PYG{l+lScalar+lScalarPlain}{EXPOSE 9000}
+
+\PYG{l+lScalar+lScalarPlain}{CMD [\PYGZdq{}php\PYGZhy{}fpm\PYGZdq{}]}
+\end{Verbatim}
