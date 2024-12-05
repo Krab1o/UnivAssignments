@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{x}{class AnecdoteBaseRequestDTO}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    public function \PYGZus{}\PYGZus{}construct(}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}NotNull(groups: [\PYGZsq{}register\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Type(type: \PYGZsq{}string\PYGZsq{}, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Length(max: 127, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        public ?string \PYGZdl{}title = null,}
+
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}NotNull(groups: [\PYGZsq{}register\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Type(type: \PYGZsq{}string\PYGZsq{}, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        public ?string \PYGZdl{}text = null,}
+
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}NotNull(groups: [\PYGZsq{}register\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Type(type: \PYGZsq{}string\PYGZsq{}, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        public ?bool \PYGZdl{}category = null,}
+\PYG{x}{    ) \PYGZob{} \PYGZcb{}}
+\PYG{x}{\PYGZcb{}}
+\end{Verbatim}

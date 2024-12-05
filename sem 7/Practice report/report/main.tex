@@ -31,7 +31,7 @@
 \chair{математической кибернетики и компьютерных наук}
 
 % Тема работ
-\title{Курс разработки Backend Web-приложения с DevOps принципами}
+\title{Курс разработки Backend Web-приложения с \ DevOps принципами}
 
 % Курс
 \course{3}
@@ -150,6 +150,11 @@
     контейнеризации и автоматизации запуска приложения  
 \end{enumerate}
 
+В процессе выполнения данных задач будет рассмотрено использование
+лучших практик разработки веб-приложений, а также современные подходы
+к организации рабочего процесса с акцентом на безопасность и масштабируемость
+приложения.
+
 \section{Описание проекта}
 
 Современная веб-разработка является одной из самых динамично развивающихся 
@@ -193,11 +198,139 @@ MVC на Symfony и взаимодействие с базами данных ч
 что позволит улучшить навыки работы с современными DevOps-технологиями.
 
 \section{Выполненные в рамках проекта задачи}
+
 \subsection{Построение схемы базы данных}
+
 \subsubsection{Постановка задачи}
+
 Построить схему базы данных для данной предметной области (анекдоты) и 
-представить её в виде ER-диаграммы
+представить её в виде ER-диаграммы.
+
 \subsubsection{Решение}
+
+Для начала опишем структуру таблиц, которые использовались для построения
+изображения, а затем предоставим SQL-запросы для их создания.
+
+Структура таблиц:
+
+\begin{itemize}
+    \item Анекдот ­— сущность использовалась для хранения информации об 
+    анекдоте. Сущность включала следующие поля:
+    \begin{enumerate}
+        \item id (Primary Key): идентификатор.
+        \item title: заголовок.
+        \item text: текст анекдота.
+        \item category: категория.
+        \item author\_id (Foreign Key): ссылка на пользователя.
+    \end{enumerate}
+
+    \item User — сущность, использующаяся для хранения информации о 
+    пользователе. Сущность включала следующие поля:
+    \begin{enumerate}
+        \item id (Primary Key): идентификатор пользователя.
+        \item surname: фамилия.
+        \item name: имя.
+        \item patronym: отчество.
+        \item email: электронная почта.
+    \end{enumerate}
+        
+    \item Mark — сущность, использующаяся для хранения информации об оценке,
+    которую пользователь мог поставить анекдоту. Сущность включала следующие 
+    поля:
+    \begin{enumerate}
+        \item user\_id (Primary Key, Foreign Key): cсылка на пользователя.
+        \item anec\_id (Primary Key, Foreign Key): Ссылка на анекдот.
+        \item value: Оценка.
+    \end{enumerate}
+
+    \item Code — сущность, использующаяся для хранения информации о коде
+    подтверждения email пользователя при регистрации.
+    \begin{enumerate}
+        \item id (Primary Key): идентификатор.
+        \item code: код.
+        \item user\_id (Foreign Key): ссылка на пользователя.
+        \item expired\_at: время истечения срока действия.
+    \end{enumerate}
+\end{itemize}
+
+\begin{minted}[linenos, breaklines=true, style=bw]{PostgreSQL}
+-- Таблица User
+CREATE TABLE User (
+    id SERIAL PRIMARY KEY,
+    sur VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    patr VARCHAR(100),
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- Таблица Anecdote
+CREATE TABLE Anecdote (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    text TEXT NOT NULL,
+    category VARCHAR(100),
+    author_id INT REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Таблица Mark
+CREATE TABLE Mark (
+    user_id INT REFERENCES User(id) ON DELETE CASCADE,
+    anec_id INT REFERENCES Anecdote(id) ON DELETE CASCADE,
+    value INT NOT NULL CHECK (value >= 1 AND value <= 5),
+    PRIMARY KEY (user_id, anec_id)
+);
+
+-- Таблица Code
+CREATE TABLE Code (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(100) NOT NULL,
+    user_id INT REFERENCES User(id) ON DELETE CASCADE,
+    expired_at TIMESTAMP NOT NULL
+);
+\end{minted}
+
+Для создания схемы базы данных использовался как язык SQL, так и ORM-модели.
+
+ORM (Object-Relational Mapping) — это технология, которая позволяет 
+разработчикам работать с базами данных, используя объектно-ориентированный 
+подход. ORM автоматически преобразует данные из базы данных (реляционные 
+таблицы) в объекты языка программирования и наоборот.
+
+ORM-модель — это объектно-ориентированное представление таблицы базы данных. 
+Каждая таблица в базе данных соответствует классу в коде, а строки таблицы 
+представлены как экземпляры этого класса.
+
+В нашем случае Doctrine сгенерировала следующую миграцию, которую впоследствии
+применили к БД:
+
+\begin{minted}[linenos, breaklines=true, style=bw]{PHP}
+public function getDescription(): string
+{
+    return 'Creating first database schema';
+}
+
+public function up(Schema $schema): void
+{
+    // this up() migration is auto-generated, please modify it to your needs
+    $this->addSql('CREATE SEQUENCE anecdote_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+    $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
+    $this->addSql('CREATE TABLE anecdote (id INT NOT NULL, author_id_id INT NOT NULL, title VARCHAR(255) NOT NULL, text VARCHAR(255) NOT NULL, category VARCHAR(127) NOT NULL, PRIMARY KEY(id))');
+    $this->addSql('CREATE INDEX IDX_A5051EEC69CCBE9A ON anecdote (author_id_id)');
+    $this->addSql('CREATE TABLE code (id INT NOT NULL, code VARCHAR(255) NOT NULL, user_id_id INT NOT NULL, expired_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id, code))');
+    $this->addSql('CREATE INDEX IDX_771530989D86650F ON code (user_id_id)');
+    $this->addSql('COMMENT ON COLUMN code.expired_at IS \'(DC2Type:datetime_immutable)\'');
+    $this->addSql('CREATE TABLE mark (user_id_id INT NOT NULL, anecdote_id_id INT NOT NULL, value INT NOT NULL, PRIMARY KEY(user_id_id, anecdote_id_id))');
+    $this->addSql('CREATE INDEX IDX_6674F2719D86650F ON mark (user_id_id)');
+    $this->addSql('CREATE INDEX IDX_6674F271A347EF68 ON mark (anecdote_id_id)');
+    $this->addSql('CREATE TABLE "user" (id INT NOT NULL, surname VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, patronymic VARCHAR(255) DEFAULT NULL, email VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+    $this->addSql('ALTER TABLE anecdote ADD CONSTRAINT FK_A5051EEC69CCBE9A FOREIGN KEY (author_id_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+    $this->addSql('ALTER TABLE code ADD CONSTRAINT FK_771530989D86650F FOREIGN KEY (user_id_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+    $this->addSql('ALTER TABLE mark ADD CONSTRAINT FK_6674F2719D86650F FOREIGN KEY (user_id_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+    $this->addSql('ALTER TABLE mark ADD CONSTRAINT FK_6674F271A347EF68 FOREIGN KEY (anecdote_id_id) REFERENCES anecdote (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+}
+\end{minted}
+
+Таким образом, была создана схема базы данных.
 
 \subsection{Создание базовых CRUD для Backend-приложения}
 \subsubsection{Постановка задачи}
@@ -205,10 +338,210 @@ MVC на Symfony и взаимодействие с базами данных ч
 Backend-приложения. 
 \subsubsection{Решение}
 
+Для решения данной задачи требовалось:
+
+\begin{enumerate}
+    \item Создать DTO с помощью инструментов PHP-фреймворка Symfony
+    \item Создать класс-контроллер для сущности Anecdote
+    \item Создать бизнес-логику для указанных endpoint из вышеописанного
+    контроллера
+\end{enumerate}
+
+Рассмотрим пример на одной из сущностей (анекдоте): остальные реализовались по
+аналогичному сценарию.
+
+Создание DTO для запроса:
+
+\begin{minted}[linenos, breaklines=true, style=bw]{PHP}
+class AnecdoteBaseRequestDTO
+{
+    public function __construct(
+        #[Assert\NotNull(groups: ['register'])]
+        #[Assert\Type(type: 'string', groups: ['register', 'edit'])]
+        #[Assert\Length(max: 127, groups: ['register', 'edit'])]
+        public ?string $title = null,
+
+        #[Assert\NotNull(groups: ['register'])]
+        #[Assert\Type(type: 'string', groups: ['register', 'edit'])]
+        public ?string $text = null,
+
+        #[Assert\NotNull(groups: ['register'])]
+        #[Assert\Type(type: 'string', groups: ['register', 'edit'])]
+        public ?bool $category = null,
+    ) { }
+}
+\end{minted}
+
+Создание DTO для ответа:
+
+\begin{minted}[linenos, breaklines=true, style=bw]{PHP}
+class AnecdoteBaseResponseDTO
+{
+    public int $id;
+    public string $title;
+    public string $text;
+    public string $category;
+
+    public function __construct(Anecdote $anecdote)
+    {
+        $this->id = $anecdote->getId();
+        $this->title = $anecdote->getTitle();
+        $this->text = $anecdote->getText();
+        $this->category = $anecdote->getCategory();
+    }
+}
+\end{minted}
+
+Создание контроллера для сущности anecdote с относительным URI 
+\texttt{\/anecdote}:
+
+\begin{minted}[linenos, breaklines=true, style=bw]{PHP}
+#[Route(path: '/anecdote')]
+class AnecdoteController extends AbstractController
+{
+    public function __construct(
+        private readonly ValidatorService    $validator,
+        private readonly SerializerInterface $serializer,
+    ) { }
+    #[Route(path: '', name: 'apiGetAnecdoteList', methods: Request::METHOD_GET)]
+    public function getAnecdoteList(AnecdoteService $anecdoteService): JsonResponse
+    {
+        return $this->json(
+            data: $anecdoteService->getAnecdoteList(),
+            status: Response::HTTP_OK,
+        );
+    }
+    #[Route(path: '', name: 'apiCreateAnecdote', methods: Request::METHOD_POST)]
+    public function createUser(Request $request, AnecdoteService $anecdoteService): JsonResponse
+    {
+        $data = $this->serializer->deserialize($request->getContent(), AnecdoteBaseRequestDTO::class, 'json');
+        $this->validator->validate(body: $data, groupsBody: ['register']);
+        return $this->json(
+            data: $anecdoteService->createAnecdote($data),
+            status: Response::HTTP_CREATED,
+        );
+    }
+    #[Route(path: '/{id<\d+>}', name: 'apiEditAnecdote', methods: Request::METHOD_PATCH)]
+    public function editAnecdote(
+        Anecdote        $id,
+        Request         $request,
+        AnecdoteService $anecdoteService,
+    ): JsonResponse
+    {
+        $data = $this->serializer->deserialize($request->getContent(), AnecdoteBaseRequestDTO::class, 'json');
+        $this->validator->validate(body: $data, groupsBody: ['edit']);
+
+        return $this->json(
+            data: $anecdoteService->editAnecdote($id, $data),
+            status: Response::HTTP_CREATED,
+        );
+    }
+    #[Route(path: '/{id<\d+>}', name: 'apiDeleteAnecdote', methods: Request::METHOD_DELETE)]
+    public function deleteUser(Anecdote $id, AnecdoteService $anecdoteService): JsonResponse
+    {
+        $anecdoteService->deleteAnecdote($id);
+
+        return $this->json(
+            data: [],
+            status: Response::HTTP_NO_CONTENT,
+        );
+    }
+}
+\end{minted}
+
+В данном коде представлены основные операции с сущностью Anecdote: создание,
+обновление, чтение, удаление. Это реализуется с помощью вызова у переменной
+\texttt{\$anecdoteService} методов create, edit и прочих.
+
+Сама же переменная \$anecdoteService является объектом класса
+AnecdoteService, в котором хранится вся бизнес-логика методов, связанных с 
+сущностью Anecdote. 
+
+Рассмотрим один из методов: их логика достаточно тривиальна:
+
+\begin{minted}[linenos, breaklines=true, style=bw]{PHP}
+public function editAnecdote(Anecdote $anecdote, AnecdoteBaseRequestDTO $DTO): AnecdoteBaseResponseDTO
+{
+    if ($title = $DTO->title) {
+        $anecdote->setTitle($title);
+    }
+    if ($text = $DTO->text) {
+        $anecdote->setText($text);
+    }
+    if ($category = $DTO->category) {
+        $anecdote->setCategory($category);
+    }
+    $this->entityManager->flush();
+    return new AnecdoteBaseResponseDTO($anecdote);
+}
+\end{minted}
+
+Таким образом, при последующем использовании кода были выявлены следующие
+преимущества данного подхода к решению задачи: 
+
+\begin{enumerate}
+    \item DTO позволяет отделить внутренние модели приложения от структуры 
+    данных, передаваемых клиенту, что упрощает форматирование ответов и 
+    защиту чувствительных данных.
+    \item Контроллеры обеспечивают чистую организацию кода, выступая 
+    посредниками между бизнес-логикой и клиентами API, обрабатывая запросы, 
+    вызовы сервисов и формирование ответов.
+\end{enumerate}
+
 \subsection{Создание авторизации на основе концепции access- и refresh-токенов}
 \subsubsection{Постановка задачи}
 Создать механизм авторизации с помощью access- и refresh-токенов.
+
+\subsubsection{access- и refresh-токены}
+
+Использование access и refresh токенов — это подход для безопасной и 
+удобной аутентификации пользователей, часто применяемый в системах с 
+использованием JWT (JSON Web Tokens). Этот метод позволяет минимизировать 
+риски, связанные с компрометацией токенов, и улучшить пользовательский опыт 
+за счёт автоматического обновления сессии.
+
+\textbf{Access-токен} — краткоживущий токен, содержащий информацию об 
+аутентификации пользователя (например, ID, роли и права доступа). Используется 
+для выполнения запросов к защищённым ресурсам API. Имеет короткий срок действия
+(например, 15 минут), что снижает последствия его утечки.
+
+\textbf{Refresh-токен} — долгоживущий токен, используемый только для получения 
+нового access-токена. Не используется напрямую для доступа к API. Хранится в 
+более защищённом месте (например, в HTTP-only cookies), чтобы минимизировать 
+риск его утечки.
+
+\textbf{Алгоритм работы системы}:
+
+\begin{enumerate}
+    \item Пользователь аутентифицируется (например, с помощью логина и пароля).
+    \item Сервер выдаёт:
+    \begin{enumerate}
+        \item Access-токен для доступа к ресурсам API.
+        \item Refresh-токен для продления действия сессии.
+    \end{enumerate}
+    \item Клиент отправляет access-токен в каждом запросе к API 
+    (обычно в заголовке Authorization: Bearer <token>).
+    \item Если access-токен истёк, клиент использует refresh-токен, 
+    чтобы получить новый access-токен через специальный API-эндпоинт.
+    \item Если refresh-токен истёк, пользователь должен пройти повторную 
+    аутентификацию.
+\end{enumerate}
+
 \subsubsection{Решение}
+
+Для выполнения задачи требуется выполнить следующее:
+
+\begin{enumerate}
+    \item Создать сущность Device и добавить её в базу данных. Указать В
+    ней два токена - access и refresh, у каждого своё время жизни.
+    \item Реализовать проверку на время жизни токена в ApiAuthenticator.
+    \item Реализовать метод обновления времени жизни access токена.
+    \item Добавить функционал отправки письма на почту при регистрации
+    с помощью MailerService
+\end{enumerate}
+
+
+
 \subsection{Создание docker-compose и gitlab-ci файлов для настройки
     контейнеризации и автоматизации запуска приложения}
 \subsubsection{Постановка задачи}
@@ -248,6 +581,139 @@ Nginx для обеспечения эффективной и стабильно
 
 Таким образом, созданный проект достигнул поставленных задач школы ProfSoft,
 цель производственной практики была достигнута, а все поставленные в ходе
-практики задачи решены.
+практики задачи решены \cite{alembic}.
+
+\inputencoding{cp1251}
+\bibliographystyle{gost780uv}
+\bibliography{thesis.bib}
+\inputencoding{utf8}
+
+\appendix
+
+\section{Создание авторизации}
+
+\begin{minted}[linenos, breaklines=true, style=bw]{PHP}
+    class SecurityService
+    {
+        private const string SUBJECT = 'Код авторизации';
+    
+        private const string ACCESS_TOKEN_LIFETIME = '+10 minutes';
+        private const string REFRESH_TOKEN_LIFETIME = '+90 days';
+    
+        public function __construct(
+            #[Autowire(service: YandexMailerService::class)]
+            private MailerServiceInterface   $mailer,
+            protected EntityManagerInterface $entityManager,
+        ) { }
+        public function sendCode(LoginDTO $DTO): void
+        {
+            $code = new Code();
+            if (!$this->entityManager->getRepository(User::class)->findOneByEmail($DTO->email) instanceof User) {
+                throw new ApiException(
+                    message: "Пользователь по указанному email не найден",
+                    status: Response::HTTP_NOT_FOUND,
+                );
+            }
+            $code
+                ->setEmail($DTO->email);
+    
+            $this->entityManager->persist($code);
+            $this->entityManager->flush();
+            $this->mailer->send(self::SUBJECT, $code->getCode(), (array)$DTO->email);
+        }
+    
+        public function verifyCode(LoginDTO $DTO): array
+        {
+            $code = $this->entityManager->getRepository(Code::class)->findOneBy([
+                'code' => $DTO->code,
+                'email' => $DTO->email,
+                'status' => CodeStatus::ACTIVE->value,
+            ]);
+    
+            if (!$code instanceof Code) {
+                throw new ApiException(
+                    'Неверный код авторизации',
+                    status: Response::HTTP_UNAUTHORIZED,
+                );
+            }
+            if ($code->getExpiredAt() < new \DateTime()) {
+                $code
+                    ->setStatus(CodeStatus::EXPIRED->value);
+                $this->entityManager->flush();
+                throw new ApiException(
+                    'Код авторизации истек',
+                    status: Response::HTTP_UNAUTHORIZED,
+                );
+            }
+            $owner = $this->entityManager->getRepository(User::class)->findOneBy([
+                'email' => $DTO->email,
+            ]);
+    
+            $device = (new Device())
+                ->setOwner($owner)
+                ->setTokenExpiresAt((new \DateTime())->modify(self::ACCESS_TOKEN_LIFETIME))
+                ->setRefreshTokenExpiresAt((new \DateTime())->modify(self::REFRESH_TOKEN_LIFETIME));
+            
+            $code
+                ->setStatus(CodeStatus::INACTIVE->value);
+    
+            $this->entityManager->persist($device);
+            $this->entityManager->flush();
+    
+            return [
+                'token' => $device->getToken(),
+                'refreshToken' => $device->getRefreshToken(),
+            ];
+        }
+    
+        public function logout(string $apikey): void
+        {
+            $device = $this->entityManager->getRepository(Device::class)->findOneBy([
+                'apikey' => $apikey,
+            ]);
+            $device->setStatus(DeviceStatus::INACTIVE->value);
+            $this->entityManager->flush();
+        }
+    
+        public function refresh(?string $refreshToken): array {
+            $device = $this->entityManager->getRepository(Device::class)->findOneBy([
+                'refreshToken' => $refreshToken,
+                'status' => DeviceStatus::ACTIVE->value,
+            ]);
+    
+            if (!$device instanceof Device) {
+                throw new ApiException(
+                    message: 'Некорректный refresh токен',
+                    status: Response::HTTP_UNAUTHORIZED,
+                );
+            }
+    
+            if ($device->getRefreshTokenExpiresAt() < new \DateTime()) {
+                $device->setStatus(DeviceStatus::EXPIRED->value);
+                $this->entityManager->flush();
+    
+                throw new ApiException(
+                    message: 'Refresh токен истёк',
+                    status: Response::HTTP_UNAUTHORIZED,
+                );
+            }
+    
+            $device
+                ->setToken($this->generateToken())
+                ->setTokenExpiresAt((new \DateTime())->modify(self::ACCESS_TOKEN_LIFETIME))
+                ->setRefreshToken($this->generateToken());
+    
+            $this->entityManager->flush();
+    
+            return [
+                'token' => $device->getToken(),
+                'refreshToken' => $device->getRefreshToken(),
+            ];
+        }
+        public function generateToken(): string {
+            return md5(random_int(100000, 999999) . microtime());
+        }
+    }
+    \end{minted}
 
 \end{document}

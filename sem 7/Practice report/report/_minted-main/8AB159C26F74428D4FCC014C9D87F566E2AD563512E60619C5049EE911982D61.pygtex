@@ -1,0 +1,26 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{x}{public function getDescription(): string}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    return \PYGZsq{}Creating first database schema\PYGZsq{};}
+\PYG{x}{\PYGZcb{}}
+
+\PYG{x}{public function up(Schema \PYGZdl{}schema): void}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    // this up() migration is auto\PYGZhy{}generated, please modify it to your needs}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE SEQUENCE anecdote\PYGZus{}id\PYGZus{}seq INCREMENT BY 1 MINVALUE 1 START 1\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE SEQUENCE \PYGZdq{}user\PYGZus{}id\PYGZus{}seq\PYGZdq{} INCREMENT BY 1 MINVALUE 1 START 1\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE TABLE anecdote (id INT NOT NULL, author\PYGZus{}id\PYGZus{}id INT NOT NULL, title VARCHAR(255) NOT NULL, text VARCHAR(255) NOT NULL, category VARCHAR(127) NOT NULL, PRIMARY KEY(id))\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE INDEX IDX\PYGZus{}A5051EEC69CCBE9A ON anecdote (author\PYGZus{}id\PYGZus{}id)\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE TABLE code (id INT NOT NULL, code VARCHAR(255) NOT NULL, user\PYGZus{}id\PYGZus{}id INT NOT NULL, expired\PYGZus{}at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id, code))\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE INDEX IDX\PYGZus{}771530989D86650F ON code (user\PYGZus{}id\PYGZus{}id)\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}COMMENT ON COLUMN code.expired\PYGZus{}at IS \PYGZbs{}\PYGZsq{}(DC2Type:datetime\PYGZus{}immutable)\PYGZbs{}\PYGZsq{}\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE TABLE mark (user\PYGZus{}id\PYGZus{}id INT NOT NULL, anecdote\PYGZus{}id\PYGZus{}id INT NOT NULL, value INT NOT NULL, PRIMARY KEY(user\PYGZus{}id\PYGZus{}id, anecdote\PYGZus{}id\PYGZus{}id))\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE INDEX IDX\PYGZus{}6674F2719D86650F ON mark (user\PYGZus{}id\PYGZus{}id)\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE INDEX IDX\PYGZus{}6674F271A347EF68 ON mark (anecdote\PYGZus{}id\PYGZus{}id)\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}CREATE TABLE \PYGZdq{}user\PYGZdq{} (id INT NOT NULL, surname VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, patronymic VARCHAR(255) DEFAULT NULL, email VARCHAR(255) NOT NULL, PRIMARY KEY(id))\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}ALTER TABLE anecdote ADD CONSTRAINT FK\PYGZus{}A5051EEC69CCBE9A FOREIGN KEY (author\PYGZus{}id\PYGZus{}id) REFERENCES \PYGZdq{}user\PYGZdq{} (id) NOT DEFERRABLE INITIALLY IMMEDIATE\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}ALTER TABLE code ADD CONSTRAINT FK\PYGZus{}771530989D86650F FOREIGN KEY (user\PYGZus{}id\PYGZus{}id) REFERENCES \PYGZdq{}user\PYGZdq{} (id) NOT DEFERRABLE INITIALLY IMMEDIATE\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}ALTER TABLE mark ADD CONSTRAINT FK\PYGZus{}6674F2719D86650F FOREIGN KEY (user\PYGZus{}id\PYGZus{}id) REFERENCES \PYGZdq{}user\PYGZdq{} (id) NOT DEFERRABLE INITIALLY IMMEDIATE\PYGZsq{});}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}addSql(\PYGZsq{}ALTER TABLE mark ADD CONSTRAINT FK\PYGZus{}6674F271A347EF68 FOREIGN KEY (anecdote\PYGZus{}id\PYGZus{}id) REFERENCES anecdote (id) NOT DEFERRABLE INITIALLY IMMEDIATE\PYGZsq{});}
+\PYG{x}{\PYGZcb{}}
+\end{Verbatim}
