@@ -1,0 +1,126 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{x}{class SecurityService}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    private const string SUBJECT = \PYGZsq{}Код авторизации\PYGZsq{};}
+
+\PYG{x}{    private const string ACCESS\PYGZus{}TOKEN\PYGZus{}LIFETIME = \PYGZsq{}+10 minutes\PYGZsq{};}
+\PYG{x}{    private const string REFRESH\PYGZus{}TOKEN\PYGZus{}LIFETIME = \PYGZsq{}+90 days\PYGZsq{};}
+
+\PYG{x}{    public function \PYGZus{}\PYGZus{}construct(}
+\PYG{x}{        \PYGZsh{}[Autowire(service: YandexMailerService::class)]}
+\PYG{x}{        private MailerServiceInterface   \PYGZdl{}mailer,}
+\PYG{x}{        protected EntityManagerInterface \PYGZdl{}entityManager,}
+\PYG{x}{    ) \PYGZob{} \PYGZcb{}}
+\PYG{x}{    public function sendCode(LoginDTO \PYGZdl{}DTO): void}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}code = new Code();}
+\PYG{x}{        if (!\PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}getRepository(User::class)\PYGZhy{}\PYGZgt{}}
+\PYG{x}{        findOneByEmail(\PYGZdl{}DTO\PYGZhy{}\PYGZgt{}email) instanceof User) \PYGZob{}}
+\PYG{x}{            throw new ApiException(}
+\PYG{x}{                message: \PYGZdq{}Пользователь по указанному email не найден\PYGZdq{},}
+\PYG{x}{                status: Response::HTTP\PYGZus{}NOT\PYGZus{}FOUND,}
+\PYG{x}{            );}
+\PYG{x}{        \PYGZcb{}}
+\PYG{x}{        \PYGZdl{}code}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setEmail(\PYGZdl{}DTO\PYGZhy{}\PYGZgt{}email);}
+
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}persist(\PYGZdl{}code);}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}mailer\PYGZhy{}\PYGZgt{}send(self::SUBJECT, \PYGZdl{}code\PYGZhy{}\PYGZgt{}getCode(), (array)\PYGZdl{}DTO\PYGZhy{}\PYGZgt{}email);}
+\PYG{x}{    \PYGZcb{}}
+
+\PYG{x}{    public function verifyCode(LoginDTO \PYGZdl{}DTO): array}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}code = \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}getRepository(Code::class)\PYGZhy{}\PYGZgt{}}
+\PYG{x}{        findOneBy([}
+\PYG{x}{            \PYGZsq{}code\PYGZsq{} =\PYGZgt{} \PYGZdl{}DTO\PYGZhy{}\PYGZgt{}code,}
+\PYG{x}{            \PYGZsq{}email\PYGZsq{} =\PYGZgt{} \PYGZdl{}DTO\PYGZhy{}\PYGZgt{}email,}
+\PYG{x}{            \PYGZsq{}status\PYGZsq{} =\PYGZgt{} CodeStatus::ACTIVE\PYGZhy{}\PYGZgt{}value,}
+\PYG{x}{        ]);}
+
+\PYG{x}{        if (!\PYGZdl{}code instanceof Code) \PYGZob{}}
+\PYG{x}{            throw new ApiException(}
+\PYG{x}{                \PYGZsq{}Неверный код авторизации\PYGZsq{},}
+\PYG{x}{                status: Response::HTTP\PYGZus{}UNAUTHORIZED,}
+\PYG{x}{            );}
+\PYG{x}{        \PYGZcb{}}
+\PYG{x}{        if (\PYGZdl{}code\PYGZhy{}\PYGZgt{}getExpiredAt() \PYGZlt{} new \PYGZbs{}DateTime()) \PYGZob{}}
+\PYG{x}{            \PYGZdl{}code}
+\PYG{x}{                \PYGZhy{}\PYGZgt{}setStatus(CodeStatus::EXPIRED\PYGZhy{}\PYGZgt{}value);}
+\PYG{x}{            \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+\PYG{x}{            throw new ApiException(}
+\PYG{x}{                \PYGZsq{}Код авторизации истек\PYGZsq{},}
+\PYG{x}{                status: Response::HTTP\PYGZus{}UNAUTHORIZED,}
+\PYG{x}{            );}
+\PYG{x}{        \PYGZcb{}}
+\PYG{x}{        \PYGZdl{}owner = \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}getRepository(User::class)\PYGZhy{}\PYGZgt{}}
+\PYG{x}{        findOneBy([}
+\PYG{x}{            \PYGZsq{}email\PYGZsq{} =\PYGZgt{} \PYGZdl{}DTO\PYGZhy{}\PYGZgt{}email,}
+\PYG{x}{        ]);}
+
+\PYG{x}{        \PYGZdl{}device = (new Device())}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setOwner(\PYGZdl{}owner)}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setTokenExpiresAt((new \PYGZbs{}DateTime())\PYGZhy{}\PYGZgt{}modify(self::ACCESS\PYGZus{}TOKEN\PYGZus{}LIFETIME))}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setRefreshTokenExpiresAt((new \PYGZbs{}DateTime())\PYGZhy{}\PYGZgt{}modify(self::REFRESH\PYGZus{}TOKEN\PYGZus{}LIFETIME));}
+
+\PYG{x}{        \PYGZdl{}code}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setStatus(CodeStatus::INACTIVE\PYGZhy{}\PYGZgt{}value);}
+
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}persist(\PYGZdl{}device);}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+
+\PYG{x}{        return [}
+\PYG{x}{            \PYGZsq{}token\PYGZsq{} =\PYGZgt{} \PYGZdl{}device\PYGZhy{}\PYGZgt{}getToken(),}
+\PYG{x}{            \PYGZsq{}refreshToken\PYGZsq{} =\PYGZgt{} \PYGZdl{}device\PYGZhy{}\PYGZgt{}getRefreshToken(),}
+\PYG{x}{        ];}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    public function logout(string \PYGZdl{}apikey): void}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}device = \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}getRepository(Device::class)\PYGZhy{}\PYGZgt{}}
+\PYG{x}{        findOneBy([}
+\PYG{x}{            \PYGZsq{}apikey\PYGZsq{} =\PYGZgt{} \PYGZdl{}apikey,}
+\PYG{x}{        ]);}
+\PYG{x}{        \PYGZdl{}device\PYGZhy{}\PYGZgt{}setStatus(DeviceStatus::INACTIVE\PYGZhy{}\PYGZgt{}value);}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    public function refresh(?string \PYGZdl{}refreshToken): array \PYGZob{}}
+\PYG{x}{        \PYGZdl{}device = \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}getRepository(Device::class)\PYGZhy{}\PYGZgt{}}
+\PYG{x}{        findOneBy([}
+\PYG{x}{            \PYGZsq{}refreshToken\PYGZsq{} =\PYGZgt{} \PYGZdl{}refreshToken,}
+\PYG{x}{            \PYGZsq{}status\PYGZsq{} =\PYGZgt{} DeviceStatus::ACTIVE\PYGZhy{}\PYGZgt{}value,}
+\PYG{x}{        ]);}
+
+\PYG{x}{        if (!\PYGZdl{}device instanceof Device) \PYGZob{}}
+\PYG{x}{            throw new ApiException(}
+\PYG{x}{                message: \PYGZsq{}Некорректный refresh токен\PYGZsq{},}
+\PYG{x}{                status: Response::HTTP\PYGZus{}UNAUTHORIZED,}
+\PYG{x}{            );}
+\PYG{x}{        \PYGZcb{}}
+
+\PYG{x}{        if (\PYGZdl{}device\PYGZhy{}\PYGZgt{}getRefreshTokenExpiresAt() \PYGZlt{} new \PYGZbs{}DateTime()) \PYGZob{}}
+\PYG{x}{              \PYGZdl{}device\PYGZhy{}\PYGZgt{}setStatus(DeviceStatus::EXPIRED\PYGZhy{}\PYGZgt{}value);}
+\PYG{x}{            \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+
+\PYG{x}{            throw new ApiException(}
+\PYG{x}{                message: \PYGZsq{}Refresh токен истёк\PYGZsq{},}
+\PYG{x}{                status: Response::HTTP\PYGZus{}UNAUTHORIZED,}
+\PYG{x}{            );}
+\PYG{x}{        \PYGZcb{}}
+
+\PYG{x}{        \PYGZdl{}device}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setToken(\PYGZdl{}this\PYGZhy{}\PYGZgt{}generateToken())}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setTokenExpiresAt((new \PYGZbs{}DateTime())\PYGZhy{}\PYGZgt{}modify(self::ACCESS\PYGZus{}TOKEN\PYGZus{}LIFETIME))}
+\PYG{x}{            \PYGZhy{}\PYGZgt{}setRefreshToken(\PYGZdl{}this\PYGZhy{}\PYGZgt{}generateToken());}
+
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+
+\PYG{x}{        return [}
+\PYG{x}{            \PYGZsq{}token\PYGZsq{} =\PYGZgt{} \PYGZdl{}device\PYGZhy{}\PYGZgt{}getToken(),}
+\PYG{x}{            \PYGZsq{}refreshToken\PYGZsq{} =\PYGZgt{} \PYGZdl{}device\PYGZhy{}\PYGZgt{}getRefreshToken(),}
+\PYG{x}{        ];}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    public function generateToken(): string \PYGZob{}}
+\PYG{x}{        return md5(random\PYGZus{}int(100000, 999999) . microtime());}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{\PYGZcb{}}
+\end{Verbatim}

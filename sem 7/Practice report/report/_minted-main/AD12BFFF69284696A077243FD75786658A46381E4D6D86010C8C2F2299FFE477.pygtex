@@ -1,0 +1,44 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nt}{version}\PYG{p}{:}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}3.9\PYGZsq{}}
+
+\PYG{n+nt}{services}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{nginx}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{build}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n+nt}{context}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{./build/nginx}
+\PYG{+w}{        }\PYG{n+nt}{dockerfile}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{Dockerfile}
+\PYG{+w}{    }\PYG{+w+wError}{ }\PYG{n+nt}{container\PYGZus{}name}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{nginx\PYGZhy{}task3}
+\PYG{+w}{    }\PYG{n+nt}{volumes}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{./app/public:/var/www/app/public/:ro}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{./build/nginx/config:/etc/nginx/conf.d/:ro}
+\PYG{+w}{    }\PYG{n+nt}{ports}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{8080:80}
+\PYG{+w}{    }\PYG{n+nt}{networks}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{default}
+
+\PYG{+w}{    }\PYG{n+nt}{db}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{image}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{postgres:15.2\PYGZhy{}alpine3.17}
+\PYG{+w}{    }\PYG{n+nt}{container\PYGZus{}name}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{db\PYGZhy{}task3}
+\PYG{+w}{    }\PYG{n+nt}{environment}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n+nt}{POSTGRES\PYGZus{}PASSWORD}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{postgres}
+\PYG{+w}{        }\PYG{n+nt}{POSTGRES\PYGZus{}DB}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{db}
+\PYG{+w}{        }\PYG{l+lScalar+lScalarPlain}{POSTGRES\PYGZus{}USER\PYGZdq{}}\PYG{p+pIndicator}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{krab1o}
+\PYG{+w}{        }\PYG{n+nt}{POSTGRES\PYGZus{}HOST}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{krab1ocomp}
+\PYG{+w}{    }\PYG{n+nt}{volumes}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{db\PYGZus{}volume:/var/lib/postgresql/data}
+\PYG{+w}{    }\PYG{n+nt}{networks}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{default}
+
+\PYG{+w}{    }\PYG{n+nt}{php}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{build}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n+nt}{context}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{./build/php}
+\PYG{+w}{        }\PYG{n+nt}{dockerfile}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{Dockerfile}
+\PYG{+w}{    }\PYG{n+nt}{container\PYGZus{}name}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{php\PYGZhy{}task3}
+\PYG{+w}{    }\PYG{n+nt}{volumes}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{./app:/var/www/app}
+\PYG{+w}{    }\PYG{n+nt}{networks}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{default}
+\PYG{n+nt}{networks}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{default}\PYG{p}{:}
+\PYG{n+nt}{volumes}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{db\PYGZus{}volume}\PYG{p}{:}
+\end{Verbatim}

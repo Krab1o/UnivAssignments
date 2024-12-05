@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{x}{class AnecdoteBaseResponseDTO}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    public int \PYGZdl{}id;}
+\PYG{x}{    public string \PYGZdl{}title;}
+\PYG{x}{    public string \PYGZdl{}text;}
+\PYG{x}{    public string \PYGZdl{}category;}
+
+\PYG{x}{    public function \PYGZus{}\PYGZus{}construct(Anecdote \PYGZdl{}anecdote)}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}id = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getId();}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}title = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getTitle();}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}text = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getText();}
+\PYG{x}{          \PYGZdl{}this\PYGZhy{}\PYGZgt{}category = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getCategory();}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{\PYGZcb{}}
+\end{Verbatim}

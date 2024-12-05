@@ -1,0 +1,37 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{x}{class AnecdoteBaseRequestDTO}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    public function \PYGZus{}\PYGZus{}construct(}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}NotNull(groups: [\PYGZsq{}register\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Type(type: \PYGZsq{}string\PYGZsq{}, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Length(max: 127, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        public ?string \PYGZdl{}title = null,}
+
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}NotNull(groups: [\PYGZsq{}register\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Type(type: \PYGZsq{}string\PYGZsq{}, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        public ?string \PYGZdl{}text = null,}
+
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}NotNull(groups: [\PYGZsq{}register\PYGZsq{}])]}
+\PYG{x}{        \PYGZsh{}[Assert\PYGZbs{}Type(type: \PYGZsq{}string\PYGZsq{}, groups: [\PYGZsq{}register\PYGZsq{}, \PYGZsq{}edit\PYGZsq{}])]}
+\PYG{x}{        public ?bool \PYGZdl{}category = null,}
+\PYG{x}{    ) \PYGZob{} \PYGZcb{}}
+\PYG{x}{\PYGZcb{}}
+\PYG{x}{\PYGZbs{}end\PYGZob{}miminted\PYGZcb{}}
+
+\PYG{x}{\PYGZbs{}begin\PYGZob{}minted\PYGZcb{}[linenos, breaklines=true, style=bw]\PYGZob{}PHP\PYGZcb{}}
+\PYG{x}{class AnecdoteBaseResponseDTO}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    public int \PYGZdl{}id;}
+\PYG{x}{    public string \PYGZdl{}title;}
+\PYG{x}{    public string \PYGZdl{}text;}
+\PYG{x}{    public string \PYGZdl{}category;}
+
+\PYG{x}{    public function \PYGZus{}\PYGZus{}construct(Anecdote \PYGZdl{}anecdote)}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}id = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getId();}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}title = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getTitle();}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}text = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getText();}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}category = \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}getCategory();}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{\PYGZcb{}}
+\end{Verbatim}

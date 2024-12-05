@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{x}{public function editAnecdote(Anecdote \PYGZdl{}anecdote, AnecdoteBaseRequestDTO \PYGZdl{}DTO): AnecdoteBaseResponseDTO}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    if (\PYGZdl{}title = \PYGZdl{}DTO\PYGZhy{}\PYGZgt{}title) \PYGZob{}}
+\PYG{x}{        \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}setTitle(\PYGZdl{}title);}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    if (\PYGZdl{}text = \PYGZdl{}DTO\PYGZhy{}\PYGZgt{}tetext) \PYGZob{}}
+\PYG{x}{        \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}setText(\PYGZdl{}text);}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    if (\PYGZdl{}category = \PYGZdl{}DTO\PYGZhy{}\PYGZgt{}category) \PYGZob{}}
+\PYG{x}{        \PYGZdl{}anecdote\PYGZhy{}\PYGZgt{}setCategory(\PYGZdl{}category);}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    \PYGZdl{}this\PYGZhy{}\PYGZgt{}entityManager\PYGZhy{}\PYGZgt{}flush();}
+\PYG{x}{    return new AnecdoteBaseResponseDTO(\PYGZdl{}anecdote);}
+\PYG{x}{\PYGZcb{}}
+\end{Verbatim}

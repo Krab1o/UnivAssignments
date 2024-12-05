@@ -1,0 +1,54 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{x}{\PYGZsh{}[Route(path: \PYGZsq{}/anecdote\PYGZsq{})]}
+\PYG{x}{class AnecdoteController extends AbstractController}
+\PYG{x}{\PYGZob{}}
+\PYG{x}{    public function \PYGZus{}\PYGZus{}construct(}
+\PYG{x}{        private readonly ValidatorService    \PYGZdl{}validator,}
+\PYG{x}{        private readonly SerializerInterface \PYGZdl{}serializer,}
+\PYG{x}{    ) \PYGZob{} \PYGZcb{}}
+\PYG{x}{    \PYGZsh{}[Route(path: \PYGZsq{}\PYGZsq{}, name: \PYGZsq{}apiGetAnecdoteList\PYGZsq{}, methods: Request::METHOD\PYGZus{}GET)]}
+\PYG{x}{    public function getAnecdoteList(AnecdoteService \PYGZdl{}anecdoteService): JsonResponse}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        return \PYGZdl{}this\PYGZhy{}\PYGZgt{}json(}
+\PYG{x}{            data: \PYGZdl{}anecdoteService\PYGZhy{}\PYGZgt{}getAnecdoteList(),}
+\PYG{x}{            status: Response::HTTP\PYGZus{}OK,}
+\PYG{x}{        );}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    \PYGZsh{}[Route(path: \PYGZsq{}\PYGZsq{}, name: \PYGZsq{}apiCreateAnecdote\PYGZsq{}, methods: Request::METHOD\PYGZus{}POST)]}
+\PYG{x}{    public function createUser(Request \PYGZdl{}request, AnecdoteService \PYGZdl{}anecdoteService): JsonResponse}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}data = \PYGZdl{}this\PYGZhy{}\PYGZgt{}serializer\PYGZhy{}\PYGZgt{}deserialize(\PYGZdl{}request\PYGZhy{}\PYGZgt{}getContent(), AnecdoteBaseRequestDTO::class, \PYGZsq{}json\PYGZsq{});}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}validator\PYGZhy{}\PYGZgt{}validate(body: \PYGZdl{}data, groupsBody: [\PYGZsq{}register\PYGZsq{}]);}
+\PYG{x}{        return \PYGZdl{}this\PYGZhy{}\PYGZgt{}json(}
+\PYG{x}{            data: \PYGZdl{}anecdoteService\PYGZhy{}\PYGZgt{}createAnecdote(\PYGZdl{}data),}
+\PYG{x}{            status: Response::HTTP\PYGZus{}CREATED,}
+\PYG{x}{        );}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    \PYGZsh{}[Route(path: \PYGZsq{}/\PYGZob{}id\PYGZlt{}\PYGZbs{}d+\PYGZgt{}\PYGZcb{}\PYGZsq{}, name: \PYGZsq{}apiEditAnecdote\PYGZsq{}, methods: Request::METHOD\PYGZus{}PATCH)]}
+\PYG{x}{    public function editAnecdote(}
+\PYG{x}{        Anecdote        \PYGZdl{}id,}
+\PYG{x}{        Request         \PYGZdl{}request,}
+\PYG{x}{        AnecdoteService \PYGZdl{}anecdoteService,}
+\PYG{x}{    ): JsonResponse}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}data = \PYGZdl{}this\PYGZhy{}\PYGZgt{}serializer\PYGZhy{}\PYGZgt{}deserialize(\PYGZdl{}request\PYGZhy{}\PYGZgt{}getContent(), AnecdoteBaseRequestDTO::class, \PYGZsq{}json\PYGZsq{});}
+\PYG{x}{        \PYGZdl{}this\PYGZhy{}\PYGZgt{}validator\PYGZhy{}\PYGZgt{}validate(body: \PYGZdl{}data, groupsBody: [\PYGZsq{}edit\PYGZsq{}]);}
+
+\PYG{x}{        return \PYGZdl{}this\PYGZhy{}\PYGZgt{}json(}
+\PYG{x}{            data: \PYGZdl{}anecdoteService\PYGZhy{}\PYGZgt{}editAnecdote(\PYGZdl{}id, \PYGZdl{}data),}
+\PYG{x}{            status: Response::HTTP\PYGZus{}CREATED,}
+\PYG{x}{        );}
+
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{    \PYGZsh{}[Route(path: \PYGZsq{}/\PYGZob{}id\PYGZlt{}\PYGZbs{}d+\PYGZgt{}\PYGZcb{}\PYGZsq{}, name: \PYGZsq{}apiDeleteAnecdote\PYGZsq{}, methods: Request::METHOD\PYGZus{}DELETE)]}
+\PYG{x}{    public function deleteUser(Anecdote \PYGZdl{}id, AnecdoteService \PYGZdl{}anecdoteService): JsonResponse}
+\PYG{x}{    \PYGZob{}}
+\PYG{x}{        \PYGZdl{}anecdoteService\PYGZhy{}\PYGZgt{}deleteAnecdote(\PYGZdl{}id);}
+
+\PYG{x}{        return \PYGZdl{}this\PYGZhy{}\PYGZgt{}json(}
+\PYG{x}{            data: [],}
+\PYG{x}{            status: Response::HTTP\PYGZus{}NO\PYGZus{}CONTENT,}
+\PYG{x}{        );}
+\PYG{x}{    \PYGZcb{}}
+\PYG{x}{\PYGZcb{}}
+\end{Verbatim}
