@@ -1,0 +1,20 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+\PYG{n}{probabilities} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{l+m+mf}{0.4}\PYG{p}{,} \PYG{l+m+mf}{0.1}\PYG{p}{]}
+\PYG{n}{requests} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{]}
+\PYG{n}{initial\PYGZus{}stock} \PYG{o}{=} \PYG{l+m+mi}{8}
+\PYG{n}{threshold} \PYG{o}{=} \PYG{l+m+mi}{2}
+\PYG{n}{num\PYGZus{}trials} \PYG{o}{=} \PYG{l+m+mi}{1000}
+\PYG{k}{def} \PYG{n+nf}{simulate\PYGZus{}single\PYGZus{}trial}\PYG{p}{():}
+    \PYG{n}{stock} \PYG{o}{=} \PYG{n}{initial\PYGZus{}stock}
+    \PYG{n}{days} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{k}{while} \PYG{n}{stock} \PYG{o}{\PYGZgt{}} \PYG{n}{threshold}\PYG{p}{:}
+        \PYG{n}{daily\PYGZus{}request} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{choice}\PYG{p}{(}\PYG{n}{requests}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{n}{probabilities}\PYG{p}{)}
+        \PYG{n}{stock} \PYG{o}{\PYGZhy{}=} \PYG{n}{daily\PYGZus{}request}
+        \PYG{n}{stock} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{stock}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}
+    \PYG{n}{days} \PYG{o}{+=} \PYG{l+m+mi}{1}
+    \PYG{k}{return} \PYG{n}{days}
+\PYG{n}{results} \PYG{o}{=} \PYG{p}{[}\PYG{n}{simulate\PYGZus{}single\PYGZus{}trial}\PYG{p}{()} \PYG{k}{for} \PYG{n}{\PYGZus{}} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{num\PYGZus{}trials}\PYG{p}{)]}
+\PYG{n}{expected\PYGZus{}days} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{results}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}Оценка математического ожидания числа дней до первого пополнения: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{expected\PYGZus{}days}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{Verbatim}

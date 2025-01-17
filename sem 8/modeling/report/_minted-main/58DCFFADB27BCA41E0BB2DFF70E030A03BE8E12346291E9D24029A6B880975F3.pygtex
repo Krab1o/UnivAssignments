@@ -1,0 +1,30 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{scipy.integrate} \PYG{k+kn}{import} \PYG{n}{solve\PYGZus{}ivp}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k}{as} \PYG{n+nn}{plt}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+\PYG{n}{m} \PYG{o}{=} \PYG{l+m+mf}{1.0}
+\PYG{n}{k} \PYG{o}{=} \PYG{l+m+mf}{1.0}
+\PYG{n}{x0}\PYG{p}{,} \PYG{n}{y0} \PYG{o}{=} \PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{l+m+mf}{0.0}
+\PYG{n}{vx0}\PYG{p}{,} \PYG{n}{vy0} \PYG{o}{=} \PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{1.0}
+\PYG{n}{t\PYGZus{}span} \PYG{o}{=} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{50}\PYG{p}{)}
+\PYG{n}{t\PYGZus{}eval} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linspace}\PYG{p}{(}\PYG{n}{t\PYGZus{}span}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{],} \PYG{n}{t\PYGZus{}span}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{],} \PYG{l+m+mi}{10000}\PYG{p}{)}
+\PYG{k}{def} \PYG{n+nf}{central\PYGZus{}force}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{state}\PYG{p}{):}
+    \PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{vx}\PYG{p}{,} \PYG{n}{vy} \PYG{o}{=} \PYG{n}{state}
+    \PYG{n}{r} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sqrt}\PYG{p}{(}\PYG{n}{x}\PYG{o}{**}\PYG{l+m+mi}{2} \PYG{o}{+} \PYG{n}{y}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{p}{)}
+    \PYG{n}{ax} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{n}{k} \PYG{o}{*} \PYG{n}{x} \PYG{o}{/} \PYG{n}{r}\PYG{o}{**}\PYG{l+m+mi}{3}
+    \PYG{n}{ay} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{n}{k} \PYG{o}{*} \PYG{n}{y} \PYG{o}{/} \PYG{n}{r}\PYG{o}{**}\PYG{l+m+mi}{3}
+    \PYG{k}{return} \PYG{p}{[}\PYG{n}{vx}\PYG{p}{,} \PYG{n}{vy}\PYG{p}{,} \PYG{n}{ax}\PYG{p}{,} \PYG{n}{ay}\PYG{p}{]}
+\PYG{n}{initial\PYGZus{}state} \PYG{o}{=} \PYG{p}{[}\PYG{n}{x0}\PYG{p}{,} \PYG{n}{y0}\PYG{p}{,} \PYG{n}{vx0}\PYG{p}{,} \PYG{n}{vy0}\PYG{p}{]}
+\PYG{n}{solution} \PYG{o}{=} \PYG{n}{solve\PYGZus{}ivp}\PYG{p}{(}\PYG{n}{central\PYGZus{}force}\PYG{p}{,} \PYG{n}{t\PYGZus{}span}\PYG{p}{,} \PYG{n}{initial\PYGZus{}state}\PYG{p}{,} \PYG{n}{t\PYGZus{}eval}\PYG{o}{=}\PYG{n}{t\PYGZus{}eval}\PYG{p}{)}
+\PYG{n}{x}\PYG{p}{,} \PYG{n}{y} \PYG{o}{=} \PYG{n}{solution}\PYG{o}{.}\PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{],} \PYG{n}{solution}\PYG{o}{.}\PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{12}\PYG{p}{,} \PYG{l+m+mi}{8}\PYG{p}{))}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}Траектория частицы\PYGZdq{}}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}blue\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{scatter}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}red\PYGZdq{}}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}Центр силы\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Движение частицы в центрально\PYGZhy{}симметричном поле\PYGZdq{}}\PYG{p}{,} \PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{14}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}x\PYGZdq{}}\PYG{p}{,} \PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{12}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}y\PYGZdq{}}\PYG{p}{,} \PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{12}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{axis}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}equal\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{12}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{()}
+\end{Verbatim}
