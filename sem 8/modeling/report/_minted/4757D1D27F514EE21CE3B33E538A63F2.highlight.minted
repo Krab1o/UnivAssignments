@@ -1,0 +1,23 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{n}{mean\PYGZus{}lifetime\PYGZus{}main} \PYG{o}{=} \PYG{l+m+mi}{100}
+\PYG{n}{mean\PYGZus{}lifetime\PYGZus{}reserve} \PYG{o}{=} \PYG{l+m+mi}{150}
+\PYG{n}{num\PYGZus{}trials} \PYG{o}{=} \PYG{l+m+mi}{10000}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{simulate\PYGZus{}system\PYGZus{}lifetime}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{main1} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{exponential}\PYG{p}{(}\PYG{n}{mean\PYGZus{}lifetime\PYGZus{}main}\PYG{p}{)}
+    \PYG{n}{main2} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{exponential}\PYG{p}{(}\PYG{n}{mean\PYGZus{}lifetime\PYGZus{}main}\PYG{p}{)}
+    \PYG{n}{reserve} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{exponential}\PYG{p}{(}\PYG{n}{mean\PYGZus{}lifetime\PYGZus{}reserve}\PYG{p}{)}
+\PYG{n}{second\PYGZus{}main\PYGZus{}failure} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{main1}\PYG{p}{,} \PYG{n}{main2}\PYG{p}{)}
+\PYG{n}{system\PYGZus{}lifetime} \PYG{o}{=} \PYG{n}{second\PYGZus{}main\PYGZus{}failure} \PYG{o}{+} \PYG{n}{reserve}
+\PYG{k}{return} \PYG{n}{system\PYGZus{}lifetime}\PYG{p}{,} \PYG{n}{second\PYGZus{}main\PYGZus{}failure}
+\PYG{n}{system\PYGZus{}lifetimes} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+\PYG{n}{second\PYGZus{}main\PYGZus{}failures} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+\PYG{k}{for} \PYG{n}{\PYGZus{}} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{num\PYGZus{}trials}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{system\PYGZus{}lifetime}\PYG{p}{,} \PYG{n}{second\PYGZus{}main\PYGZus{}failure} \PYG{o}{=} \PYG{n}{simulate\PYGZus{}system\PYGZus{}lifetime}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{system\PYGZus{}lifetimes}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{system\PYGZus{}lifetime}\PYG{p}{)}
+    \PYG{n}{second\PYGZus{}main\PYGZus{}failures}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{second\PYGZus{}main\PYGZus{}failure}\PYG{p}{)}
+\PYG{n}{mean\PYGZus{}system\PYGZus{}lifetime} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{system\PYGZus{}lifetimes}\PYG{p}{)}
+\PYG{n}{mean\PYGZus{}second\PYGZus{}main\PYGZus{}failure} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{second\PYGZus{}main\PYGZus{}failures}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Математическое ожидание времени жизни системы: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mean\PYGZus{}system\PYGZus{}lifetime}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Математическое ожидание времени жизни системы до отказа второго основного элемента: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mean\PYGZus{}second\PYGZus{}main\PYGZus{}failure}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}

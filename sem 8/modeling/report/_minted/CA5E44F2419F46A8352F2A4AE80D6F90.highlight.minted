@@ -1,0 +1,116 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+    \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{random}
+    \PYG{c+c1}{\PYGZsh{} Параметры модели}
+    \PYG{n}{lambda1} \PYG{o}{=} \PYG{l+m+mi}{2}
+    \PYG{n}{lambda2} \PYG{o}{=} \PYG{l+m+mi}{3}
+    \PYG{n}{mu} \PYG{o}{=} \PYG{l+m+mf}{5.0}      \PYG{c+c1}{\PYGZsh{} интенсивность обслуживаний}
+    \PYG{n}{N} \PYG{o}{=} \PYG{l+m+mi}{1000}
+    \PYG{n}{lambda\PYGZus{}total} \PYG{o}{=} \PYG{n}{lambda1} \PYG{o}{+} \PYG{n}{lambda2}  \PYG{c+c1}{\PYGZsh{} суммарная интенсивность поступлений}
+    \PYG{n}{t} \PYG{o}{=} \PYG{l+m+mf}{0.0}
+    \PYG{n}{next\PYGZus{}arrival} \PYG{o}{=} \PYG{n}{t} \PYG{o}{+} \PYG{n}{random}\PYG{o}{.}\PYG{n}{expovariate}\PYG{p}{(}\PYG{n}{lambda\PYGZus{}total}\PYG{p}{)}
+    \PYG{c+c1}{\PYGZsh{} current\PYGZus{}job \PYGZhy{} кортеж (job\PYGZus{}class, arrival\PYGZus{}time) для заявки, находящейся в обслуживании.}
+    \PYG{n}{current\PYGZus{}job} \PYG{o}{=} \PYG{k+kc}{None}
+    \PYG{n}{departure\PYGZus{}time} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{inf}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+    \PYG{c+c1}{\PYGZsh{} Очереди ожидания: для каждого класса храним кортеж (job\PYGZus{}class, arrival\PYGZus{}time)}
+    \PYG{n}{queue1} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} для требований 1\PYGZhy{}го класса}
+    \PYG{n}{queue2} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} для требований 2\PYGZhy{}го класса}
+    \PYG{c+c1}{\PYGZsh{} Счётчики поступлений по классам}
+    \PYG{n}{total\PYGZus{}arrivals} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{total\PYGZus{}arrivals\PYGZus{}class1} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{total\PYGZus{}arrivals\PYGZus{}class2} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{c+c1}{\PYGZsh{} Для расчёта математического ожидания времени пребывания (u)}
+    \PYG{n}{sum\PYGZus{}sojourn\PYGZus{}class1} \PYG{o}{=} \PYG{l+m+mf}{0.0}  \PYG{c+c1}{\PYGZsh{} суммарное время пребывания для требований 1\PYGZhy{}го класса}
+    \PYG{n}{sum\PYGZus{}sojourn\PYGZus{}class2} \PYG{o}{=} \PYG{l+m+mf}{0.0}  \PYG{c+c1}{\PYGZsh{} суммарное время пребывания для требований 2\PYGZhy{}го класса}
+    \PYG{n}{count\PYGZus{}class1} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{count\PYGZus{}class2} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{lost2\PYGZus{}count} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{c+c1}{\PYGZsh{} Моделирование продолжается, пока не сгенерируем N поступлений и система не опустеет.}
+    \PYG{k}{while} \PYG{n}{total\PYGZus{}arrivals} \PYG{o}{\PYGZlt{}} \PYG{n}{N} \PYG{o+ow}{or} \PYG{n}{current\PYGZus{}job} \PYG{o+ow}{is} \PYG{o+ow}{not} \PYG{k+kc}{None} \PYG{o+ow}{or} \PYG{n}{queue1} \PYG{o+ow}{or} \PYG{n}{queue2}\PYG{p}{:}
+        \PYG{c+c1}{\PYGZsh{} Определяем следующее событие: поступление или завершение обслуживания.}
+        \PYG{c+c1}{\PYGZsh{} Если ещё поступления не исчерпаны, выбираем событие с минимальным временем.}
+        \PYG{k}{if} \PYG{n}{total\PYGZus{}arrivals} \PYG{o}{\PYGZlt{}} \PYG{n}{N}\PYG{p}{:}
+            \PYG{c+c1}{\PYGZsh{} Сравниваем время следующего поступления и время завершения обслуживания.}
+            \PYG{k}{if} \PYG{n}{next\PYGZus{}arrival} \PYG{o}{\PYGZlt{}}\PYG{o}{=} \PYG{n}{departure\PYGZus{}time}\PYG{p}{:}
+                \PYG{n}{event\PYGZus{}type} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{arrival}\PYG{l+s+s1}{\PYGZsq{}}
+                \PYG{n}{event\PYGZus{}time} \PYG{o}{=} \PYG{n}{next\PYGZus{}arrival}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{event\PYGZus{}type} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{departure}\PYG{l+s+s1}{\PYGZsq{}}
+                \PYG{n}{event\PYGZus{}time} \PYG{o}{=} \PYG{n}{departure\PYGZus{}time}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{c+c1}{\PYGZsh{} Если поступлений больше не генерируем, остаются только события завершения обслуживания.}
+            \PYG{n}{event\PYGZus{}type} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{departure}\PYG{l+s+s1}{\PYGZsq{}}
+            \PYG{n}{event\PYGZus{}time} \PYG{o}{=} \PYG{n}{departure\PYGZus{}time}
+
+        \PYG{n}{t} \PYG{o}{=} \PYG{n}{event\PYGZus{}time}
+        \PYG{c+c1}{\PYGZsh{} Обработка поступления: генерируем требование и определяем его класс}
+        \PYG{k}{if} \PYG{n}{event\PYGZus{}type} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{arrival}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:}
+            \PYG{n}{total\PYGZus{}arrivals} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+            \PYG{k}{if} \PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{n}{lambda1} \PYG{o}{/} \PYG{n}{lambda\PYGZus{}total}\PYG{p}{:}
+                \PYG{n}{job\PYGZus{}class} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{class1}\PYG{l+s+s1}{\PYGZsq{}}
+                \PYG{n}{total\PYGZus{}arrivals\PYGZus{}class1} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{job\PYGZus{}class} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{class2}\PYG{l+s+s1}{\PYGZsq{}}
+                \PYG{n}{total\PYGZus{}arrivals\PYGZus{}class2} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+
+            \PYG{n}{arrival\PYGZus{}record} \PYG{o}{=} \PYG{p}{(}\PYG{n}{job\PYGZus{}class}\PYG{p}{,} \PYG{n}{t}\PYG{p}{)}
+            \PYG{c+c1}{\PYGZsh{} Обработка поступления в зависимости от состояния сервера:}
+            \PYG{k}{if} \PYG{n}{current\PYGZus{}job} \PYG{o+ow}{is} \PYG{k+kc}{None}\PYG{p}{:}
+                \PYG{c+c1}{\PYGZsh{} Если сервер свободен – начинаем обслуживание сразу.}
+                \PYG{n}{current\PYGZus{}job} \PYG{o}{=} \PYG{n}{arrival\PYGZus{}record}
+                \PYG{n}{departure\PYGZus{}time} \PYG{o}{=} \PYG{n}{t} \PYG{o}{+} \PYG{n}{random}\PYG{o}{.}\PYG{n}{expovariate}\PYG{p}{(}\PYG{n}{mu}\PYG{p}{)}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{k}{if} \PYG{n}{job\PYGZus{}class} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{class1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:}
+                    \PYG{c+c1}{\PYGZsh{} Требование 1\PYGZhy{}го класса имеет абсолютный приоритет.}
+                    \PYG{k}{if} \PYG{n}{current\PYGZus{}job}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{class2}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:}
+                        \PYG{c+c1}{\PYGZsh{} Прерываем обслуживание требования 2\PYGZhy{}го класса.}
+                        \PYG{c+c1}{\PYGZsh{} Засчитываем время пребывания прерванного требования 2\PYGZhy{}го класса.}
+                        \PYG{n}{sojourn} \PYG{o}{=} \PYG{n}{t} \PYG{o}{\PYGZhy{}} \PYG{n}{current\PYGZus{}job}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}
+                        \PYG{n}{sum\PYGZus{}sojourn\PYGZus{}class2} \PYG{o}{+}\PYG{o}{=} \PYG{n}{sojourn}
+                        \PYG{n}{count\PYGZus{}class2} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+                        \PYG{n}{lost2\PYGZus{}count} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+                        \PYG{c+c1}{\PYGZsh{} Начинаем обслуживание требования 1\PYGZhy{}го класса, поступившего в данный момент.}
+                        \PYG{n}{current\PYGZus{}job} \PYG{o}{=} \PYG{n}{arrival\PYGZus{}record}
+                        \PYG{n}{departure\PYGZus{}time} \PYG{o}{=} \PYG{n}{t} \PYG{o}{+} \PYG{n}{random}\PYG{o}{.}\PYG{n}{expovariate}\PYG{p}{(}\PYG{n}{mu}\PYG{p}{)}
+                    \PYG{k}{else}\PYG{p}{:}
+                        \PYG{c+c1}{\PYGZsh{} Если сервер занят требованием 1\PYGZhy{}го класса, поступившее требование идёт в очередь.}
+                        \PYG{n}{queue1}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{arrival\PYGZus{}record}\PYG{p}{)}
+                \PYG{k}{else}\PYG{p}{:}
+                    \PYG{c+c1}{\PYGZsh{} Требование 2\PYGZhy{}го класса: если сервер занят, добавляем в очередь.}
+                    \PYG{n}{queue2}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{arrival\PYGZus{}record}\PYG{p}{)}
+
+            \PYG{c+c1}{\PYGZsh{} Планируем следующее поступление, если общее число поступлений меньше N}
+            \PYG{k}{if} \PYG{n}{total\PYGZus{}arrivals} \PYG{o}{\PYGZlt{}} \PYG{n}{N}\PYG{p}{:}
+                \PYG{n}{next\PYGZus{}arrival} \PYG{o}{=} \PYG{n}{t} \PYG{o}{+} \PYG{n}{random}\PYG{o}{.}\PYG{n}{expovariate}\PYG{p}{(}\PYG{n}{lambda\PYGZus{}total}\PYG{p}{)}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{next\PYGZus{}arrival} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{inf}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{c+c1}{\PYGZsh{} Обработка завершения обслуживания (departure)}
+            \PYG{n}{finished\PYGZus{}job} \PYG{o}{=} \PYG{n}{current\PYGZus{}job}
+            \PYG{n}{sojourn} \PYG{o}{=} \PYG{n}{t} \PYG{o}{\PYGZhy{}} \PYG{n}{finished\PYGZus{}job}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} время пребывания в системе = t \PYGZhy{} время поступления}
+            \PYG{k}{if} \PYG{n}{finished\PYGZus{}job}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{class1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:}
+                \PYG{n}{sum\PYGZus{}sojourn\PYGZus{}class1} \PYG{o}{+}\PYG{o}{=} \PYG{n}{sojourn}
+                \PYG{n}{count\PYGZus{}class1} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{sum\PYGZus{}sojourn\PYGZus{}class2} \PYG{o}{+}\PYG{o}{=} \PYG{n}{sojourn}
+                \PYG{n}{count\PYGZus{}class2} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+            \PYG{c+c1}{\PYGZsh{} Выбор следующего требования для обслуживания:}
+            \PYG{c+c1}{\PYGZsh{} Абсолютный приоритет имеет очередь требований 1\PYGZhy{}го класса.}
+            \PYG{k}{if} \PYG{n}{queue1}\PYG{p}{:}
+                \PYG{n}{current\PYGZus{}job} \PYG{o}{=} \PYG{n}{queue1}\PYG{o}{.}\PYG{n}{pop}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{)}
+                \PYG{n}{departure\PYGZus{}time} \PYG{o}{=} \PYG{n}{t} \PYG{o}{+} \PYG{n}{random}\PYG{o}{.}\PYG{n}{expovariate}\PYG{p}{(}\PYG{n}{mu}\PYG{p}{)}
+            \PYG{k}{elif} \PYG{n}{queue2}\PYG{p}{:}
+                \PYG{n}{current\PYGZus{}job} \PYG{o}{=} \PYG{n}{queue2}\PYG{o}{.}\PYG{n}{pop}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{)}
+                \PYG{n}{departure\PYGZus{}time} \PYG{o}{=} \PYG{n}{t} \PYG{o}{+} \PYG{n}{random}\PYG{o}{.}\PYG{n}{expovariate}\PYG{p}{(}\PYG{n}{mu}\PYG{p}{)}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{current\PYGZus{}job} \PYG{o}{=} \PYG{k+kc}{None}
+                \PYG{n}{departure\PYGZus{}time} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{inf}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+    \PYG{n}{u1} \PYG{o}{=} \PYG{n}{sum\PYGZus{}sojourn\PYGZus{}class1} \PYG{o}{/} \PYG{n}{count\PYGZus{}class1} \PYG{k}{if} \PYG{n}{count\PYGZus{}class1} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+    \PYG{n}{u2} \PYG{o}{=} \PYG{n}{sum\PYGZus{}sojourn\PYGZus{}class2} \PYG{o}{/} \PYG{n}{count\PYGZus{}class2} \PYG{k}{if} \PYG{n}{count\PYGZus{}class2} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+    \PYG{n}{refusal\PYGZus{}prob\PYGZus{}class2} \PYG{o}{=} \PYG{n}{lost2\PYGZus{}count} \PYG{o}{/} \PYG{n}{total\PYGZus{}arrivals\PYGZus{}class2} \PYG{k}{if} \PYG{n}{total\PYGZus{}arrivals\PYGZus{}class2} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+    \PYG{c+c1}{\PYGZsh{} Вывод результатов моделирования}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Результаты моделирования (на основе }\PYG{l+s+si}{\PYGZob{}\PYGZcb{}}\PYG{l+s+s2}{ поступлений):}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Класс 1: Всего поступило = }\PYG{l+s+si}{\PYGZob{}\PYGZcb{}}\PYG{l+s+s2}{, u1 (ср. время пребывания) = }\PYG{l+s+si}{\PYGZob{}:.3f\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{total\PYGZus{}arrivals\PYGZus{}class1}\PYG{p}{,} \PYG{n}{u1}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Класс 2: Всего поступило = }\PYG{l+s+si}{\PYGZob{}\PYGZcb{}}\PYG{l+s+s2}{, u2 (ср. время пребывания) = }\PYG{l+s+si}{\PYGZob{}:.3f\PYGZcb{}}\PYG{l+s+s2}{, Вероятность отказа = }\PYG{l+s+si}{\PYGZob{}:.3f\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+          \PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{total\PYGZus{}arrivals\PYGZus{}class2}\PYG{p}{,} \PYG{n}{u2}\PYG{p}{,} \PYG{n}{refusal\PYGZus{}prob\PYGZus{}class2}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Общее модельное время: }\PYG{l+s+si}{\PYGZob{}:.3f\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{t}\PYG{p}{)}\PYG{p}{)}
+\end{MintedVerbatim}

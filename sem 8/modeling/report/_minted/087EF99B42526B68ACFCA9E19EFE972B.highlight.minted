@@ -1,0 +1,19 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{n}{time\PYGZus{}range} \PYG{o}{=} \PYG{l+m+mi}{24}
+\PYG{n}{ship1\PYGZus{}stay} \PYG{o}{=} \PYG{l+m+mi}{1}
+\PYG{n}{ship2\PYGZus{}stay} \PYG{o}{=} \PYG{l+m+mi}{2}
+\PYG{n}{num\PYGZus{}trials} \PYG{o}{=} \PYG{l+m+mi}{100000}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{intervals\PYGZus{}overlap}\PYG{p}{(}\PYG{n}{start1}\PYG{p}{,} \PYG{n}{duration1}\PYG{p}{,} \PYG{n}{start2}\PYG{p}{,} \PYG{n}{duration2}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{end1} \PYG{o}{=} \PYG{n}{start1} \PYG{o}{+} \PYG{n}{duration1}
+    \PYG{n}{end2} \PYG{o}{=} \PYG{n}{start2} \PYG{o}{+} \PYG{n}{duration2}
+    \PYG{k}{return} \PYG{o+ow}{not} \PYG{p}{(}\PYG{n}{end1} \PYG{o}{\PYGZlt{}}\PYG{o}{=} \PYG{n}{start2} \PYG{o+ow}{or} \PYG{n}{end2} \PYG{o}{\PYGZlt{}}\PYG{o}{=} \PYG{n}{start1}\PYG{p}{)}
+\PYG{n}{conflict\PYGZus{}count} \PYG{o}{=} \PYG{l+m+mi}{0}
+\PYG{k}{for} \PYG{n}{\PYGZus{}} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{num\PYGZus{}trials}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{arrival1} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{time\PYGZus{}range}\PYG{p}{)}
+    \PYG{n}{arrival2} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{time\PYGZus{}range}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{intervals\PYGZus{}overlap}\PYG{p}{(}\PYG{n}{arrival1}\PYG{p}{,} \PYG{n}{ship1\PYGZus{}stay}\PYG{p}{,} \PYG{n}{arrival2}\PYG{p}{,} \PYG{n}{ship2\PYGZus{}stay}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{conflict\PYGZus{}count} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+\PYG{n}{probability} \PYG{o}{=} \PYG{n}{conflict\PYGZus{}count} \PYG{o}{/} \PYG{n}{num\PYGZus{}trials}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Оцененная вероятность ожидания: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{probability}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}

@@ -1,0 +1,23 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{scipy}\PYG{n+nn}{.}\PYG{n+nn}{integrate}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{solve\PYGZus{}ivp}
+\PYG{n}{mu} \PYG{o}{=} \PYG{l+m+mf}{0.5}
+\PYG{n}{K} \PYG{o}{=} \PYG{l+m+mf}{1.0}
+\PYG{n}{eps} \PYG{o}{=} \PYG{l+m+mf}{0.1}
+\PYG{n}{S} \PYG{o}{=} \PYG{l+m+mf}{1.0}
+\PYG{n}{M0} \PYG{o}{=} \PYG{l+m+mf}{0.1}
+\PYG{n}{t\PYGZus{}span} \PYG{o}{=} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{50}\PYG{p}{)}
+\PYG{n}{t\PYGZus{}eval} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linspace}\PYG{p}{(}\PYG{n}{t\PYGZus{}span}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{t\PYGZus{}span}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{l+m+mi}{500}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{biomass\PYGZus{}dynamics}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{M}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{return} \PYG{n}{mu} \PYG{o}{*} \PYG{p}{(}\PYG{n}{M} \PYG{o}{*} \PYG{n}{S}\PYG{p}{)} \PYG{o}{/} \PYG{p}{(}\PYG{n}{K} \PYG{o}{+} \PYG{n}{S}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{eps} \PYG{o}{*} \PYG{n}{M}
+\PYG{n}{solution} \PYG{o}{=} \PYG{n}{solve\PYGZus{}ivp}\PYG{p}{(}\PYG{n}{biomass\PYGZus{}dynamics}\PYG{p}{,} \PYG{n}{t\PYGZus{}span}\PYG{p}{,} \PYG{p}{[}\PYG{n}{M0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{t\PYGZus{}eval}\PYG{o}{=}\PYG{n}{t\PYGZus{}eval}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{solution}\PYG{o}{.}\PYG{n}{t}\PYG{p}{,} \PYG{n}{solution}\PYG{o}{.}\PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{M(t)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{blue}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Динамика биомассы M(t)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{14}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Время t}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{12}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Биомасса M}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{12}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{k+kc}{True}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{n}{fontsize}\PYG{o}{=}\PYG{l+m+mi}{12}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+\end{MintedVerbatim}
