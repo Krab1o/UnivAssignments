@@ -1,0 +1,6 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{    }WORKDIR\PYG{+w}{ }/app
+\PYG{+w}{    }COPY\PYG{+w}{ }requirements.txt\PYG{+w}{ }.
+\PYG{+w}{    }RUN\PYG{+w}{ }pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}\PYGZhy{}no\PYGZhy{}cache\PYGZhy{}dir\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }requirements.txt
+\PYG{+w}{    }COPY\PYG{+w}{ }.\PYG{+w}{ }.
+\end{MintedVerbatim}

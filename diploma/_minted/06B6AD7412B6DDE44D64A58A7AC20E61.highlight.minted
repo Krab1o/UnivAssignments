@@ -1,0 +1,14 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n+nx}{query}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{args}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{sq}\PYG{p}{.}\PYG{n+nx}{Select}\PYG{p}{(}
+\PYG{+w}{        }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleColumnTitle}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{    }\PYG{n+nx}{PlaceholderFormat}\PYG{p}{(}\PYG{n+nx}{sq}\PYG{p}{.}\PYG{n+nx}{Dollar}\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{    }\PYG{n+nx}{From}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleTableName}\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{    }\PYG{n+nx}{LeftJoin}\PYG{p}{(}\PYG{n+nx}{fmt}\PYG{p}{.}\PYG{n+nx}{Sprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}\PYGZpc{}s ON \PYGZpc{}s = \PYGZpc{}s\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleTableName}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{Col}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleTableName}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleColumnIdRole}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{        }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{Col}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleTableName}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleColumnId}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{        }\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{)}\PYG{p}{.}\PYG{n+nx}{Where}\PYG{p}{(}\PYG{n+nx}{sq}\PYG{p}{.}\PYG{n+nx}{Eq}\PYG{p}{\PYGZob{}}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{Col}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleTableName}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleColumnIdUser}\PYG{p}{)}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{userId}\PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{    }\PYG{n+nx}{ToSql}\PYG{p}{(}\PYG{p}{)}
+\end{MintedVerbatim}

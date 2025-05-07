@@ -1,0 +1,49 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{fastapi}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{APIRouter}\PYG{p}{,} \PYG{n}{Depends}\PYG{p}{,} \PYG{n}{HTTPException}\PYG{p}{,} \PYG{n}{status}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{n+nn}{.}\PYG{n+nn}{orm}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Session}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{.}\PYG{n+nn}{.}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{models}\PYG{p}{,} \PYG{n}{database}\PYG{p}{,} \PYG{n}{schemas}\PYG{p}{,} \PYG{n}{auth}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{typing}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{List}
+
+\PYG{n}{router} \PYG{o}{=} \PYG{n}{APIRouter}\PYG{p}{(}\PYG{n}{prefix}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/users}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{tags}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Получить всех пользователей}
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{List}\PYG{p}{[}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{UserOut}\PYG{p}{]}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}users}\PYG{p}{(}\PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{database}\PYG{o}{.}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{users} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{)}\PYG{o}{.}\PYG{n}{all}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{users}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+si}{\PYGZob{}user\PYGZus{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}users}\PYG{p}{(}\PYG{n}{user\PYGZus{}ud}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{database}\PYG{o}{.}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{users} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{)}\PYG{o}{.}\PYG{n}{all}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{users}
+
+\PYG{c+c1}{\PYGZsh{} Удалить пользователя}
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{delete}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+si}{\PYGZob{}user\PYGZus{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{delete\PYGZus{}user}\PYG{p}{(}\PYG{n}{user\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{database}\PYG{o}{.}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{user} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{o}{.}\PYG{n}{id} \PYG{o}{==} \PYG{n}{user\PYGZus{}id}\PYG{p}{)}\PYG{o}{.}\PYG{n}{first}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{user}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{HTTPException}\PYG{p}{(}\PYG{n}{status\PYGZus{}code}\PYG{o}{=}\PYG{l+m+mi}{404}\PYG{p}{,} \PYG{n}{detail}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Пользователь не найден}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{delete}\PYG{p}{(}\PYG{n}{user}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{commit}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{detail}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Пользователь удален}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{\PYGZsh{} Обновить информацию о пользователе}
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{put}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+si}{\PYGZob{}user\PYGZus{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{UserOut}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{update\PYGZus{}user}\PYG{p}{(}\PYG{n}{user\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{user\PYGZus{}update}\PYG{p}{:} \PYG{n}{schemas}\PYG{o}{.}\PYG{n}{UserCreate}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{database}\PYG{o}{.}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{user} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{o}{.}\PYG{n}{id} \PYG{o}{==} \PYG{n}{user\PYGZus{}id}\PYG{p}{)}\PYG{o}{.}\PYG{n}{first}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{user}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{HTTPException}\PYG{p}{(}\PYG{n}{status\PYGZus{}code}\PYG{o}{=}\PYG{l+m+mi}{404}\PYG{p}{,} \PYG{n}{detail}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Пользователь не найден}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{login} \PYG{o}{=} \PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{login}
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{mail} \PYG{o}{=} \PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{mail}
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{password} \PYG{o}{=} \PYG{n}{auth}\PYG{o}{.}\PYG{n}{get\PYGZus{}password\PYGZus{}hash}\PYG{p}{(}\PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{password}\PYG{p}{)}
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{name} \PYG{o}{=} \PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{name}
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{lastname} \PYG{o}{=} \PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{lastname}
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{surname} \PYG{o}{=} \PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{surname}\PYG{p}{,}
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{birthdate} \PYG{o}{=} \PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{birthdate}\PYG{p}{,}
+    \PYG{n}{user}\PYG{o}{.}\PYG{n}{city} \PYG{o}{=} \PYG{n}{user\PYGZus{}update}\PYG{o}{.}\PYG{n}{city}
+
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{commit}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{refresh}\PYG{p}{(}\PYG{n}{user}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{user}
+\end{MintedVerbatim}

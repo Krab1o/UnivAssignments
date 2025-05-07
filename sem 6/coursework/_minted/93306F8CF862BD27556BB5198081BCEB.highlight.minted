@@ -1,0 +1,44 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{pydantic}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{BaseModel}\PYG{p}{,} \PYG{n}{EmailStr}\PYG{p}{,} \PYG{n}{Field}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{typing}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Optional}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{datetime}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{datetime}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{UserBase}\PYG{p}{(}\PYG{n}{BaseModel}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{login}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{mail}\PYG{p}{:} \PYG{n}{EmailStr}
+    \PYG{n}{name}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{lastname}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{surname}\PYG{p}{:} \PYG{n}{Optional}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{]} \PYG{o}{=} \PYG{k+kc}{None}
+    \PYG{n}{birthdate}\PYG{p}{:} \PYG{n}{datetime}
+    \PYG{n}{city}\PYG{p}{:} \PYG{n+nb}{str}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{UserCreate}\PYG{p}{(}\PYG{n}{UserBase}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{password}\PYG{p}{:} \PYG{n+nb}{str}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{UserOut}\PYG{p}{(}\PYG{n}{UserBase}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{id}\PYG{p}{:} \PYG{n+nb}{int}
+
+    \PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Config}\PYG{p}{:}
+        \PYG{n}{orm\PYGZus{}mode} \PYG{o}{=} \PYG{k+kc}{True}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{TrashEventBase}\PYG{p}{(}\PYG{n}{BaseModel}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{photo\PYGZus{}url}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{address}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{event\PYGZus{}status}\PYG{p}{:} \PYG{n+nb}{int}
+    \PYG{n}{time\PYGZus{}called}\PYG{p}{:} \PYG{n}{datetime}
+    \PYG{n}{time\PYGZus{}cleaned}\PYG{p}{:} \PYG{n}{datetime}
+    \PYG{n}{comment}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{confirmation\PYGZus{}photo\PYGZus{}url}\PYG{p}{:} \PYG{n+nb}{str}
+    \PYG{n}{price}\PYG{p}{:} \PYG{n+nb}{int}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{TrashEventCreate}\PYG{p}{(}\PYG{n}{TrashEventBase}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{utilizator\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{TrashEventOut}\PYG{p}{(}\PYG{n}{TrashEventBase}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{id}\PYG{p}{:} \PYG{n+nb}{int}
+    \PYG{n}{caller\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}
+    \PYG{n}{utilizator\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}
+
+    \PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Config}\PYG{p}{:}
+        \PYG{n}{orm\PYGZus{}mode} \PYG{o}{=} \PYG{k+kc}{True}
+\end{MintedVerbatim}

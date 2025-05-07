@@ -1,0 +1,21 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} app/database.py}
+
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{create\PYGZus{}engine}\PYG{p}{,} \PYG{n}{MetaData}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{n+nn}{.}\PYG{n+nn}{ext}\PYG{n+nn}{.}\PYG{n+nn}{declarative}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{declarative\PYGZus{}base}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{n+nn}{.}\PYG{n+nn}{orm}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{sessionmaker}
+
+\PYG{n}{DATABASE\PYGZus{}URL} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{postgresql://meebin\PYGZus{}user:password@db/meebin\PYGZus{}db}\PYG{l+s+s2}{\PYGZdq{}}
+
+\PYG{n}{engine} \PYG{o}{=} \PYG{n}{create\PYGZus{}engine}\PYG{p}{(}\PYG{n}{DATABASE\PYGZus{}URL}\PYG{p}{)}
+\PYG{n}{SessionLocal} \PYG{o}{=} \PYG{n}{sessionmaker}\PYG{p}{(}\PYG{n}{autocommit}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{autoflush}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{bind}\PYG{o}{=}\PYG{n}{engine}\PYG{p}{)}
+\PYG{n}{metadata} \PYG{o}{=} \PYG{n}{MetaData}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{Base} \PYG{o}{=} \PYG{n}{declarative\PYGZus{}base}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}db}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{db} \PYG{o}{=} \PYG{n}{SessionLocal}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{try}\PYG{p}{:}
+        \PYG{k}{yield} \PYG{n}{db}
+    \PYG{k}{finally}\PYG{p}{:}
+        \PYG{n}{db}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
+\end{MintedVerbatim}

@@ -1,0 +1,15 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// @Tags Auth}
+\PYG{c+c1}{// @Summary Login}
+\PYG{c+c1}{// @Schemes http}
+\PYG{c+c1}{// @Description Creates new pair of refresh\PYGZhy{}access tokens based on your credentials}
+\PYG{c+c1}{// @Accept json}
+\PYG{c+c1}{// @Produce json}
+\PYG{c+c1}{// @Param LoginCreds body dto.LoginCreds true \PYGZdq{}Login info\PYGZdq{}}
+\PYG{c+c1}{// @Success 200 \PYGZob{}object\PYGZcb{} dto.ResponseTokens}
+\PYG{c+c1}{// @Failure 400 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{c+c1}{// @Failure 401 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{c+c1}{// @Failure 404 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{c+c1}{// @Failure 500 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{c+c1}{// @Router /auth/login [post]}
+\end{MintedVerbatim}

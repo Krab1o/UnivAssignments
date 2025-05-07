@@ -1,0 +1,58 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} alembic/env.py}
+
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{sys}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{os}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{logging}\PYG{n+nn}{.}\PYG{n+nn}{config}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{fileConfig}
+
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{engine\PYGZus{}from\PYGZus{}config}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{pool}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{alembic}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{context}
+
+\PYG{c+c1}{\PYGZsh{} Добавляем путь к проекту}
+\PYG{n}{sys}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{abspath}\PYG{p}{(}\PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}
+    \PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{dirname}\PYG{p}{(}\PYG{n+nv+vm}{\PYGZus{}\PYGZus{}file\PYGZus{}\PYGZus{}}\PYG{p}{)}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{..}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{app}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{app}\PYG{n+nn}{.}\PYG{n+nn}{database}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Base}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{app}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{models}  \PYG{c+c1}{\PYGZsh{} Убедитесь, что ваши модели импортируются}
+
+\PYG{c+c1}{\PYGZsh{} this is the Alembic Config object, which provides}
+\PYG{c+c1}{\PYGZsh{} access to the values within the .ini file in use.}
+\PYG{n}{config} \PYG{o}{=} \PYG{n}{context}\PYG{o}{.}\PYG{n}{config}
+
+\PYG{c+c1}{\PYGZsh{} Interpret the config file for Python logging.}
+\PYG{c+c1}{\PYGZsh{} This line sets up loggers basically.}
+\PYG{n}{fileConfig}\PYG{p}{(}\PYG{n}{config}\PYG{o}{.}\PYG{n}{config\PYGZus{}file\PYGZus{}name}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Добавьте ваши модели здесь}
+\PYG{n}{target\PYGZus{}metadata} \PYG{o}{=} \PYG{n}{Base}\PYG{o}{.}\PYG{n}{metadata}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{run\PYGZus{}migrations\PYGZus{}offline}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Run migrations in \PYGZsq{}offline\PYGZsq{} mode.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{url} \PYG{o}{=} \PYG{n}{config}\PYG{o}{.}\PYG{n}{get\PYGZus{}main\PYGZus{}option}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sqlalchemy.url}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{context}\PYG{o}{.}\PYG{n}{configure}\PYG{p}{(}
+        \PYG{n}{url}\PYG{o}{=}\PYG{n}{url}\PYG{p}{,} \PYG{n}{target\PYGZus{}metadata}\PYG{o}{=}\PYG{n}{target\PYGZus{}metadata}\PYG{p}{,} \PYG{n}{literal\PYGZus{}binds}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{dialect\PYGZus{}opts}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{paramstyle}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{named}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}
+    \PYG{p}{)}
+
+    \PYG{k}{with} \PYG{n}{context}\PYG{o}{.}\PYG{n}{begin\PYGZus{}transaction}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{context}\PYG{o}{.}\PYG{n}{run\PYGZus{}migrations}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{run\PYGZus{}migrations\PYGZus{}online}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Run migrations in \PYGZsq{}online\PYGZsq{} mode.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{connectable} \PYG{o}{=} \PYG{n}{engine\PYGZus{}from\PYGZus{}config}\PYG{p}{(}
+        \PYG{n}{config}\PYG{o}{.}\PYG{n}{get\PYGZus{}section}\PYG{p}{(}\PYG{n}{config}\PYG{o}{.}\PYG{n}{config\PYGZus{}ini\PYGZus{}section}\PYG{p}{)}\PYG{p}{,}
+        \PYG{n}{prefix}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sqlalchemy.}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+        \PYG{n}{poolclass}\PYG{o}{=}\PYG{n}{pool}\PYG{o}{.}\PYG{n}{NullPool}\PYG{p}{,}
+    \PYG{p}{)}
+
+    \PYG{k}{with} \PYG{n}{connectable}\PYG{o}{.}\PYG{n}{connect}\PYG{p}{(}\PYG{p}{)} \PYG{k}{as} \PYG{n}{connection}\PYG{p}{:}
+        \PYG{n}{context}\PYG{o}{.}\PYG{n}{configure}\PYG{p}{(}\PYG{n}{connection}\PYG{o}{=}\PYG{n}{connection}\PYG{p}{,} \PYG{n}{target\PYGZus{}metadata}\PYG{o}{=}\PYG{n}{target\PYGZus{}metadata}\PYG{p}{)}
+
+        \PYG{k}{with} \PYG{n}{context}\PYG{o}{.}\PYG{n}{begin\PYGZus{}transaction}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{context}\PYG{o}{.}\PYG{n}{run\PYGZus{}migrations}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{if} \PYG{n}{context}\PYG{o}{.}\PYG{n}{is\PYGZus{}offline\PYGZus{}mode}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{run\PYGZus{}migrations\PYGZus{}offline}\PYG{p}{(}\PYG{p}{)}
+\PYG{k}{else}\PYG{p}{:}
+    \PYG{n}{run\PYGZus{}migrations\PYGZus{}online}\PYG{p}{(}\PYG{p}{)}
+\end{MintedVerbatim}

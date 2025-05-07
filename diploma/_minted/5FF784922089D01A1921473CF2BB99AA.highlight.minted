@@ -1,0 +1,6 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{    }\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{title}
+\PYG{+w}{    }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{user\PYGZus{}role\PYGZus{}}
+\PYG{+w}{    }\PYG{k}{LEFT}\PYG{+w}{ }\PYG{k}{JOIN}\PYG{+w}{ }\PYG{n}{role\PYGZus{}}\PYG{+w}{ }\PYG{k}{ON}\PYG{+w}{ }\PYG{n}{user\PYGZus{}role\PYGZus{}}\PYG{p}{.}\PYG{n}{id}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{role\PYGZus{}}\PYG{p}{.}\PYG{n}{id}
+\PYG{+w}{    }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{user\PYGZus{}role\PYGZus{}}\PYG{p}{.}\PYG{n}{id}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{err}{\PYGZdl{}}\PYG{l+m+mi}{1}
+\end{MintedVerbatim}

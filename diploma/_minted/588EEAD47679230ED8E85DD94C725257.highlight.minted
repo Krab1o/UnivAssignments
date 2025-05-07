@@ -1,0 +1,197 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+.
+\PYG{p}{|}—\PYG{+w}{ }bin
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }goose
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }minimock
+\PYG{p}{|}—\PYG{+w}{ }cmd
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }http\PYGZus{}server
+\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }main.go
+\PYG{p}{|}—\PYG{+w}{ }docker\PYGZhy{}compose.air.yml
+\PYG{p}{|}—\PYG{+w}{ }docker\PYGZhy{}compose.bin.yml
+\PYG{p}{|}—\PYG{+w}{ }Dockerfile.air
+\PYG{p}{|}—\PYG{+w}{ }Dockerfile.bin
+\PYG{p}{|}—\PYG{+w}{ }Dockerfile.migration
+\PYG{p}{|}—\PYG{+w}{ }docs
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }docs.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }swagger.json
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }swagger.yaml
+\PYG{p}{|}—\PYG{+w}{ }go.mod
+\PYG{p}{|}—\PYG{+w}{ }go.sum
+\PYG{p}{|}—\PYG{+w}{ }internal
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }api
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }auth
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }api\PYGZus{}auth.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }login.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }logout.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }refresh.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }register.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }constants.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }errors.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }event
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }api\PYGZus{}event.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }create.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }delete.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }get.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }list.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }handler.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }user
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }api\PYGZus{}user.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }delete.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }get.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }list.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }validation.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }app
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }app.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }closer
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }closer.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }init.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }routes.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }server
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }validator.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }service\PYGZus{}provider.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }client
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }db
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }db.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }pg
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }client.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }pg.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }transaction
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }transaction.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }transaction.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }config
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }config.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }env
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }http.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }jwt.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }pg.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }env.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }converter
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }api
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }event
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }base
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}dto.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }create
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }update
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }token
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}dto.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }user
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }base
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}dto.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }login
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }register
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }update
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{           }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}dto.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{           }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }role.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }service
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }event
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}repo.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }user
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{           }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}repo.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{           }\PYG{p}{|}—\PYG{+w}{ }to\PYGZus{}service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }middleware
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }auth.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }model
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }event
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }dto
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }base.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }create.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }id.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }r\PYGZus{}model
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }event.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }s\PYGZus{}model
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }event.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }role.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }status.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }token
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }dto
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }tokens.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }user
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }dto
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }base.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }login.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }register.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }r\PYGZus{}model
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }user.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }s\PYGZus{}model
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{           }\PYG{p}{|}—\PYG{+w}{ }user.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }repository
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }errors.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }event
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }add.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }delete.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }get.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }list.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }repository.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }repository.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }role
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }find.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }repository.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }session
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }add.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }find.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }remove.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }repository.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }sql\PYGZus{}names.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }user
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }add.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }delete.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }get\PYGZus{}creds.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }get\PYGZus{}user.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }list.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }repository.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }service
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }auth
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }helper
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }helper.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }login.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }logout.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }refresh.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }register.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }constants.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }errors.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }event
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }add.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }delete.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }get.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }list.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }user
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }delete.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }get.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }list.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }service.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }update.go
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }shared
+\PYG{p}{|}\PYG{+w}{       }\PYG{p}{|}—\PYG{+w}{ }jwt.go
+\PYG{p}{|}—\PYG{+w}{ }Makefile
+\PYG{p}{|}—\PYG{+w}{ }migrations
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250224182407\PYGZus{}create\PYGZus{}user\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250224183811\PYGZus{}create\PYGZus{}personaldata\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250224184716\PYGZus{}create\PYGZus{}userstats\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250224185347\PYGZus{}create\PYGZus{}session\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250224185654\PYGZus{}create\PYGZus{}roles\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250224185804\PYGZus{}create\PYGZus{}userrole\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250307190708\PYGZus{}create\PYGZus{}basic\PYGZus{}roles.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250325071118\PYGZus{}create\PYGZus{}event\PYGZus{}status\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250325071213\PYGZus{}create\PYGZus{}event\PYGZus{}table.sql
+\PYG{p}{|}\PYG{+w}{   }\PYG{p}{|}—\PYG{+w}{ }20250325071433\PYGZus{}create\PYGZus{}event\PYGZus{}data\PYGZus{}table.sql
+\PYG{p}{|}—\PYG{+w}{ }migration.sh
+\PYG{p}{|}—\PYG{+w}{ }README.md
+\end{MintedVerbatim}

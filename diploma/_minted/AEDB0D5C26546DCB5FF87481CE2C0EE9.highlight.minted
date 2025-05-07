@@ -1,0 +1,36 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n+nt}{services}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{db}\PYG{p}{:}
+\PYG{+w}{      }\PYG{n+nt}{image}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{postgres:17}
+\PYG{+w}{      }\PYG{n+nt}{container\PYGZus{}name}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{meebin\PYGZus{}db}
+\PYG{+w}{      }\PYG{n+nt}{restart}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{unless\PYGZhy{}stopped}
+\PYG{+w}{      }\PYG{n+nt}{environment}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n+nt}{POSTGRES\PYGZus{}USER}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{\PYGZdl{}\PYGZob{}PG\PYGZus{}USER\PYGZcb{}}
+\PYG{+w}{        }\PYG{n+nt}{POSTGRES\PYGZus{}PASSWORD}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{\PYGZdl{}\PYGZob{}PG\PYGZus{}PASSWORD\PYGZcb{}}
+\PYG{+w}{        }\PYG{n+nt}{POSTGRES\PYGZus{}DB}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{\PYGZdl{}\PYGZob{}PG\PYGZus{}DB\PYGZcb{}}
+\PYG{+w}{      }\PYG{n+nt}{ports}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{\PYGZdl{}\PYGZob{}PG\PYGZus{}PORT\PYGZcb{}:5432}
+\PYG{+w}{      }\PYG{n+nt}{volumes}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{postgres\PYGZus{}data:/var/lib/postgresql/data}
+
+\PYG{+w}{    }\PYG{n+nt}{server}\PYG{p}{:}
+\PYG{+w}{      }\PYG{n+nt}{container\PYGZus{}name}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{meebin\PYGZus{}server\PYGZus{}bin}
+\PYG{+w}{      }\PYG{n+nt}{build}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n+nt}{context}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{.}
+\PYG{+w}{        }\PYG{n+nt}{dockerfile}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{Dockerfile.bin}
+\PYG{+w}{      }\PYG{n+nt}{depends\PYGZus{}on}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{db}
+\PYG{+w}{      }\PYG{n+nt}{ports}\PYG{p}{:}
+\PYG{+w}{        }\PYG{p+pIndicator}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{\PYGZdl{}\PYGZob{}HTTP\PYGZus{}PORT:\PYGZhy{}8080\PYGZcb{}:\PYGZdl{}\PYGZob{}HTTP\PYGZus{}PORT:\PYGZhy{}8080\PYGZcb{}}
+\PYG{+w}{      }\PYG{n+nt}{restart}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{unless\PYGZhy{}stopped}
+
+\PYG{+w}{    }\PYG{n+nt}{migrator}\PYG{p}{:}
+\PYG{+w}{      }\PYG{n+nt}{container\PYGZus{}name}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{migrator}
+\PYG{+w}{      }\PYG{n+nt}{build}\PYG{p}{:}
+\PYG{+w}{        }\PYG{n+nt}{context}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{.}
+\PYG{+w}{        }\PYG{n+nt}{dockerfile}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{Dockerfile.migration}
+\PYG{+w}{      }\PYG{n+nt}{restart}\PYG{p}{:}\PYG{+w}{ }\PYG{l+lScalar+lScalarPlain}{on\PYGZhy{}failure}
+
+\PYG{+w+wError}{  }\PYG{n+nt}{volumes}\PYG{p}{:}
+\PYG{+w}{    }\PYG{n+nt}{postgres\PYGZus{}data}\PYG{p}{:}
+\end{MintedVerbatim}

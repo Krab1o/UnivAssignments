@@ -1,0 +1,69 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Column}\PYG{p}{,} \PYG{n}{Integer}\PYG{p}{,} \PYG{n}{String}\PYG{p}{,} \PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{ForeignKey}\PYG{p}{,} \PYG{n}{Float}\PYG{p}{,} \PYG{n}{TIMESTAMP}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{n+nn}{.}\PYG{n+nn}{orm}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{relationship}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{.}\PYG{n+nn}{database}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Base}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{User}\PYG{p}{(}\PYG{n}{Base}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{\PYGZus{}\PYGZus{}tablename\PYGZus{}\PYGZus{}} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users}\PYG{l+s+s2}{\PYGZdq{}}
+
+    \PYG{n+nb}{id} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{Integer}\PYG{p}{,} \PYG{n}{primary\PYGZus{}key}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{index}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{unique}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{login} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{50}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{mail} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{80}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{password} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{255}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{name} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{lastname} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{surname} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{birthdate} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{TIMESTAMP}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{default}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{\PYGZhy{}1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+    \PYG{n}{report\PYGZus{}counter} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{default}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{utilized\PYGZus{}counter} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{default}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{rating} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{Float}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{city} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+    \PYG{n}{roles} \PYG{o}{=} \PYG{n}{relationship}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Role}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{secondary}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users\PYGZus{}Roles}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{back\PYGZus{}populates}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{users}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{called\PYGZus{}events} \PYG{o}{=} \PYG{n}{relationship}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TrashEvent}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{foreign\PYGZus{}keys}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{[TrashEvent.caller\PYGZus{}id]}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{back\PYGZus{}populates}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{caller}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{utilized\PYGZus{}events} \PYG{o}{=} \PYG{n}{relationship}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TrashEvent}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{foreign\PYGZus{}keys}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{[TrashEvent.utilizator\PYGZus{}id]}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{back\PYGZus{}populates}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{utilizator}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{TrashEvent}\PYG{p}{(}\PYG{n}{Base}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{\PYGZus{}\PYGZus{}tablename\PYGZus{}\PYGZus{}} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TrashEvent}\PYG{l+s+s2}{\PYGZdq{}}
+
+    \PYG{n+nb}{id} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{Integer}\PYG{p}{,} \PYG{n}{primary\PYGZus{}key}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{index}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{unique}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{photo\PYGZus{}url} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{100}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{address} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{255}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{caller\PYGZus{}id} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{ForeignKey}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users.id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{utilizator\PYGZus{}id} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{ForeignKey}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users.id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{event\PYGZus{}status} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{ForeignKey}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TrashStatus.id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{default}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{time\PYGZus{}called} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{TIMESTAMP}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{time\PYGZus{}cleaned} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{TIMESTAMP}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{comment} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{255}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{confirmation\PYGZus{}photo\PYGZus{}url} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{255}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+    \PYG{n}{price} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+    \PYG{n}{caller} \PYG{o}{=} \PYG{n}{relationship}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{User}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{foreign\PYGZus{}keys}\PYG{o}{=}\PYG{p}{[}\PYG{n}{caller\PYGZus{}id}\PYG{p}{]}\PYG{p}{,} \PYG{n}{back\PYGZus{}populates}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{called\PYGZus{}events}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{utilizator} \PYG{o}{=} \PYG{n}{relationship}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{User}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{foreign\PYGZus{}keys}\PYG{o}{=}\PYG{p}{[}\PYG{n}{utilizator\PYGZus{}id}\PYG{p}{]}\PYG{p}{,} \PYG{n}{back\PYGZus{}populates}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{utilized\PYGZus{}events}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{status} \PYG{o}{=} \PYG{n}{relationship}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TrashStatus}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{Role}\PYG{p}{(}\PYG{n}{Base}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{\PYGZus{}\PYGZus{}tablename\PYGZus{}\PYGZus{}} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Roles}\PYG{l+s+s2}{\PYGZdq{}}
+
+    \PYG{n+nb}{id} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{Integer}\PYG{p}{,} \PYG{n}{primary\PYGZus{}key}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{index}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{unique}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{title} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+    \PYG{n}{users} \PYG{o}{=} \PYG{n}{relationship}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{User}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{secondary}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users\PYGZus{}Roles}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{back\PYGZus{}populates}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{roles}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{UsersRoles}\PYG{p}{(}\PYG{n}{Base}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{\PYGZus{}\PYGZus{}tablename\PYGZus{}\PYGZus{}} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users\PYGZus{}Roles}\PYG{l+s+s2}{\PYGZdq{}}
+
+    \PYG{n}{id\PYGZus{}roles} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{ForeignKey}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Roles.id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{primary\PYGZus{}key}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{id\PYGZus{}users} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{BigInteger}\PYG{p}{,} \PYG{n}{ForeignKey}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Users.id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{primary\PYGZus{}key}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{TrashStatus}\PYG{p}{(}\PYG{n}{Base}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{\PYGZus{}\PYGZus{}tablename\PYGZus{}\PYGZus{}} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TrashStatus}\PYG{l+s+s2}{\PYGZdq{}}
+
+    \PYG{n+nb}{id} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{Integer}\PYG{p}{,} \PYG{n}{primary\PYGZus{}key}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{index}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{unique}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{title} \PYG{o}{=} \PYG{n}{Column}\PYG{p}{(}\PYG{n}{String}\PYG{p}{(}\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nullable}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+
+\end{MintedVerbatim}

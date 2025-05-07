@@ -1,0 +1,51 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{fastapi}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{APIRouter}\PYG{p}{,} \PYG{n}{Depends}\PYG{p}{,} \PYG{n}{HTTPException}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{n+nn}{.}\PYG{n+nn}{orm}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Session}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{.}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{models}\PYG{p}{,} \PYG{n}{schemas}\PYG{p}{,} \PYG{n}{database}\PYG{p}{,} \PYG{n}{auth}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{fastapi}\PYG{n+nn}{.}\PYG{n+nn}{security}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{OAuth2PasswordRequestForm}
+
+\PYG{n}{router} \PYG{o}{=} \PYG{n}{APIRouter}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{post}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/register}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{UserOut}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{register}\PYG{p}{(}\PYG{n}{user}\PYG{p}{:} \PYG{n}{schemas}\PYG{o}{.}\PYG{n}{UserCreate}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{database}\PYG{o}{.}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{db\PYGZus{}user} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{o}{.}\PYG{n}{login} \PYG{o}{==} \PYG{n}{user}\PYG{o}{.}\PYG{n}{login}\PYG{p}{)}\PYG{o}{.}\PYG{n}{first}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{db\PYGZus{}user}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{HTTPException}\PYG{p}{(}\PYG{n}{status\PYGZus{}code}\PYG{o}{=}\PYG{l+m+mi}{400}\PYG{p}{,} \PYG{n}{detail}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Такой пользователь уже зарегистрирован}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{n}{hashed\PYGZus{}password} \PYG{o}{=} \PYG{n}{auth}\PYG{o}{.}\PYG{n}{get\PYGZus{}password\PYGZus{}hash}\PYG{p}{(}\PYG{n}{user}\PYG{o}{.}\PYG{n}{password}\PYG{p}{)}
+    \PYG{n}{new\PYGZus{}user} \PYG{o}{=} \PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{(}
+        \PYG{n}{login}\PYG{o}{=}\PYG{n}{user}\PYG{o}{.}\PYG{n}{login}\PYG{p}{,}
+        \PYG{n}{mail}\PYG{o}{=}\PYG{n}{user}\PYG{o}{.}\PYG{n}{mail}\PYG{p}{,}
+        \PYG{n}{password}\PYG{o}{=}\PYG{n}{hashed\PYGZus{}password}\PYG{p}{,}
+        \PYG{n}{name}\PYG{o}{=}\PYG{n}{user}\PYG{o}{.}\PYG{n}{name}\PYG{p}{,}
+        \PYG{n}{lastname}\PYG{o}{=}\PYG{n}{user}\PYG{o}{.}\PYG{n}{lastname}\PYG{p}{,}
+        \PYG{n}{surname}\PYG{o}{=}\PYG{n}{user}\PYG{o}{.}\PYG{n}{surname}\PYG{p}{,}
+        \PYG{n}{birthdate}\PYG{o}{=}\PYG{n}{user}\PYG{o}{.}\PYG{n}{birthdate}\PYG{p}{,}
+        \PYG{n}{city}\PYG{o}{=}\PYG{n}{user}\PYG{o}{.}\PYG{n}{city}
+    \PYG{p}{)}
+
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{new\PYGZus{}user}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{commit}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{refresh}\PYG{p}{(}\PYG{n}{new\PYGZus{}user}\PYG{p}{)}
+
+    \PYG{k}{return} \PYG{n}{new\PYGZus{}user}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{post}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/login}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{login}\PYG{p}{(}\PYG{n}{form\PYGZus{}data}\PYG{p}{:} \PYG{n}{OAuth2PasswordRequestForm} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{database}\PYG{o}{.}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{user} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{o}{.}\PYG{n}{login} \PYG{o}{==} \PYG{n}{form\PYGZus{}data}\PYG{o}{.}\PYG{n}{username}\PYG{p}{)}\PYG{o}{.}\PYG{n}{first}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{user} \PYG{o+ow}{or} \PYG{o+ow}{not} \PYG{n}{auth}\PYG{o}{.}\PYG{n}{verify\PYGZus{}password}\PYG{p}{(}\PYG{n}{form\PYGZus{}data}\PYG{o}{.}\PYG{n}{password}\PYG{p}{,} \PYG{n}{user}\PYG{o}{.}\PYG{n}{password}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{HTTPException}\PYG{p}{(}\PYG{n}{status\PYGZus{}code}\PYG{o}{=}\PYG{l+m+mi}{400}\PYG{p}{,} \PYG{n}{detail}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Неверный логин или пароль}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{n}{access\PYGZus{}token} \PYG{o}{=} \PYG{n}{auth}\PYG{o}{.}\PYG{n}{create\PYGZus{}access\PYGZus{}token}\PYG{p}{(}\PYG{n}{data}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sub}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{user}\PYG{o}{.}\PYG{n}{login}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    \PYG{k}{return} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{access\PYGZus{}token}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{access\PYGZus{}token}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{token\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bearer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}
+
+
+\PYG{c+c1}{\PYGZsh{} Включаем маршруты заявок}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{.}\PYG{n+nn}{routers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{events}\PYG{p}{,} \PYG{n}{users}
+
+\PYG{n}{main\PYGZus{}router} \PYG{o}{=} \PYG{n}{APIRouter}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{main\PYGZus{}router}\PYG{o}{.}\PYG{n}{include\PYGZus{}router}\PYG{p}{(}\PYG{n}{router}\PYG{p}{,} \PYG{n}{prefix}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/auth}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{tags}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Authentication}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{main\PYGZus{}router}\PYG{o}{.}\PYG{n}{include\PYGZus{}router}\PYG{p}{(}\PYG{n}{events}\PYG{o}{.}\PYG{n}{router}\PYG{p}{)}
+\PYG{n}{main\PYGZus{}router}\PYG{o}{.}\PYG{n}{include\PYGZus{}router}\PYG{p}{(}\PYG{n}{users}\PYG{o}{.}\PYG{n}{router}\PYG{p}{)}
+
+\end{MintedVerbatim}

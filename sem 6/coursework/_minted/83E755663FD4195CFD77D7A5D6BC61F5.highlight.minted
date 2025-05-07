@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{    }EXPOSE\PYG{+w}{ }\PYG{l+m}{8000}
+\PYG{+w}{    }CMD\PYG{+w}{ }\PYG{o}{[}\PYG{l+s+s2}{\PYGZdq{}uvicorn\PYGZdq{}},\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}app.main:app\PYGZdq{}},\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZhy{}\PYGZhy{}host\PYGZdq{}},\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}0.0.0.0\PYGZdq{}},\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZhy{}\PYGZhy{}port\PYGZdq{}},\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}8000\PYGZdq{}}\PYG{o}{]}
+\end{MintedVerbatim}

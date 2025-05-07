@@ -1,0 +1,27 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{func}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{h}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{Handler}\PYG{p}{)}\PYG{+w}{ }\PYG{n+nx}{Create}\PYG{p}{(}\PYG{n+nx}{c}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{gin}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{)}\PYG{+w}{ }\PYG{k+kt}{error}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n+nx}{ctx}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{Request}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{(}\PYG{p}{)}
+\PYG{+w}{    }\PYG{n+nx}{callerId}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{Get}\PYG{p}{(}\PYG{n+nx}{shared}\PYG{p}{.}\PYG{n+nx}{UserIDJsonName}\PYG{p}{)}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{!}\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{k+kc}{nil}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n+nx}{event}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n+nx}{dto}\PYG{p}{.}\PYG{n+nx}{NewEvent}\PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{ShouldBindJSON}\PYG{p}{(}\PYG{n+nx}{event}\PYG{p}{)}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewBadRequestError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{ParseValidationErrors}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{n+nx}{serviceEvent}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{converter}\PYG{p}{.}\PYG{n+nx}{NewEventServiceToDTO}\PYG{p}{(}\PYG{n+nx}{event}\PYG{p}{)}
+\PYG{+w}{    }\PYG{n+nx}{eventId}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{h}\PYG{p}{.}\PYG{n+nx}{eventService}\PYG{p}{.}\PYG{n+nx}{Create}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{callerId}\PYG{p}{.}\PYG{p}{(}\PYG{k+kt}{uint64}\PYG{p}{)}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{serviceEvent}\PYG{p}{)}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nx}{errors}\PYG{p}{.}\PYG{n+nx}{Is}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{ErrDuplicate}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewDuplicateError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Event already exists\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{default}\PYG{p}{:}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Internal Error\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{JSON}\PYG{p}{(}\PYG{n+nx}{http}\PYG{p}{.}\PYG{n+nx}{StatusCreated}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{dto}\PYG{p}{.}\PYG{n+nx}{IdResponse}\PYG{p}{\PYGZob{}}\PYG{n+nx}{Id}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{eventId}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

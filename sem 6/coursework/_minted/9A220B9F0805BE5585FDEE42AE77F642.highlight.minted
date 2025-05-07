@@ -1,0 +1,116 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} app/routers/events.py}
+
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{fastapi}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{APIRouter}\PYG{p}{,} \PYG{n}{Depends}\PYG{p}{,} \PYG{n}{HTTPException}\PYG{p}{,} \PYG{n}{status}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sqlalchemy}\PYG{n+nn}{.}\PYG{n+nn}{orm}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Session}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{typing}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{List}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{datetime}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{timedelta}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{.}\PYG{n+nn}{.}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{models}\PYG{p}{,} \PYG{n}{schemas}\PYG{p}{,} \PYG{n}{database}\PYG{p}{,} \PYG{n}{auth}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{fastapi}\PYG{n+nn}{.}\PYG{n+nn}{security}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{OAuth2PasswordBearer}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{jose}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{JWTError}\PYG{p}{,} \PYG{n}{jwt}
+
+\PYG{n}{router} \PYG{o}{=} \PYG{n}{APIRouter}\PYG{p}{(}\PYG{n}{prefix}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/events}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{tags}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Events}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{n}{oauth2\PYGZus{}scheme} \PYG{o}{=} \PYG{n}{OAuth2PasswordBearer}\PYG{p}{(}\PYG{n}{tokenUrl}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{api/login}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}db}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{db} \PYG{o}{=} \PYG{n}{database}\PYG{o}{.}\PYG{n}{SessionLocal}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{try}\PYG{p}{:}
+        \PYG{k}{yield} \PYG{n}{db}
+    \PYG{k}{finally}\PYG{p}{:}
+        \PYG{n}{db}\PYG{o}{.}\PYG{n}{close}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Функция для получения текущего пользователя}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}current\PYGZus{}user}\PYG{p}{(}\PYG{n}{token}\PYG{p}{:} \PYG{n+nb}{str} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{oauth2\PYGZus{}scheme}\PYG{p}{)}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{credentials\PYGZus{}exception} \PYG{o}{=} \PYG{n}{HTTPException}\PYG{p}{(}
+        \PYG{n}{status\PYGZus{}code}\PYG{o}{=}\PYG{n}{status}\PYG{o}{.}\PYG{n}{HTTP\PYGZus{}401\PYGZus{}UNAUTHORIZED}\PYG{p}{,}
+        \PYG{n}{detail}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Невалидные учетные данные}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+        \PYG{n}{headers}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{WWW\PYGZhy{}Authenticate}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Bearer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{)}
+    \PYG{k}{try}\PYG{p}{:}
+        \PYG{n}{payload} \PYG{o}{=} \PYG{n}{jwt}\PYG{o}{.}\PYG{n}{decode}\PYG{p}{(}\PYG{n}{token}\PYG{p}{,} \PYG{n}{auth}\PYG{o}{.}\PYG{n}{SECRET\PYGZus{}KEY}\PYG{p}{,} \PYG{n}{algorithms}\PYG{o}{=}\PYG{p}{[}\PYG{n}{auth}\PYG{o}{.}\PYG{n}{ALGORITHM}\PYG{p}{]}\PYG{p}{)}
+        \PYG{n}{username}\PYG{p}{:} \PYG{n+nb}{str} \PYG{o}{=} \PYG{n}{payload}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sub}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{username} \PYG{o+ow}{is} \PYG{k+kc}{None}\PYG{p}{:}
+            \PYG{k}{raise} \PYG{n}{credentials\PYGZus{}exception}
+    \PYG{k}{except} \PYG{n}{JWTError}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{credentials\PYGZus{}exception}
+    \PYG{n}{user} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{User}\PYG{o}{.}\PYG{n}{username} \PYG{o}{==} \PYG{n}{username}\PYG{p}{)}\PYG{o}{.}\PYG{n}{first}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{user} \PYG{o+ow}{is} \PYG{k+kc}{None}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{credentials\PYGZus{}exception}
+    \PYG{k}{return} \PYG{n}{user}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{post}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{create\PYGZus{}event}\PYG{p}{(}
+    \PYG{n}{event}\PYG{p}{:} \PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventCreate}\PYG{p}{,}
+    \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{database}\PYG{o}{.}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{,}
+    \PYG{n}{current\PYGZus{}user}\PYG{p}{:} \PYG{n}{models}\PYG{o}{.}\PYG{n}{User} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{auth}\PYG{o}{.}\PYG{n}{get\PYGZus{}current\PYGZus{}user}\PYG{p}{)}
+    \PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{new\PYGZus{}event} \PYG{o}{=} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{(}
+        \PYG{n}{photo\PYGZus{}url}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{photo\PYGZus{}url}\PYG{p}{,}
+        \PYG{n}{address}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{address}\PYG{p}{,}
+        \PYG{n}{caller\PYGZus{}id}\PYG{o}{=}\PYG{n}{current\PYGZus{}user}\PYG{o}{.}\PYG{n}{id}\PYG{p}{,}
+        \PYG{n}{utilizator\PYGZus{}id}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{utilizator\PYGZus{}id}\PYG{p}{,}
+        \PYG{n}{event\PYGZus{}status}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{event\PYGZus{}status}\PYG{p}{,}
+        \PYG{n}{time\PYGZus{}called}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{time\PYGZus{}called}\PYG{p}{,}
+        \PYG{n}{time\PYGZus{}cleaned}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{time\PYGZus{}cleaned}\PYG{p}{,}
+        \PYG{n}{comment}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{comment}\PYG{p}{,}
+        \PYG{n}{confirmation\PYGZus{}photo\PYGZus{}url}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{confirmation\PYGZus{}photo\PYGZus{}url}\PYG{p}{,}
+        \PYG{n}{price}\PYG{o}{=}\PYG{n}{event}\PYG{o}{.}\PYG{n}{price}
+    \PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{new\PYGZus{}event}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{commit}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{refresh}\PYG{p}{(}\PYG{n}{new\PYGZus{}event}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{new\PYGZus{}event}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{List}\PYG{p}{[}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{]}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}available\PYGZus{}events}\PYG{p}{(}\PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{events} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{status} \PYG{o}{==} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashStatus}\PYG{o}{.}\PYG{n}{available}\PYG{p}{)}\PYG{o}{.}\PYG{n}{all}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{events}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/my}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{List}\PYG{p}{[}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{]}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}my\PYGZus{}events}\PYG{p}{(}\PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{,} \PYG{n}{current\PYGZus{}user}\PYG{p}{:} \PYG{n}{models}\PYG{o}{.}\PYG{n}{User} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}current\PYGZus{}user}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{events} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}
+    \PYG{n}{creator\PYGZus{}id} \PYG{o}{==} \PYG{n}{current\PYGZus{}user}\PYG{o}{.}\PYG{n}{id}\PYG{p}{)}\PYG{o}{.}\PYG{n}{all}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{events}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/accepted}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{List}\PYG{p}{[}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{]}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}accepted\PYGZus{}events}\PYG{p}{(}\PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{,} \PYG{n}{current\PYGZus{}user}\PYG{p}{:} \PYG{n}{models}\PYG{o}{.}\PYG{n}{User} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}current\PYGZus{}user}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{events} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}
+    \PYG{n}{accepted\PYGZus{}by} \PYG{o}{==} \PYG{n}{current\PYGZus{}user}\PYG{o}{.}\PYG{n}{id}\PYG{p}{)}\PYG{o}{.}\PYG{n}{all}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{events}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/completed}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{List}\PYG{p}{[}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{]}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}completed\PYGZus{}events}\PYG{p}{(}\PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{,} \PYG{n}{current\PYGZus{}user}\PYG{p}{:} \PYG{n}{models}\PYG{o}{.}\PYG{n}{User} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}current\PYGZus{}user}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{events} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{status} \PYG{o}{==} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashStatus}\PYG{o}{.}\PYG{n}{completed}\PYG{p}{,} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{accepted\PYGZus{}by} \PYG{o}{==} \PYG{n}{current\PYGZus{}user}\PYG{o}{.}\PYG{n}{id}\PYG{p}{)}\PYG{o}{.}\PYG{n}{all}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{events}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{post}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+si}{\PYGZob{}event\PYGZus{}id\PYGZcb{}}\PYG{l+s+s2}{/accept}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{accept\PYGZus{}event}\PYG{p}{(}\PYG{n}{event\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{,} \PYG{n}{current\PYGZus{}user}\PYG{p}{:} \PYG{n}{models}\PYG{o}{.}\PYG{n}{User} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}current\PYGZus{}user}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{event} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{id} \PYG{o}{==} \PYG{n}{event\PYGZus{}id}\PYG{p}{,} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{status} \PYG{o}{==} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashStatus}\PYG{o}{.}\PYG{n}{available}\PYG{p}{)}\PYG{o}{.}\PYG{n}{first}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{event}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{HTTPException}\PYG{p}{(}\PYG{n}{status\PYGZus{}code}\PYG{o}{=}\PYG{l+m+mi}{404}\PYG{p}{,} \PYG{n}{detail}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Заявка не найдена или уже принята}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{event}\PYG{o}{.}\PYG{n}{status} \PYG{o}{=} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashStatus}\PYG{o}{.}\PYG{n}{accepted}
+    \PYG{n}{event}\PYG{o}{.}\PYG{n}{accepted\PYGZus{}by} \PYG{o}{=} \PYG{n}{current\PYGZus{}user}\PYG{o}{.}\PYG{n}{id}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{commit}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{refresh}\PYG{p}{(}\PYG{n}{event}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{event}
+
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{post}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/}\PYG{l+s+si}{\PYGZob{}event\PYGZus{}id\PYGZcb{}}\PYG{l+s+s2}{/complete}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{complete\PYGZus{}event}\PYG{p}{(}\PYG{n}{event\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{,} \PYG{n}{current\PYGZus{}user}\PYG{p}{:} \PYG{n}{models}\PYG{o}{.}\PYG{n}{User} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}current\PYGZus{}user}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{event} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{id} \PYG{o}{==} \PYG{n}{event\PYGZus{}id}\PYG{p}{,} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{accepted\PYGZus{}by} \PYG{o}{==} \PYG{n}{current\PYGZus{}user}\PYG{o}{.}\PYG{n}{id}\PYG{p}{)}\PYG{o}{.}\PYG{n}{first}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{event}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n}{HTTPException}\PYG{p}{(}\PYG{n}{status\PYGZus{}code}\PYG{o}{=}\PYG{l+m+mi}{404}\PYG{p}{,} \PYG{n}{detail}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Заявка не найдена или вы её не приняли}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{event}\PYG{o}{.}\PYG{n}{status} \PYG{o}{=} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashStatus}\PYG{o}{.}\PYG{n}{completed}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{commit}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{db}\PYG{o}{.}\PYG{n}{refresh}\PYG{p}{(}\PYG{n}{event}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{event}
+
+\PYG{c+c1}{\PYGZsh{} Получить историю заявок пользователя}
+\PYG{n+nd}{@router}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/users/}\PYG{l+s+si}{\PYGZob{}user\PYGZus{}id\PYGZcb{}}\PYG{l+s+s2}{/history}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{response\PYGZus{}model}\PYG{o}{=}\PYG{n}{List}\PYG{p}{[}\PYG{n}{schemas}\PYG{o}{.}\PYG{n}{TrashEventOut}\PYG{p}{]}\PYG{p}{)}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}user\PYGZus{}request\PYGZus{}history}\PYG{p}{(}\PYG{n}{user\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{db}\PYG{p}{:} \PYG{n}{Session} \PYG{o}{=} \PYG{n}{Depends}\PYG{p}{(}\PYG{n}{get\PYGZus{}db}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{requests} \PYG{o}{=} \PYG{n}{db}\PYG{o}{.}\PYG{n}{query}\PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{p}{)}\PYG{o}{.}\PYG{n}{filter}\PYG{p}{(}
+        \PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{caller\PYGZus{}id} \PYG{o}{==} \PYG{n}{user\PYGZus{}id}\PYG{p}{)} \PYG{o}{|} \PYG{p}{(}\PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{utilizator\PYGZus{}id} \PYG{o}{==} \PYG{n}{user\PYGZus{}id}\PYG{p}{)}\PYG{p}{,}
+        \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashEvent}\PYG{o}{.}\PYG{n}{status} \PYG{o}{==} \PYG{n}{models}\PYG{o}{.}\PYG{n}{TrashStatus}\PYG{o}{.}\PYG{n}{completed}
+    \PYG{p}{)}\PYG{o}{.}\PYG{n}{all}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{requests}
+\end{MintedVerbatim}

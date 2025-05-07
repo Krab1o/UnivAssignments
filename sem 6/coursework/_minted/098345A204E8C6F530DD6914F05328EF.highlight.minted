@@ -1,0 +1,14 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} app/main.py}
+
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{fastapi}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{FastAPI}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{.}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{models}\PYG{p}{,} \PYG{n}{database}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{.}\PYG{n+nn}{router}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{main\PYGZus{}router}
+
+\PYG{n}{app} \PYG{o}{=} \PYG{n}{FastAPI}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Создаем все таблицы}
+\PYG{n}{models}\PYG{o}{.}\PYG{n}{Base}\PYG{o}{.}\PYG{n}{metadata}\PYG{o}{.}\PYG{n}{create\PYGZus{}all}\PYG{p}{(}\PYG{n}{bind}\PYG{o}{=}\PYG{n}{database}\PYG{o}{.}\PYG{n}{engine}\PYG{p}{)}
+
+\PYG{n}{app}\PYG{o}{.}\PYG{n}{include\PYGZus{}router}\PYG{p}{(}\PYG{n}{main\PYGZus{}router}\PYG{p}{,} \PYG{n}{prefix}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{/api}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}
