@@ -1,0 +1,23 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Dockerfile}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{l+s}{alpine:latest}
+
+\PYG{k}{RUN}\PYG{+w}{ }apk\PYG{+w}{ }update\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }apk\PYG{+w}{ }upgrade\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }apk\PYG{+w}{ }add\PYG{+w}{ }bash\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }rm\PYG{+w}{ }\PYGZhy{}rf\PYG{+w}{ }/var/cache/apk/*
+
+\PYG{k}{ADD}\PYG{+w}{ }https://github.com/pressly/goose/releases/download/v3.24.1/goose\PYGZus{}
+linux\PYGZus{}x86\PYGZus{}64\PYG{+w}{ }/bin/goose
+\PYG{k}{RUN}\PYG{+w}{ }chmod\PYG{+w}{ }+x\PYG{+w}{ }/bin/goose
+
+\PYG{k}{WORKDIR}\PYG{+w}{ }\PYG{l+s}{/root}
+
+\PYG{k}{ADD}\PYG{+w}{ }migrations/*.sql\PYG{+w}{ }migrations/
+\PYG{k}{ADD}\PYG{+w}{ }migration.sh\PYG{+w}{ }.
+\PYG{k}{ADD}\PYG{+w}{ }.env\PYG{+w}{ }.
+
+\PYG{k}{RUN}\PYG{+w}{ }chmod\PYG{+w}{ }+x\PYG{+w}{ }migration.sh
+
+\PYG{k}{ENTRYPOINT}\PYG{+w}{ }\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}bash\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}migration.sh\PYGZdq{}}\PYG{p}{]}
+\end{MintedVerbatim}

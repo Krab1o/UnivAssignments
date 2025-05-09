@@ -1,0 +1,175 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// Обработка ошибок}
+\PYG{+w}{    }\PYG{k+kd}{type}\PYG{+w}{ }\PYG{n+nx}{Error}\PYG{+w}{ }\PYG{k+kd}{struct}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n+nx}{StatusCode}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{   }\PYG{l+s}{`json:\PYGZdq{}\PYGZhy{}\PYGZdq{}`}
+\PYG{+w}{        }\PYG{n+nx}{Message}\PYG{+w}{    }\PYG{k+kt}{any}\PYG{+w}{   }\PYG{l+s}{`json:\PYGZdq{}message\PYGZdq{}`}
+\PYG{+w}{        }\PYG{n+nx}{Err}\PYG{+w}{        }\PYG{k+kt}{error}\PYG{+w}{ }\PYG{l+s}{`json:\PYGZdq{}\PYGZhy{}\PYGZdq{}`}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k+kd}{func}\PYG{+w}{ }\PYG{n+nx}{newError}\PYG{p}{(}\PYG{n+nx}{statusCode}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{k+kt}{error}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{message}\PYG{+w}{ }\PYG{k+kt}{any}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{Error}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n+nx}{Error}\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n+nx}{StatusCode}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{statusCode}\PYG{p}{,}
+\PYG{+w}{            }\PYG{n+nx}{Message}\PYG{p}{:}\PYG{+w}{    }\PYG{n+nx}{message}\PYG{p}{,}
+\PYG{+w}{            }\PYG{n+nx}{Err}\PYG{p}{:}\PYG{+w}{        }\PYG{n+nx}{err}\PYG{p}{,}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{k+kd}{func}\PYG{+w}{ }\PYG{n+nx}{NewNotFoundError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{+w}{ }\PYG{k+kt}{error}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{message}\PYG{+w}{ }\PYG{k+kt}{any}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{Error}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{newError}\PYG{p}{(}\PYG{n+nx}{http}\PYG{p}{.}\PYG{n+nx}{StatusNotFound}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{message}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// API\PYGZhy{}слой}
+
+\PYG{+w}{    }\PYG{k+kd}{func}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{h}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{Handler}\PYG{p}{)}\PYG{+w}{ }\PYG{n+nx}{Create}\PYG{p}{(}\PYG{n+nx}{c}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{gin}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{)}\PYG{+w}{ }\PYG{k+kt}{error}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n+nx}{ctx}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{Request}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{(}\PYG{p}{)}
+\PYG{+w}{        }\PYG{n+nx}{callerId}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{Get}\PYG{p}{(}\PYG{n+nx}{shared}\PYG{p}{.}\PYG{n+nx}{UserIDJsonName}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{!}\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{k+kc}{nil}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n+nx}{event}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n+nx}{dto}\PYG{p}{.}\PYG{n+nx}{NewEvent}\PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{ShouldBindJSON}\PYG{p}{(}\PYG{n+nx}{event}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewBadRequestError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{ParseValidationErrors}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{n+nx}{serviceEvent}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{converter}\PYG{p}{.}\PYG{n+nx}{NewEventServiceToDTO}\PYG{p}{(}\PYG{n+nx}{event}\PYG{p}{)}
+\PYG{+w}{        }\PYG{n+nx}{eventId}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{h}\PYG{p}{.}\PYG{n+nx}{eventService}\PYG{p}{.}\PYG{n+nx}{Create}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{callerId}\PYG{p}{.}\PYG{p}{(}\PYG{k+kt}{uint64}\PYG{p}{)}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{serviceEvent}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{switch}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{case}\PYG{+w}{ }\PYG{n+nx}{errors}\PYG{p}{.}\PYG{n+nx}{Is}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{ErrDuplicate}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewDuplicateError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Event already exists\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{            }\PYG{k}{default}\PYG{p}{:}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}Internal Error\PYGZdq{}}\PYG{p}{)}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{JSON}\PYG{p}{(}\PYG{n+nx}{http}\PYG{p}{.}\PYG{n+nx}{StatusCreated}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{dto}\PYG{p}{.}\PYG{n+nx}{IdResponse}\PYG{p}{\PYGZob{}}\PYG{n+nx}{Id}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{eventId}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// Документация}
+
+\PYG{+w}{    }\PYG{c+c1}{// @Tags Auth}
+\PYG{+w}{    }\PYG{c+c1}{// @Summary Login}
+\PYG{+w}{    }\PYG{c+c1}{// @Schemes http}
+\PYG{+w}{    }\PYG{c+c1}{// @Description Creates new pair of refresh\PYGZhy{}access tokens based on your credentials}
+\PYG{+w}{    }\PYG{c+c1}{// @Accept json}
+\PYG{+w}{    }\PYG{c+c1}{// @Produce json}
+\PYG{+w}{    }\PYG{c+c1}{// @Param LoginCreds body dto.LoginCreds true \PYGZdq{}Login info\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{// @Success 200 \PYGZob{}object\PYGZcb{} dto.ResponseTokens}
+\PYG{+w}{    }\PYG{c+c1}{// @Failure 400 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{+w}{    }\PYG{c+c1}{// @Failure 401 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{+w}{    }\PYG{c+c1}{// @Failure 404 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{+w}{    }\PYG{c+c1}{// @Failure 500 \PYGZob{}object\PYGZcb{} api.Error}
+\PYG{+w}{    }\PYG{c+c1}{// @Router /auth/login [post]}
+
+\PYG{+w}{    }\PYG{c+c1}{// Сервисный слой}
+\PYG{+w}{    }\PYG{k+kd}{func}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{s}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{serv}\PYG{p}{)}\PYG{+w}{ }\PYG{n+nx}{Login}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{+w}{ }\PYG{n+nx}{context}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{creds}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{smodel}\PYG{p}{.}\PYG{n+nx}{Creds}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{(}\PYG{o}{*}\PYG{n+nx}{smodel}\PYG{p}{.}\PYG{n+nx}{Tokens}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{error}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n+nx}{repoUser}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{userRepository}\PYG{p}{.}\PYG{n+nx}{GetCredsByEmail}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{creds}\PYG{p}{.}\PYG{n+nx}{Email}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{ErrorDBToService}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{helper}\PYG{p}{.}\PYG{n+nx}{VerifyPassword}\PYG{p}{(}
+\PYG{+w}{            }\PYG{n+nx}{repoUser}\PYG{p}{.}\PYG{n+nx}{Creds}\PYG{p}{.}\PYG{n+nx}{HashedPassword}\PYG{p}{,}
+\PYG{+w}{            }\PYG{n+nx}{creds}\PYG{p}{.}\PYG{n+nx}{Password}\PYG{p}{,}
+\PYG{+w}{        }\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{!}\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{NewUnauthorizedError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k+kd}{var}\PYG{+w}{ }\PYG{n+nx}{refreshToken}\PYG{+w}{ }\PYG{k+kt}{string}
+\PYG{+w}{        }\PYG{k+kd}{var}\PYG{+w}{ }\PYG{n+nx}{accessToken}\PYG{+w}{ }\PYG{k+kt}{string}
+\PYG{+w}{        }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{txManager}\PYG{p}{.}\PYG{n+nx}{ReadCommitted}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kd}{func}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{+w}{ }\PYG{n+nx}{context}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{)}\PYG{+w}{ }\PYG{k+kt}{error}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n+nx}{timeNow}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{time}\PYG{p}{.}\PYG{n+nx}{Now}\PYG{p}{(}\PYG{p}{)}
+\PYG{+w}{            }\PYG{n+nx}{refreshExpirationTime}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{timeNow}\PYG{p}{.}\PYG{n+nx}{Add}\PYG{p}{(}
+\PYG{+w}{                }\PYG{n+nx}{time}\PYG{p}{.}\PYG{n+nx}{Duration}\PYG{p}{(}\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{jwtConfig}\PYG{p}{.}\PYG{n+nx}{RefreshTimeout}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{n+nx}{time}\PYG{p}{.}\PYG{n+nx}{Hour}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{)}
+\PYG{+w}{            }\PYG{n+nx}{repoSession}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n+nx}{rmodel}\PYG{p}{.}\PYG{n+nx}{Session}\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{n+nx}{UserId}\PYG{p}{:}\PYG{+w}{         }\PYG{n+nx}{repoUser}\PYG{p}{.}\PYG{n+nx}{Id}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{ExpirationTime}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{refreshExpirationTime}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{            }\PYG{n+nx}{sessionId}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{sessionRepository}\PYG{p}{.}\PYG{n+nx}{AddSession}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{repoSession}\PYG{p}{)}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{ErrorDBToService}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{            }\PYG{n+nx}{refreshToken}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nx}{helper}\PYG{p}{.}\PYG{n+nx}{GenerateRefreshToken}\PYG{p}{(}
+\PYG{+w}{                }\PYG{n+nx}{shared}\PYG{p}{.}\PYG{n+nx}{CustomRefreshFields}\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{n+nx}{SessionID}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{sessionId}\PYG{p}{,}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{refreshExpirationTime}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{time}\PYG{p}{.}\PYG{n+nx}{Now}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{jwtConfig}\PYG{p}{.}\PYG{n+nx}{Secret}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{)}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{            }\PYG{n+nx}{roles}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{roleRepository}\PYG{p}{.}\PYG{n+nx}{ListUserRolesById}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{repoUser}\PYG{p}{.}\PYG{n+nx}{Id}\PYG{p}{)}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{ErrorDBToService}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{            }\PYG{n+nx}{accessToken}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nx}{helper}\PYG{p}{.}\PYG{n+nx}{GenerateAccessToken}\PYG{p}{(}
+\PYG{+w}{                }\PYG{n+nx}{shared}\PYG{p}{.}\PYG{n+nx}{CustomAccessFields}\PYG{p}{\PYGZob{}}
+\PYG{+w}{                    }\PYG{n+nx}{UserID}\PYG{p}{:}\PYG{+w}{    }\PYG{n+nx}{repoUser}\PYG{p}{.}\PYG{n+nx}{Id}\PYG{p}{,}
+\PYG{+w}{                    }\PYG{n+nx}{SessionID}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{sessionId}\PYG{p}{,}
+\PYG{+w}{                    }\PYG{n+nx}{Roles}\PYG{p}{:}\PYG{+w}{     }\PYG{n+nx}{roles}\PYG{p}{,}
+\PYG{+w}{                }\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{timeNow}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{jwtConfig}\PYG{p}{.}\PYG{n+nx}{Secret}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{s}\PYG{p}{.}\PYG{n+nx}{jwtConfig}\PYG{p}{.}\PYG{n+nx}{AccessTimeout}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{)}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{service}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n+nx}{smodel}\PYG{p}{.}\PYG{n+nx}{Tokens}\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n+nx}{AccessToken}\PYG{p}{:}\PYG{+w}{  }\PYG{n+nx}{accessToken}\PYG{p}{,}
+\PYG{+w}{            }\PYG{n+nx}{RefreshToken}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{refreshToken}\PYG{p}{,}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{nil}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{    }\PYG{c+c1}{// Репозиторий}
+\PYG{+w}{    }\PYG{k+kd}{func}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{r}\PYG{+w}{ }\PYG{o}{*}\PYG{n+nx}{repo}\PYG{p}{)}\PYG{+w}{ }\PYG{n+nx}{ListUserRolesById}\PYG{p}{(}
+\PYG{+w}{	}\PYG{n+nx}{ctx}\PYG{+w}{ }\PYG{n+nx}{context}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{,}
+\PYG{+w}{	}\PYG{n+nx}{userId}\PYG{+w}{ }\PYG{k+kt}{uint64}\PYG{p}{,}
+\PYG{p}{)}\PYG{+w}{ }\PYG{p}{(}\PYG{p}{[}\PYG{p}{]}\PYG{n+nx}{model}\PYG{p}{.}\PYG{n+nx}{Role}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{error}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n+nx}{query}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{args}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{sq}\PYG{p}{.}\PYG{n+nx}{Select}\PYG{p}{(}
+\PYG{+w}{            }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleColumnTitle}\PYG{p}{,}
+\PYG{+w}{        }\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{            }\PYG{n+nx}{PlaceholderFormat}\PYG{p}{(}\PYG{n+nx}{sq}\PYG{p}{.}\PYG{n+nx}{Dollar}\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{            }\PYG{n+nx}{From}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleTableName}\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{            }\PYG{n+nx}{LeftJoin}\PYG{p}{(}\PYG{n+nx}{fmt}\PYG{p}{.}\PYG{n+nx}{Sprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}\PYGZpc{}s ON \PYGZpc{}s = \PYGZpc{}s\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleTableName}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{Col}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleTableName}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleColumnIdRole}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{                }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{Col}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleTableName}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{RoleColumnId}\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{)}\PYG{p}{,}
+\PYG{+w}{            }\PYG{p}{)}\PYG{p}{.}\PYG{n+nx}{Where}\PYG{p}{(}\PYG{n+nx}{sq}\PYG{p}{.}\PYG{n+nx}{Eq}\PYG{p}{\PYGZob{}}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{Col}\PYG{p}{(}\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleTableName}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{UserRoleColumnIdUser}\PYG{p}{)}\PYG{p}{:}\PYG{+w}{ }\PYG{n+nx}{userId}\PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{p}{.}
+\PYG{+w}{            }\PYG{n+nx}{ToSql}\PYG{p}{(}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{n+nx}{rows}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{r}\PYG{p}{.}\PYG{n+nx}{db}\PYG{p}{.}\PYG{n+nx}{DB}\PYG{p}{(}\PYG{p}{)}\PYG{p}{.}\PYG{n+nx}{QueryContext}\PYG{p}{(}\PYG{n+nx}{ctx}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{query}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{args}\PYG{o}{...}\PYG{p}{)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k+kd}{var}\PYG{+w}{ }\PYG{n+nx}{roles}\PYG{+w}{ }\PYG{p}{[}\PYG{p}{]}\PYG{n+nx}{model}\PYG{p}{.}\PYG{n+nx}{Role}
+\PYG{+w}{        }\PYG{k+kd}{var}\PYG{+w}{ }\PYG{n+nx}{role}\PYG{+w}{ }\PYG{n+nx}{model}\PYG{p}{.}\PYG{n+nx}{Role}
+\PYG{+w}{        }\PYG{k}{for}\PYG{+w}{ }\PYG{n+nx}{rows}\PYG{p}{.}\PYG{n+nx}{Next}\PYG{p}{(}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nx}{rows}\PYG{p}{.}\PYG{n+nx}{Scan}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n+nx}{role}\PYG{p}{)}
+\PYG{+w}{            }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{return}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rep}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{            }\PYG{n+nx}{roles}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{append}\PYG{p}{(}\PYG{n+nx}{roles}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{role}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{roles}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{nil}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

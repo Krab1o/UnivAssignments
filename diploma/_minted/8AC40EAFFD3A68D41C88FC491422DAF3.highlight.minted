@@ -1,0 +1,7 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{c+ch}{\PYGZsh{}!/bin/bash}
+\PYG{c+c1}{\PYGZsh{} Скрипт мигратора}
+\PYG{n+nb}{source}\PYG{+w}{ }.env
+\PYG{n+nb}{export}\PYG{+w}{ }\PYG{n+nv}{MIGRATION\PYGZus{}DSN}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{host=}\PYG{n+nv}{\PYGZdl{}DB\PYGZus{}HOST}\PYG{l+s+s2}{ port=}\PYG{n+nv}{\PYGZdl{}PG\PYGZus{}PORT}\PYG{l+s+s2}{ dbname=}\PYG{n+nv}{\PYGZdl{}PG\PYGZus{}DB}\PYG{l+s+s2}{ user=}\PYG{n+nv}{\PYGZdl{}PG\PYGZus{}USER}\PYG{l+s+s2}{ password=}\PYG{n+nv}{\PYGZdl{}PG\PYGZus{}PASSWORD}\PYG{l+s+s2}{\PYGZdq{}}
+sleep\PYG{+w}{ }\PYG{l+m}{2}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }goose\PYG{+w}{ }\PYGZhy{}dir\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{MIGRATION\PYGZus{}DIR}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }postgres\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{MIGRATION\PYGZus{}DSN}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{+w}{ }up\PYG{+w}{ }\PYGZhy{}v
+\end{MintedVerbatim}
