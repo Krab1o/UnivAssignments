@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n+nx}{ctx}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{Request}\PYG{p}{.}\PYG{n+nx}{Context}\PYG{p}{(}\PYG{p}{)}
+\PYG{n+nx}{callerId}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{Get}\PYG{p}{(}\PYG{n+nx}{shared}\PYG{p}{.}\PYG{n+nx}{UserIDJsonName}\PYG{p}{)}
+\PYG{k}{if}\PYG{+w}{ }\PYG{p}{!}\PYG{n+nx}{ok}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewInternalError}\PYG{p}{(}\PYG{k+kc}{nil}\PYG{p}{)}
+\PYG{p}{\PYGZcb{}}
+\PYG{n+nx}{event}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n+nx}{dto}\PYG{p}{.}\PYG{n+nx}{NewEvent}\PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n+nx}{c}\PYG{p}{.}\PYG{n+nx}{ShouldBindJSON}\PYG{p}{(}\PYG{n+nx}{event}\PYG{p}{)}
+\PYG{k}{if}\PYG{+w}{ }\PYG{n+nx}{err}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k+kc}{nil}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{NewBadRequestError}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{api}\PYG{p}{.}\PYG{n+nx}{ParseValidationErrors}\PYG{p}{(}\PYG{n+nx}{err}\PYG{p}{)}\PYG{p}{)}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}
